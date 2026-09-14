@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand colors -->
     <color name="primary">#4F46E5</color>
     <color name="primary_variant">#4338CA</color>
     <color name="primary_light">#EEF2FF</color>
     <color name="secondary">#10B981</color>
     <color name="secondary_variant">#059669</color>
     <color name="secondary_light">#ECFDF5</color>
+    <color name="secondary_stroke">#A7F3D0</color>
 
+    <!-- Backgrounds & Surfaces -->
     <color name="background">#F8FAFC</color>
     <color name="surface">#FFFFFF</color>
     <color name="card_stroke">#E2E8F0</color>
 
+    <!-- Text colors -->
     <color name="text_primary">#0F172A</color>
     <color name="text_secondary">#64748B</color>
     <color name="text_muted">#94A3B8</color>
 
+    <!-- Status & Alerts -->
     <color name="success">#10B981</color>
     <color name="danger">#EF4444</color>
     <color name="danger_light">#FEF2F2</color>
+    <color name="danger_stroke">#FECACA</color>
     <color name="warning">#F59E0B</color>
     <color name="warning_light">#FFFBEB</color>
+
+    <!-- Input Fields (Visible & distinct when unfocused) -->
+    <color name="input_background">#F1F5F9</color>
+    <color name="input_background_focused">#FFFFFF</color>
+    <color name="input_stroke">#CBD5E1</color>
+    <color name="input_stroke_hover">#94A3B8</color>
+    <color name="input_stroke_focused">#4F46E5</color>
 
     <!-- Legacy compatibility colors -->
     <color name="purple_200">#C7D2FE</color>

@@ -24,7 +24,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="12dp"
             android:text="Paste sample notification details to test your rules"
-            android:textColor="@color/text_secondary"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="13sp" />
 
         <!-- Quick Sample Chips -->
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:fontFamily="monospace"
-                android:textColor="@color/text_primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="12sp" />
 
             <com.google.android.material.button.MaterialButton

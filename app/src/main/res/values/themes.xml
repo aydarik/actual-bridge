@@ -1,29 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme - Light -->
     <style name="Theme.ActualApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+        <!-- Primary brand color -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+        <!-- Secondary brand color -->
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorSecondaryVariant">@color/secondary_variant</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Backgrounds -->
         <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
+        <!-- TextInputLayout: visible unfocused stroke & filled background -->
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxBackgroundColor">@color/text_input_box_background</item>
+        <item name="hintTextColor">?colorPrimary</item>
     </style>
 
     <!-- Floating Dialog Theme for ConfirmTransactionActivity -->
     <style name="Theme.ActualApp.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSurface">@color/surface</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.55</item>
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxBackgroundColor">@color/text_input_box_background</item>
+        <item name="hintTextColor">?colorPrimary</item>
     </style>
 </resources>

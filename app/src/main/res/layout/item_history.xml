@@ -6,7 +6,7 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/surface"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:strokeColor="@color/card_stroke"
     app:strokeWidth="1dp">
 
@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Starbucks"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Checking • 2026-07-01"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="-10.50"
-                android:textColor="@color/text_primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
         </LinearLayout>

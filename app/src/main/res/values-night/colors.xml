@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand colors for Dark Theme -->
+    <color name="primary">#818CF8</color>
+    <color name="primary_variant">#6366F1</color>
+    <color name="primary_light">#1E1B4B</color>
+    <color name="secondary">#34D399</color>
+    <color name="secondary_variant">#10B981</color>
+    <color name="secondary_light">#064E3B</color>
+    <color name="secondary_stroke">#065F46</color>
+
+    <!-- Backgrounds & Surfaces (Dark Slate) -->
+    <color name="background">#0F172A</color>
+    <color name="surface">#1E293B</color>
+    <color name="card_stroke">#334155</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+
+    <!-- Status & Alerts -->
+    <color name="success">#34D399</color>
+    <color name="danger">#F87171</color>
+    <color name="danger_light">#450A0A</color>
+    <color name="danger_stroke">#7F1D1D</color>
+    <color name="warning">#FBBF24</color>
+    <color name="warning_light">#451A03</color>
+
+    <!-- Input Fields (Dark Theme: recessed & distinct) -->
+    <color name="input_background">#0F172A</color>
+    <color name="input_background_focused">#1E293B</color>
+    <color name="input_stroke">#475569</color>
+    <color name="input_stroke_hover">#64748B</color>
+    <color name="input_stroke_focused">#818CF8</color>
+
+    <!-- Legacy compatibility colors -->
+    <color name="purple_200">#818CF8</color>
+    <color name="purple_500">#6366F1</color>
+    <color name="purple_700">#4F46E5</color>
+    <color name="teal_200">#34D399</color>
+    <color name="teal_700">#10B981</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>

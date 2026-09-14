@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface"
+        android:background="?attr/colorSurface"
         app:elevation="0dp">
 
         <LinearLayout
@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Actual Budget Bridge"
-                android:textColor="@color/text_primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Automatic notification parsing &amp; sync"
-                android:textColor="@color/text_secondary"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textSize="14sp" />
         </LinearLayout>
         <View
@@ -61,7 +61,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:strokeColor="@color/card_stroke"
                 app:strokeWidth="1dp">
 
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Required to detect notifications and show popups"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:textSize="13sp" />
 
                     <View
@@ -111,7 +111,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Notification Access"
-                                android:textColor="@color/text_primary"
+                                android:textColor="?android:attr/textColorPrimary"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
@@ -150,7 +150,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Display Over Other Apps"
-                                android:textColor="@color/text_primary"
+                                android:textColor="?android:attr/textColorPrimary"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
@@ -159,7 +159,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Required for instant popup dialogs"
-                                android:textColor="@color/text_secondary"
+                                android:textColor="?android:attr/textColorSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -180,7 +180,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:strokeColor="@color/card_stroke"
                 app:strokeWidth="1dp">
 
@@ -204,7 +204,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="16dp"
                         android:text="Destination for parsed transaction POST requests"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:textSize="13sp" />
 
                     <!-- Server URL -->
@@ -266,7 +266,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Auto-show popup dialog over apps"
-                            android:textColor="@color/text_primary"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -289,7 +289,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Attach GPS coordinates to transactions"
-                            android:textColor="@color/text_primary"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -334,7 +334,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:strokeColor="@color/card_stroke"
                 app:strokeWidth="1dp">
 
@@ -369,7 +369,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="3 active rules"
-                                android:textColor="@color/text_secondary"
+                                android:textColor="?android:attr/textColorSecondary"
                                 android:textSize="13sp" />
                         </LinearLayout>
 
@@ -413,7 +413,7 @@
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:strokeColor="@color/card_stroke"
                 app:strokeWidth="1dp">
 
