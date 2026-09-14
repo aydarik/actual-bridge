@@ -11,7 +11,7 @@ android {
     }
 
     val appVersionCode = (project.findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
-    val appVersionName = project.findProperty("versionName") as? String ?: "1.0"
+    val appVersionName = project.findProperty("versionName") as? String ?: "1.0.0"
 
     defaultConfig {
         applicationId = "de.gumerbaev.actual"
@@ -41,8 +41,8 @@ android {
 
 configurations.all {
     resolutionStrategy {
-        force("androidx.core:core:1.15.0")
-        force("androidx.core:core-ktx:1.15.0")
+        force("androidx.core:core:${libs.versions.coreKtx.get()}")
+        force("androidx.core:core-ktx:${libs.versions.coreKtx.get()}")
     }
 }
 

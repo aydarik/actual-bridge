@@ -22,13 +22,13 @@ Welcome to **Actual Budget Bridge** (`actual-bridge`). This document provides ar
 - **Language**: Kotlin (JVM target 24)
 - **Target SDK**: Android 36 (Extension / Minor API Level 1), **Min SDK**: 33, **Compile SDK**: 36
 - **Build System**: Gradle with Kotlin DSL (`build.gradle.kts`, `settings.gradle.kts`) and Gradle Version Catalogs (`gradle/libs.versions.toml`)
-- **Android Gradle Plugin (AGP)**: 9.1.1
-- **UI Framework**: Android ViewBinding, AppCompat, Material Design Components (`com.google.android.material:material:1.12.0`)
-- **Networking**: OkHttp 4.12.0 (`okhttp3`, `logging-interceptor`)
-- **Serialization**: Gson 2.11.0
-- **Concurrency**: Kotlin Coroutines (`kotlinx-coroutines-android:1.8.1`)
-- **Location Services**: Google Play Services Location (`play-services-location:21.3.0`)
-- **Testing Framework**: JUnit 4 (`4.13.2`), AndroidX JUnit (`1.3.0`), Espresso Core (`3.7.0`)
+- **Android Gradle Plugin (AGP)**
+- **UI Framework**: Android ViewBinding, AppCompat, Material Design Components (`com.google.android.material:material`)
+- **Networking**: OkHttp (`okhttp3`, `logging-interceptor`)
+- **Serialization**: Gson
+- **Concurrency**: Kotlin Coroutines (`kotlinx-coroutines-android`)
+- **Location Services**: Google Play Services Location (`play-services-location`)
+- **Testing Framework**: JUnit, AndroidX JUnit, Espresso Core
 
 ---
 

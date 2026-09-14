@@ -1,6 +1,7 @@
 package de.gumerbaev.actual.util
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -18,13 +19,14 @@ object LocationHelper {
         return fine || coarse
     }
 
+    @SuppressLint("MissingPermission")
     suspend fun getLastLocation(context: Context): Location? {
         if (!hasLocationPermission(context)) return null
 
         // Try Google Play Services Location first
         try {
             val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-            val fusedLocation = suspendCancellableCoroutine<Location?> { cont ->
+            val fusedLocation = suspendCancellableCoroutine { cont ->
                 fusedClient.lastLocation
                     .addOnSuccessListener { loc ->
                         if (cont.isActive) cont.resume(loc)
@@ -34,7 +36,7 @@ object LocationHelper {
                     }
             }
             if (fusedLocation != null) return fusedLocation
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback to framework LocationManager
         }
 
@@ -50,7 +52,7 @@ object LocationHelper {
                 }
             }
             bestLocation
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

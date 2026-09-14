@@ -2,15 +2,11 @@
 
 A lightweight Android companion app that automatically captures transaction notifications from your banking and payment apps and syncs them directly into your personal [Actual Budget](https://actualbudget.org/) instance via [Actual Tap](https://github.com/MattFaz/actualtap).
 
----
-
 ## Prerequisites
 
 Actual Budget Bridge requires both of the following installed and running on your server:
 - **[Actual Budget](https://actualbudget.org/)** — your personal finance manager.
 - **[Actual Tap](https://github.com/MattFaz/actualtap)** — the server-side API bridge for creating transactions.
-
----
 
 ## Features
 
@@ -19,15 +15,11 @@ Actual Budget Bridge requires both of the following installed and running on you
 - **📍 Location Tagging**: Optionally attach location context to transactions to remember where you made a purchase.
 - **🔒 Privacy First**: Runs entirely on your device. Your data goes directly to your own Actual Budget setup—no third-party cloud or data collection.
 
----
-
 ## How It Works
 
 1. **Spend**: You make a purchase, and your bank sends a notification.
 2. **Review (Optional)**: Actual Budget Bridge catches the notification, extracts transaction details, and prompts you to confirm (or automatically syncs if auto-send is enabled).
 3. **Sync**: The transaction is synced to your Actual Budget accounts via Actual Tap.
-
----
 
 ## Getting Started
 
@@ -42,8 +34,6 @@ When you open the app for the first time:
 
 ### 3. Configure Your Server
 Open the app settings and enter your Actual Tap server URL (with Actual Budget connected) and API token.
-
----
 
 ## Contributing & Issues
 

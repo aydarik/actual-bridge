@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Actual App"
+rootProject.name = "Actual Budget Bridge"
 include(":app")

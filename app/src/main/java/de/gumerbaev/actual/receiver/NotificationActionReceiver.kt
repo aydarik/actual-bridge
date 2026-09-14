@@ -45,7 +45,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             ACTION_CONFIRM_SEND -> {
-                val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION) as? ActualTransaction ?: return
+                val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION, ActualTransaction::class.java) ?: return
                 val pendingResult = goAsync()
 
                 CoroutineScope(Dispatchers.IO).launch {
