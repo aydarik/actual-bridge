@@ -21,19 +21,42 @@
         <item name="hintTextColor">?colorPrimary</item>
     </style>
 
-    <!-- Floating Dialog Theme for ConfirmTransactionActivity -->
-    <style name="Theme.ActualApp.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <!-- Bottom Sheet Overlay Theme for ConfirmTransactionActivity -->
+    <style name="Theme.ActualApp.Dialog" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="colorSurface">@color/surface</item>
+        <item name="android:colorBackground">@color/background</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowAnimationStyle">@style/Animation.ActualApp.BottomSheet</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.55</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxBackgroundColor">@color/text_input_box_background</item>
         <item name="hintTextColor">?colorPrimary</item>
+    </style>
+
+    <!-- Bottom sheet slide-up animation -->
+    <style name="Animation.ActualApp.BottomSheet" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
+    <!-- Top-only rounded corners for the bottom sheet card -->
+    <style name="ShapeAppearance.ActualApp.BottomSheetCard" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
     </style>
 </resources>

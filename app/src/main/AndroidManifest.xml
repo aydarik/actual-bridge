@@ -37,12 +37,13 @@
             </intent-filter>
         </activity>
 
-        <!-- Floating Popup Review Activity -->
+        <!-- Floating Popup Review Activity (bottom sheet style) -->
         <activity
             android:name=".ui.ConfirmTransactionActivity"
             android:exported="false"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.ActualApp.Dialog" />
 
         <!-- Notification Listener Service -->

@@ -91,6 +91,14 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        binding.root.setOnClickListener {
+            dismissAndFinish()
+        }
+
+        binding.cardContainer.setOnClickListener {
+            // Consume clicks inside the bottom sheet card to prevent dismissal
+        }
+
         binding.btnClose.setOnClickListener {
             dismissAndFinish()
         }
