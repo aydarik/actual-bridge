@@ -1,0 +1,50 @@
+# Gradle files
+.gradle/
+build/
+app/build/
+**/build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android build outputs
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Java / Kotlin class & cache files
+*.class
+.kotlin/
+
+# Junie / AI assistant caches
+.junie/
+
+# IntelliJ IDEA / Android Studio
+*.iml
+.idea/
+*.iws
+
+# Eclipse / Proguard
+proguard/
+
+# Log & capture files
+*.log
+captures/
+.navigation/
+
+# External native build folders
+.externalNativeBuild
+.cxx
+
+# Signing & Keystores (sensitive credentials)
+*.jks
+*.keystore
+signing.properties
+
+# Google Services secrets
+google-services.json
+
+# OS-specific files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,104 @@
+name: Build & Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]+.[0-9]+*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Java 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract Version from Git Tag
+        id: get_version
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          VERSION_NAME="${TAG_NAME#v}"
+          VERSION_CODE="${{ github.run_number }}"
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "Version Name: $VERSION_NAME"
+          echo "Version Code: $VERSION_CODE"
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew test
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease -PversionName="${{ env.VERSION_NAME }}" -PversionCode="${{ env.VERSION_CODE }}"
+
+      - name: Sign Release APK
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Signing APK with repository keystore secret..."
+            echo "$KEYSTORE_BASE64" | base64 -d > release.keystore
+            SIGN_ALIAS="$KEY_ALIAS"
+            SIGN_STOREPASS="$KEYSTORE_PASSWORD"
+            SIGN_KEYPASS="$KEY_PASSWORD"
+          else
+            echo "No keystore secret provided. Generating release key for installation..."
+            keytool -genkeypair -v -keystore release.keystore -alias actualRelease -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass releasepass -keypass releasepass -dname "CN=Actual Budget Bridge, O=Actual"
+            SIGN_ALIAS="actualRelease"
+            SIGN_STOREPASS="releasepass"
+            SIGN_KEYPASS="releasepass"
+          fi
+
+          # Locate latest apksigner
+          APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | sort -V | tail -n 1)
+          echo "Using apksigner at: $APKSIGNER"
+
+          # Sign the APK
+          $APKSIGNER sign --ks release.keystore \
+            --ks-key-alias "$SIGN_ALIAS" \
+            --ks-pass "pass:$SIGN_STOREPASS" \
+            --key-pass "pass:$SIGN_KEYPASS" \
+            --out "actual-budget-bridge-${{ env.VERSION_NAME }}.apk" \
+            app/build/outputs/apk/release/app-release-unsigned.apk
+
+          # Verify signature
+          $APKSIGNER verify "actual-budget-bridge-${{ env.VERSION_NAME }}.apk"
+          echo "APK successfully signed and verified!"
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-budget-bridge-${{ env.VERSION_NAME }}
+          path: actual-budget-bridge-${{ env.VERSION_NAME }}.apk
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: actual-budget-bridge-${{ env.VERSION_NAME }}.apk
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
