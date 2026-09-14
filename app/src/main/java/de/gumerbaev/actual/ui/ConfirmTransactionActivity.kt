@@ -2,8 +2,6 @@ package de.gumerbaev.actual.ui
 
 import android.app.DatePickerDialog
 import android.app.NotificationManager
-import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -23,6 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 
 class ConfirmTransactionActivity : AppCompatActivity() {
 
@@ -59,7 +58,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
         prefs = AppPreferences(this)
 
-        val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION) as? ActualTransaction
+        val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION, ActualTransaction::class.java)
         recordId = intent.getStringExtra(EXTRA_RECORD_ID)
         notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
 
@@ -272,7 +271,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 binding.tvStatusMessage.visibility = View.VISIBLE
 
                 Toast.makeText(this@ConfirmTransactionActivity, "Transaction posted successfully!", Toast.LENGTH_SHORT).show()
-                delay(800)
+                delay(800.milliseconds)
                 finish()
             } else {
                 recordId?.let { id ->
@@ -293,7 +292,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
     private fun cancelNotification() {
         if (notificationId != -1) {
-            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             nm.cancel(notificationId)
         }
     }

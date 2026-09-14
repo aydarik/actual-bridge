@@ -2,7 +2,6 @@ package de.gumerbaev.actual.parser
 
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.ParsingRule
-import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Test
 

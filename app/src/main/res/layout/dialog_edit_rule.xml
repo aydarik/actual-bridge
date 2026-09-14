@@ -100,6 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -133,11 +134,12 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <!-- Default Account & Default Type Row -->
+        <!-- Account & Default Type Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -146,10 +148,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:hint="Default Account">
+                android:hint="Account">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDefaultAccount"
+                    android:id="@+id/etAccount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Checking" />

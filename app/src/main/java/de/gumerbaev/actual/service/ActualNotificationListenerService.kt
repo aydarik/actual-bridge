@@ -11,7 +11,6 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
@@ -154,7 +153,7 @@ class ActualNotificationListenerService : NotificationListenerService() {
         transaction: ActualTransaction,
         notificationId: Int
     ) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         // Intent to open confirmation dialog popup
         val reviewIntent = Intent(this, ConfirmTransactionActivity::class.java).apply {

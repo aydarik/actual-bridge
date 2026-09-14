@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.model.TransactionRecord
+import androidx.core.content.edit
 
 class AppPreferences(context: Context) {
 
@@ -25,19 +26,19 @@ class AppPreferences(context: Context) {
 
     var serverUrl: String
         get() = prefs.getString(KEY_SERVER_URL, "http://10.0.2.2:5006/transaction") ?: "http://10.0.2.2:5006/transaction"
-        set(value) = prefs.edit().putString(KEY_SERVER_URL, value.trim()).apply()
+        set(value) = prefs.edit { putString(KEY_SERVER_URL, value.trim()) }
 
     var apiToken: String
         get() = prefs.getString(KEY_API_TOKEN, "") ?: ""
-        set(value) = prefs.edit().putString(KEY_API_TOKEN, value.trim()).apply()
+        set(value) = prefs.edit { putString(KEY_API_TOKEN, value.trim()) }
 
     var attachLocation: Boolean
         get() = prefs.getBoolean(KEY_ATTACH_LOCATION, false)
-        set(value) = prefs.edit().putBoolean(KEY_ATTACH_LOCATION, value).apply()
+        set(value) = prefs.edit { putBoolean(KEY_ATTACH_LOCATION, value) }
 
     var autoPopup: Boolean
-        get() = prefs.getBoolean(KEY_AUTO_POPUP, true)
-        set(value) = prefs.edit().putBoolean(KEY_AUTO_POPUP, value).apply()
+        get() = prefs.getBoolean(KEY_AUTO_POPUP, false)
+        set(value) = prefs.edit { putBoolean(KEY_AUTO_POPUP, value) }
 
     fun getRules(): List<ParsingRule> {
         val json = prefs.getString(KEY_PARSING_RULES, null)
@@ -49,14 +50,14 @@ class AppPreferences(context: Context) {
         return try {
             val type = object : TypeToken<List<ParsingRule>>() {}.type
             gson.fromJson(json, type) ?: ParsingRule.createDefaultRules()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             ParsingRule.createDefaultRules()
         }
     }
 
     fun saveRules(rules: List<ParsingRule>) {
         val json = gson.toJson(rules)
-        prefs.edit().putString(KEY_PARSING_RULES, json).apply()
+        prefs.edit { putString(KEY_PARSING_RULES, json) }
     }
 
     fun addRule(rule: ParsingRule) {
@@ -85,7 +86,7 @@ class AppPreferences(context: Context) {
         return try {
             val type = object : TypeToken<List<TransactionRecord>>() {}.type
             gson.fromJson(json, type) ?: emptyList()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             emptyList()
         }
     }
@@ -97,7 +98,7 @@ class AppPreferences(context: Context) {
             history.subList(MAX_HISTORY_SIZE, history.size).clear()
         }
         val json = gson.toJson(history)
-        prefs.edit().putString(KEY_TRANSACTION_HISTORY, json).apply()
+        prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
     }
 
     fun updateHistoryRecord(recordId: String, status: String, httpCode: Int? = null, responseDetails: String? = null) {
@@ -109,11 +110,11 @@ class AppPreferences(context: Context) {
             existing.httpCode = httpCode
             existing.responseDetails = responseDetails
             val json = gson.toJson(history)
-            prefs.edit().putString(KEY_TRANSACTION_HISTORY, json).apply()
+            prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
         }
     }
 
     fun clearHistory() {
-        prefs.edit().remove(KEY_TRANSACTION_HISTORY).apply()
+        prefs.edit { remove(KEY_TRANSACTION_HISTORY) }
     }
 }

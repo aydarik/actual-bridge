@@ -176,7 +176,7 @@ object NotificationParser {
             } else {
                 matcher.group(groupIdentifier)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -199,14 +199,14 @@ object NotificationParser {
             } else if (cleaned.contains(",")) {
                 // If single comma and 2 digits after, likely decimal (e.g. 12,50)
                 val parts = cleaned.split(",")
-                if (parts.size == 2 && parts[1].length in 1..2) {
-                    cleaned = cleaned.replace(',', '.')
+                cleaned = if (parts.size == 2 && parts[1].length in 1..2) {
+                    cleaned.replace(',', '.')
                 } else {
-                    cleaned = cleaned.replace(",", "")
+                    cleaned.replace(",", "")
                 }
             }
             cleaned.toDouble()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             0.0
         }
     }

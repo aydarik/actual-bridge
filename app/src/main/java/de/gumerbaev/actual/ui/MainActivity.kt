@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -24,7 +23,6 @@ import de.gumerbaev.actual.databinding.DialogEditRuleBinding
 import de.gumerbaev.actual.databinding.DialogTestParserBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.ParsingRule
-import de.gumerbaev.actual.model.TransactionRecord
 import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.service.ActualNotificationListenerService
@@ -66,18 +64,14 @@ class MainActivity : AppCompatActivity() {
         loadHistory()
 
         val filter = IntentFilter(ActualNotificationListenerService.ACTION_TRANSACTION_PARSED)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(transactionUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(transactionUpdateReceiver, filter)
-        }
+        registerReceiver(transactionUpdateReceiver, filter, RECEIVER_NOT_EXPORTED)
     }
 
     override fun onPause() {
         super.onPause()
         try {
             unregisterReceiver(transactionUpdateReceiver)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Ignored
         }
     }
@@ -270,10 +264,10 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.etTextRegex.setText(existingRule.textRegex)
             dialogBinding.etAmountGroup.setText(existingRule.amountGroup)
             dialogBinding.etPayeeGroup.setText(existingRule.payeeGroup)
-            dialogBinding.etDefaultAccount.setText(existingRule.account)
+            dialogBinding.etAccount.setText(existingRule.account)
             dialogBinding.actvDefaultType.setText(existingRule.defaultType, false)
         } else {
-            dialogBinding.etDefaultAccount.setText("")
+            dialogBinding.etAccount.setText("")
             dialogBinding.actvDefaultType.setText(ActualTransaction.TYPE_PAYMENT, false)
         }
 
@@ -303,7 +297,7 @@ class MainActivity : AppCompatActivity() {
                 this.textRegex = textRegex
                 this.amountGroup = dialogBinding.etAmountGroup.text?.toString()?.trim() ?: "amount"
                 this.payeeGroup = dialogBinding.etPayeeGroup.text?.toString()?.trim() ?: "payee"
-                this.account = dialogBinding.etDefaultAccount.text?.toString()?.trim() ?: ""
+                this.account = dialogBinding.etAccount.text?.toString()?.trim() ?: ""
                 this.defaultType = dialogBinding.actvDefaultType.text?.toString()?.trim() ?: ActualTransaction.TYPE_PAYMENT
             }
 

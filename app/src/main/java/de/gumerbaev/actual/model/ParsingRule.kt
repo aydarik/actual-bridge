@@ -1,6 +1,5 @@
 package de.gumerbaev.actual.model
 
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.UUID
 
@@ -11,7 +10,6 @@ data class ParsingRule(
     var targetPackage: String = "*", // App package name or '*' for all
     var titleRegex: String = "",
     var textRegex: String = "",
-    @SerializedName(value = "account", alternate = ["defaultAccount"])
     var account: String = "",
     var defaultType: String = ActualTransaction.TYPE_PAYMENT,
     // Group names or indices (1-based)
