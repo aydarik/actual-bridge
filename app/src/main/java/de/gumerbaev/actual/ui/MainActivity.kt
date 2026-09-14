@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.gumerbaev.actual.R
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnGrantOverlay.setOnClickListener {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
+                "package:$packageName".toUri()
             )
             startActivity(intent)
         }
@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity() {
         binding.etApiToken.setText(prefs.apiToken)
         binding.switchAttachLocation.isChecked = prefs.attachLocation
         binding.switchAutoPopup.isChecked = prefs.autoPopup
+        binding.switchAutoSend.isChecked = prefs.autoSend
     }
 
     private fun saveSettings() {
@@ -207,6 +208,7 @@ class MainActivity : AppCompatActivity() {
         prefs.apiToken = binding.etApiToken.text?.toString()?.trim() ?: ""
         prefs.attachLocation = binding.switchAttachLocation.isChecked
         prefs.autoPopup = binding.switchAutoPopup.isChecked
+        prefs.autoSend = binding.switchAutoSend.isChecked
     }
 
     private fun testConnection() {

@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -14,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
+import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.receiver.NotificationActionReceiver
 import de.gumerbaev.actual.ui.ConfirmTransactionActivity
@@ -129,6 +129,12 @@ class ActualNotificationListenerService : NotificationListenerService() {
 
         val notificationId = notificationIdGenerator.incrementAndGet()
 
+        // If autoSend is enabled, bypass review and dispatch POST request directly
+        if (prefs.autoSend) {
+            sendTransactionDirectly(record, finalTransaction, notificationId)
+            return
+        }
+
         // 1. Show interactive confirmation notification
         showConfirmationNotification(record, finalTransaction, notificationId)
 
@@ -146,6 +152,63 @@ class ActualNotificationListenerService : NotificationListenerService() {
                 Log.e(TAG, "Could not start overlay activity: ${e.message}")
             }
         }
+    }
+
+    private suspend fun sendTransactionDirectly(
+        record: TransactionRecord,
+        transaction: ActualTransaction,
+        notificationId: Int
+    ) {
+        val serverUrl = prefs.serverUrl
+        val apiToken = prefs.apiToken
+        val result = ActualApiClient.sendTransaction(serverUrl, apiToken, transaction)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        if (result.success) {
+            prefs.updateHistoryRecord(
+                record.id,
+                TransactionRecord.STATUS_SENT,
+                result.httpCode,
+                "Success: ${result.responseBody}"
+            )
+            val sentNotification = NotificationCompat.Builder(
+                this,
+                CHANNEL_TRANSACTIONS
+            )
+                .setSmallIcon(android.R.drawable.stat_sys_upload_done)
+                .setContentTitle("Transaction Sent to Actual")
+                .setContentText("${transaction.payee} (${transaction.amount}) sent to ${transaction.account}")
+                .setAutoCancel(true)
+                .setTimeoutAfter(4000)
+                .build()
+
+            notificationManager.notify(notificationId, sentNotification)
+        } else {
+            prefs.updateHistoryRecord(
+                record.id,
+                TransactionRecord.STATUS_FAILED,
+                result.httpCode,
+                result.errorMessage
+            )
+            val errorNotification = NotificationCompat.Builder(
+                this,
+                CHANNEL_TRANSACTIONS
+            )
+                .setSmallIcon(android.R.drawable.stat_notify_error)
+                .setContentTitle("Failed to send transaction")
+                .setContentText(result.errorMessage ?: "Unknown error")
+                .setAutoCancel(true)
+                .build()
+
+            notificationManager.notify(notificationId, errorNotification)
+        }
+
+        // Broadcast to update history in MainActivity
+        val broadcastIntent = Intent(ACTION_TRANSACTION_PARSED).apply {
+            putExtra(NotificationActionReceiver.EXTRA_RECORD_ID, record.id)
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     private fun showConfirmationNotification(
@@ -224,17 +287,15 @@ class ActualNotificationListenerService : NotificationListenerService() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_TRANSACTIONS,
-                "Actual Budget Transactions",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Alerts for parsed transactions from notifications"
-                enableVibration(true)
-            }
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_TRANSACTIONS,
+            "Actual Budget Transactions",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Alerts for parsed transactions from notifications"
+            enableVibration(true)
         }
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager?.createNotificationChannel(channel)
     }
 }
