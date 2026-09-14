@@ -15,8 +15,7 @@ class NotificationParserTest {
             packageName = "com.bank.app",
             title = "Debit Card Alert",
             text = "Paid $10.50 at Starbucks",
-            rules = rules,
-            fallbackAccount = "Checking"
+            rules = rules
         )
 
         assertTrue("Expected parsing to succeed", result.success)
@@ -34,8 +33,7 @@ class NotificationParserTest {
             packageName = "com.bank.app",
             title = "Account Alert",
             text = "Received $150.00 from Employer",
-            rules = rules,
-            fallbackAccount = "Checking"
+            rules = rules
         )
 
         assertTrue("Expected parsing to succeed", result.success)
@@ -54,8 +52,7 @@ class NotificationParserTest {
             packageName = "com.google.android.apps.walletnfcrel",
             title = "Google Pay",
             text = "Starbucks: 10.50 USD",
-            rules = rules,
-            fallbackAccount = "Checking"
+            rules = rules
         )
 
         assertTrue("Expected parsing to succeed", result.success)
@@ -94,8 +91,7 @@ class NotificationParserTest {
             packageName = "com.bank.app",
             title = "Notification",
             text = "Spent €24,99 at Supermarket",
-            rules = rules,
-            fallbackAccount = "Checking"
+            rules = rules
         )
 
         assertTrue("Expected parsing to succeed", result.success)
@@ -127,6 +123,43 @@ class NotificationParserTest {
         assertEquals("Savings", result.transaction?.account)
         assertEquals(45.50, result.transaction?.amount ?: 0.0, 0.001)
         assertEquals("Target", result.transaction?.payee)
+    }
+
+    @Test
+    fun testPackageDependentAccountRule() {
+        val ruleA = ParsingRule(
+            name = "Bank A Rule",
+            enabled = true,
+            targetPackage = "com.banka.app",
+            textRegex = "(?i)Paid \\$(?<amount>[0-9.]+) at (?<payee>[^.,]+)",
+            account = "Bank A Checking"
+        )
+        val ruleB = ParsingRule(
+            name = "Bank B Rule",
+            enabled = true,
+            targetPackage = "com.bankb.app",
+            textRegex = "(?i)Paid \\$(?<amount>[0-9.]+) at (?<payee>[^.,]+)",
+            account = "Bank B Credit Card"
+        )
+        val rules = listOf(ruleA, ruleB)
+
+        val resultA = NotificationParser.parse(
+            packageName = "com.banka.app",
+            title = "Alert",
+            text = "Paid $25.00 at Grocery",
+            rules = rules
+        )
+        assertTrue(resultA.success)
+        assertEquals("Bank A Checking", resultA.transaction?.account)
+
+        val resultB = NotificationParser.parse(
+            packageName = "com.bankb.app",
+            title = "Alert",
+            text = "Paid $50.00 at Fuel Station",
+            rules = rules
+        )
+        assertTrue(resultB.success)
+        assertEquals("Bank B Credit Card", resultB.transaction?.account)
     }
 
     @Test

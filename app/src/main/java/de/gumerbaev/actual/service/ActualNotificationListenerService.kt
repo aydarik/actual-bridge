@@ -81,8 +81,7 @@ class ActualNotificationListenerService : NotificationListenerService() {
             packageName = pkgName,
             title = title,
             text = effectiveText,
-            rules = rules,
-            fallbackAccount = prefs.defaultAccount
+            rules = rules
         )
 
         if (parseResult.success && parseResult.transaction != null) {

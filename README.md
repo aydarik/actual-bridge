@@ -33,13 +33,7 @@ When you open the app for the first time:
 - *(Optional)* Grant **Location Permission** if you wish to tag where purchases occur.
 
 ### 3. Configure Your Server
-Open the app settings and enter your Actual Budget server URL, API token, and select your default budget/account.
-
----
-
-## Releases & Updates
-
-New releases are automatically compiled and published to GitHub Releases whenever a version tag is pushed to the repository.
+Open the app settings and enter your Actual Budget server URL and API token.
 
 ---
 

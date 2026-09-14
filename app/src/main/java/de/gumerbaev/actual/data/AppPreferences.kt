@@ -16,7 +16,6 @@ class AppPreferences(context: Context) {
         private const val PREFS_NAME = "actual_app_prefs"
         private const val KEY_SERVER_URL = "server_url"
         private const val KEY_API_TOKEN = "api_token"
-        private const val KEY_DEFAULT_ACCOUNT = "default_account"
         private const val KEY_ATTACH_LOCATION = "attach_location"
         private const val KEY_AUTO_POPUP = "auto_popup"
         private const val KEY_PARSING_RULES = "parsing_rules"
@@ -31,10 +30,6 @@ class AppPreferences(context: Context) {
     var apiToken: String
         get() = prefs.getString(KEY_API_TOKEN, "") ?: ""
         set(value) = prefs.edit().putString(KEY_API_TOKEN, value.trim()).apply()
-
-    var defaultAccount: String
-        get() = prefs.getString(KEY_DEFAULT_ACCOUNT, "Checking") ?: "Checking"
-        set(value) = prefs.edit().putString(KEY_DEFAULT_ACCOUNT, value.trim()).apply()
 
     var attachLocation: Boolean
         get() = prefs.getBoolean(KEY_ATTACH_LOCATION, false)

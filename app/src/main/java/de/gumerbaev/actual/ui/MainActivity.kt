@@ -204,7 +204,6 @@ class MainActivity : AppCompatActivity() {
     private fun loadSettings() {
         binding.etServerUrl.setText(prefs.serverUrl)
         binding.etApiToken.setText(prefs.apiToken)
-        binding.etDefaultAccount.setText(prefs.defaultAccount)
         binding.switchAttachLocation.isChecked = prefs.attachLocation
         binding.switchAutoPopup.isChecked = prefs.autoPopup
     }
@@ -212,7 +211,6 @@ class MainActivity : AppCompatActivity() {
     private fun saveSettings() {
         prefs.serverUrl = binding.etServerUrl.text?.toString()?.trim() ?: ""
         prefs.apiToken = binding.etApiToken.text?.toString()?.trim() ?: ""
-        prefs.defaultAccount = binding.etDefaultAccount.text?.toString()?.trim() ?: "Checking"
         prefs.attachLocation = binding.switchAttachLocation.isChecked
         prefs.autoPopup = binding.switchAutoPopup.isChecked
     }
@@ -272,10 +270,10 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.etTextRegex.setText(existingRule.textRegex)
             dialogBinding.etAmountGroup.setText(existingRule.amountGroup)
             dialogBinding.etPayeeGroup.setText(existingRule.payeeGroup)
-            dialogBinding.etDefaultAccount.setText(existingRule.defaultAccount)
+            dialogBinding.etDefaultAccount.setText(existingRule.account)
             dialogBinding.actvDefaultType.setText(existingRule.defaultType, false)
         } else {
-            dialogBinding.etDefaultAccount.setText(prefs.defaultAccount)
+            dialogBinding.etDefaultAccount.setText("")
             dialogBinding.actvDefaultType.setText(ActualTransaction.TYPE_PAYMENT, false)
         }
 
@@ -305,7 +303,7 @@ class MainActivity : AppCompatActivity() {
                 this.textRegex = textRegex
                 this.amountGroup = dialogBinding.etAmountGroup.text?.toString()?.trim() ?: "amount"
                 this.payeeGroup = dialogBinding.etPayeeGroup.text?.toString()?.trim() ?: "payee"
-                this.defaultAccount = dialogBinding.etDefaultAccount.text?.toString()?.trim() ?: "Checking"
+                this.account = dialogBinding.etDefaultAccount.text?.toString()?.trim() ?: ""
                 this.defaultType = dialogBinding.actvDefaultType.text?.toString()?.trim() ?: ActualTransaction.TYPE_PAYMENT
             }
 
@@ -353,8 +351,7 @@ class MainActivity : AppCompatActivity() {
                 packageName = pkg,
                 title = title,
                 text = text,
-                rules = rules,
-                fallbackAccount = prefs.defaultAccount
+                rules = rules
             )
 
             dialogBinding.layoutTestResult.visibility = View.VISIBLE

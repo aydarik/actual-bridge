@@ -26,7 +26,7 @@ class RulesAdapter(
             tvRuleName.text = rule.name
             tvTargetPackage.text = "App: ${if (rule.targetPackage.isBlank()) "*" else rule.targetPackage}"
             tvRegexPreview.text = rule.textRegex
-            tvAccountBadge.text = "${rule.defaultAccount} • ${rule.defaultType}"
+            tvAccountBadge.text = if (rule.account.isNotBlank()) "${rule.account} • ${rule.defaultType}" else rule.defaultType
 
             switchEnabled.setOnCheckedChangeListener(null)
             switchEnabled.isChecked = rule.enabled

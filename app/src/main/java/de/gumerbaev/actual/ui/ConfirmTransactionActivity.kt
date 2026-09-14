@@ -76,7 +76,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     private fun setupViews(tx: ActualTransaction) {
         binding.etPayee.setText(tx.payee)
         binding.etAmount.setText(String.format(Locale.US, "%.2f", abs(tx.amount)))
-        binding.etAccount.setText(tx.account.ifBlank { prefs.defaultAccount })
+        binding.etAccount.setText(tx.account)
         binding.etDate.setText(tx.date ?: ActualTransaction.todayFormatted())
 
         if (tx.type == ActualTransaction.TYPE_DEPOSIT) {

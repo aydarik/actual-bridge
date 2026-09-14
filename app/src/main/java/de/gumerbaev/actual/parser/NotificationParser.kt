@@ -21,8 +21,7 @@ object NotificationParser {
         packageName: String,
         title: String,
         text: String,
-        rules: List<ParsingRule>,
-        fallbackAccount: String = "Checking"
+        rules: List<ParsingRule>
     ): ParseResult {
         val enabledRules = rules.filter { it.enabled }
         if (enabledRules.isEmpty()) {
@@ -30,7 +29,7 @@ object NotificationParser {
         }
 
         for (rule in enabledRules) {
-            val result = parseWithRule(packageName, title, text, rule, fallbackAccount)
+            val result = parseWithRule(packageName, title, text, rule)
             if (result.success) {
                 return result
             }
@@ -46,8 +45,7 @@ object NotificationParser {
         packageName: String,
         title: String,
         text: String,
-        rule: ParsingRule,
-        fallbackAccount: String = "Checking"
+        rule: ParsingRule
     ): ParseResult {
         // 1. Package filter
         if (rule.targetPackage.isNotBlank() && rule.targetPackage.trim() != "*") {
@@ -120,7 +118,7 @@ object NotificationParser {
         // 6. Extract Account
         var account = extractGroup(matcher, rule.accountGroup)?.trim()
         if (account.isNullOrBlank()) {
-            account = rule.defaultAccount.ifBlank { fallbackAccount }
+            account = rule.account.trim()
         }
 
         // 7. Extract Type ("payment" or "deposit")
