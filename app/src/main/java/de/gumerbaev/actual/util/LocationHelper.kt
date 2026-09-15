@@ -19,6 +19,13 @@ object LocationHelper {
         return fine || coarse
     }
 
+    fun hasBackgroundLocationPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     @SuppressLint("MissingPermission")
     suspend fun getLastLocation(context: Context): Location? {
         if (!hasLocationPermission(context)) return null

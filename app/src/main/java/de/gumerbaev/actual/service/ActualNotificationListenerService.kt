@@ -85,8 +85,9 @@ class ActualNotificationListenerService : NotificationListenerService() {
 
         if (parseResult.success && parseResult.transaction != null) {
             Log.d(TAG, "Successfully parsed transaction: ${parseResult.transaction}")
+            val sbnKey = sbn.key
             serviceScope.launch {
-                handleParsedTransaction(pkgName, title, effectiveText, parseResult.transaction)
+                handleParsedTransaction(pkgName, title, effectiveText, parseResult.transaction, sbnKey)
             }
         }
     }
@@ -95,7 +96,8 @@ class ActualNotificationListenerService : NotificationListenerService() {
         sourcePackage: String,
         sourceTitle: String,
         sourceText: String,
-        transaction: ActualTransaction
+        transaction: ActualTransaction,
+        sbnKey: String? = null
     ) {
         var finalTransaction = transaction
 
@@ -131,7 +133,14 @@ class ActualNotificationListenerService : NotificationListenerService() {
 
         // If autoSend is enabled, bypass review and dispatch POST request directly
         if (prefs.autoSend) {
-            sendTransactionDirectly(record, finalTransaction, notificationId)
+            if (prefs.dismissOriginalNotification && sbnKey != null) {
+                try {
+                    cancelNotification(sbnKey)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to cancel notification $sbnKey: ${e.message}")
+                }
+            }
+            sendTransactionDirectly(record, finalTransaction, notificationId, showStatus = prefs.dismissOriginalNotification)
             return
         }
 
@@ -157,7 +166,8 @@ class ActualNotificationListenerService : NotificationListenerService() {
     private suspend fun sendTransactionDirectly(
         record: TransactionRecord,
         transaction: ActualTransaction,
-        notificationId: Int
+        notificationId: Int,
+        showStatus: Boolean
     ) {
         val serverUrl = prefs.serverUrl
         val apiToken = prefs.apiToken
@@ -171,18 +181,19 @@ class ActualNotificationListenerService : NotificationListenerService() {
                 result.httpCode,
                 "Success: ${result.responseBody}"
             )
-            val sentNotification = NotificationCompat.Builder(
-                this,
-                CHANNEL_TRANSACTIONS
-            )
-                .setSmallIcon(android.R.drawable.stat_sys_upload_done)
-                .setContentTitle("Transaction Sent to Actual")
-                .setContentText("${transaction.payee} (${transaction.amount}) sent to ${transaction.account}")
-                .setAutoCancel(true)
-                .setTimeoutAfter(4000)
-                .build()
+            if (showStatus) {
+                val sentNotification = NotificationCompat.Builder(
+                    this,
+                    CHANNEL_TRANSACTIONS
+                )
+                    .setSmallIcon(android.R.drawable.stat_sys_upload_done)
+                    .setContentTitle(transaction.payee)
+                    .setContentText("${transaction.amount} recorded in ${transaction.account}")
+                    .setAutoCancel(true)
+                    .build()
 
-            notificationManager.notify(notificationId, sentNotification)
+                notificationManager.notify(notificationId, sentNotification)
+            }
         } else {
             prefs.updateHistoryRecord(
                 record.id,
@@ -190,17 +201,19 @@ class ActualNotificationListenerService : NotificationListenerService() {
                 result.httpCode,
                 result.errorMessage
             )
-            val errorNotification = NotificationCompat.Builder(
-                this,
-                CHANNEL_TRANSACTIONS
-            )
-                .setSmallIcon(android.R.drawable.stat_notify_error)
-                .setContentTitle("Failed to send transaction")
-                .setContentText(result.errorMessage ?: "Unknown error")
-                .setAutoCancel(true)
-                .build()
+            if (showStatus) {
+                val errorNotification = NotificationCompat.Builder(
+                    this,
+                    CHANNEL_TRANSACTIONS
+                )
+                    .setSmallIcon(android.R.drawable.stat_notify_error)
+                    .setContentTitle("Failed to send transaction")
+                    .setContentText(result.errorMessage ?: "Unknown error")
+                    .setAutoCancel(true)
+                    .build()
 
-            notificationManager.notify(notificationId, errorNotification)
+                notificationManager.notify(notificationId, errorNotification)
+            }
         }
 
         // Broadcast to update history in MainActivity

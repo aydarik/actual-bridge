@@ -1,15 +1,19 @@
 package de.gumerbaev.actual.ui
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -28,6 +32,7 @@ import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.service.ActualNotificationListenerService
 import de.gumerbaev.actual.ui.adapter.HistoryAdapter
 import de.gumerbaev.actual.ui.adapter.RulesAdapter
+import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +42,49 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var rulesAdapter: RulesAdapter
     private lateinit var historyAdapter: HistoryAdapter
+
+    private var pendingNotificationSwitch: CompoundButton? = null
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            pendingNotificationSwitch?.isChecked = false
+            Toast.makeText(this, "Notification permission is required to display notifications", Toast.LENGTH_SHORT).show()
+        }
+        pendingNotificationSwitch = null
+    }
+
+    private val requestBackgroundLocationLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(this, "Location permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            binding.switchAttachLocation.isChecked = false
+            Toast.makeText(
+                this,
+                "Background location permission ('Allow all the time') is required to capture location when the app is not open",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private val requestForegroundLocationLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions.values.any { it }
+        if (granted) {
+            if (!LocationHelper.hasBackgroundLocationPermission(this)) {
+                requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            }
+        } else {
+            binding.switchAttachLocation.isChecked = false
+            Toast.makeText(this, "Location permission is required to attach GPS coordinates", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private val transactionUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -52,8 +100,8 @@ class MainActivity : AppCompatActivity() {
         prefs = AppPreferences(this)
 
         setupUI()
-        setupListeners()
         loadSettings()
+        setupListeners()
         loadRules()
         loadHistory()
     }
@@ -132,6 +180,39 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.switchAutoSend.setOnCheckedChangeListener { _, isChecked ->
+            updateAutoSendVisibility(isChecked)
+        }
+
+        binding.switchDismissNotification.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked && !hasNotificationPermission()) {
+                pendingNotificationSwitch = buttonView
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        binding.switchAutoPopup.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked && !hasNotificationPermission()) {
+                pendingNotificationSwitch = buttonView
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        binding.switchAttachLocation.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (!LocationHelper.hasLocationPermission(this)) {
+                    requestForegroundLocationLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    )
+                } else if (!LocationHelper.hasBackgroundLocationPermission(this)) {
+                    requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                }
+            }
+        }
+
         // Save Settings
         binding.btnSaveSettings.setOnClickListener {
             saveSettings()
@@ -165,6 +246,13 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+    }
+
+    private fun hasNotificationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun updatePermissionStatuses() {
@@ -201,6 +289,8 @@ class MainActivity : AppCompatActivity() {
         binding.switchAttachLocation.isChecked = prefs.attachLocation
         binding.switchAutoPopup.isChecked = prefs.autoPopup
         binding.switchAutoSend.isChecked = prefs.autoSend
+        binding.switchDismissNotification.isChecked = prefs.dismissOriginalNotification
+        updateAutoSendVisibility(prefs.autoSend)
     }
 
     private fun saveSettings() {
@@ -209,6 +299,23 @@ class MainActivity : AppCompatActivity() {
         prefs.attachLocation = binding.switchAttachLocation.isChecked
         prefs.autoPopup = binding.switchAutoPopup.isChecked
         prefs.autoSend = binding.switchAutoSend.isChecked
+        prefs.dismissOriginalNotification = binding.switchDismissNotification.isChecked
+    }
+
+    private fun updateAutoSendVisibility(autoSendEnabled: Boolean) {
+        if (autoSendEnabled) {
+            binding.layoutAutoPopup.visibility = View.GONE
+            binding.switchAutoPopup.isEnabled = false
+
+            binding.layoutDismissNotification.visibility = View.VISIBLE
+            binding.switchDismissNotification.isEnabled = true
+        } else {
+            binding.layoutAutoPopup.visibility = View.VISIBLE
+            binding.switchAutoPopup.isEnabled = true
+
+            binding.layoutDismissNotification.visibility = View.GONE
+            binding.switchDismissNotification.isEnabled = false
+        }
     }
 
     private fun testConnection() {
@@ -219,10 +326,10 @@ class MainActivity : AppCompatActivity() {
             val result = ActualApiClient.testConnection(prefs.serverUrl, prefs.apiToken)
             binding.btnTestConnection.isEnabled = true
 
-            if (result.success) {
+            if (result.success || result.httpCode == 400) {
                 AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Connection Successful! (HTTP ${result.httpCode})")
-                    .setMessage("The server is reachable and accepted the test request.\n\nResponse:\n${result.responseBody}")
+                    .setTitle("Connection Successful!")
+                    .setMessage("The server is reachable and accepted the test request.")
                     .setPositiveButton("OK", null)
                     .show()
             } else {

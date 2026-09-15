@@ -20,6 +20,7 @@ class AppPreferences(context: Context) {
         private const val KEY_ATTACH_LOCATION = "attach_location"
         private const val KEY_AUTO_POPUP = "auto_popup"
         private const val KEY_AUTO_SEND = "auto_send"
+        private const val KEY_DISMISS_ORIGINAL_NOTIFICATION = "dismiss_original_notification"
         private const val KEY_PARSING_RULES = "parsing_rules"
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
         private const val MAX_HISTORY_SIZE = 100
@@ -44,6 +45,10 @@ class AppPreferences(context: Context) {
     var autoSend: Boolean
         get() = prefs.getBoolean(KEY_AUTO_SEND, false)
         set(value) = prefs.edit { putBoolean(KEY_AUTO_SEND, value) }
+
+    var dismissOriginalNotification: Boolean
+        get() = prefs.getBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, false)
+        set(value) = prefs.edit { putBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, value) }
 
     fun getRules(): List<ParsingRule> {
         val json = prefs.getString(KEY_PARSING_RULES, null)
