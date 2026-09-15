@@ -38,6 +38,7 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="14sp" />
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -252,7 +253,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Send automatically"
+                            android:text="Send automatically 🚀"
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp" />
 
@@ -345,16 +346,6 @@
                             android:layout_weight="1"
                             android:text="Test Connection"
                             app:icon="@drawable/ic_refresh" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSaveSettings"
-                            style="@style/Widget.MaterialComponents.Button"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="Save Settings"
-                            app:icon="@drawable/ic_save" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

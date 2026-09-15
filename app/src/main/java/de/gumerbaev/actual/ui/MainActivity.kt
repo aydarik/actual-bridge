@@ -181,10 +181,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.switchAutoSend.setOnCheckedChangeListener { _, isChecked ->
+            prefs.autoSend = isChecked
             updateAutoSendVisibility(isChecked)
         }
 
         binding.switchDismissNotification.setOnCheckedChangeListener { buttonView, isChecked ->
+            prefs.dismissOriginalNotification = isChecked
             if (isChecked && !hasNotificationPermission()) {
                 pendingNotificationSwitch = buttonView
                 requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -192,6 +194,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.switchAutoPopup.setOnCheckedChangeListener { buttonView, isChecked ->
+            prefs.autoPopup = isChecked
             if (isChecked && !hasNotificationPermission()) {
                 pendingNotificationSwitch = buttonView
                 requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -199,6 +202,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.switchAttachLocation.setOnCheckedChangeListener { _, isChecked ->
+            prefs.attachLocation = isChecked
             if (isChecked) {
                 if (!LocationHelper.hasLocationPermission(this)) {
                     requestForegroundLocationLauncher.launch(
@@ -211,12 +215,6 @@ class MainActivity : AppCompatActivity() {
                     requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                 }
             }
-        }
-
-        // Save Settings
-        binding.btnSaveSettings.setOnClickListener {
-            saveSettings()
-            Toast.makeText(this, "Settings saved successfully!", Toast.LENGTH_SHORT).show()
         }
 
         // Test Connection
@@ -293,15 +291,6 @@ class MainActivity : AppCompatActivity() {
         updateAutoSendVisibility(prefs.autoSend)
     }
 
-    private fun saveSettings() {
-        prefs.serverUrl = binding.etServerUrl.text?.toString()?.trim() ?: ""
-        prefs.apiToken = binding.etApiToken.text?.toString()?.trim() ?: ""
-        prefs.attachLocation = binding.switchAttachLocation.isChecked
-        prefs.autoPopup = binding.switchAutoPopup.isChecked
-        prefs.autoSend = binding.switchAutoSend.isChecked
-        prefs.dismissOriginalNotification = binding.switchDismissNotification.isChecked
-    }
-
     private fun updateAutoSendVisibility(autoSendEnabled: Boolean) {
         if (autoSendEnabled) {
             binding.layoutAutoPopup.visibility = View.GONE
@@ -319,7 +308,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testConnection() {
-        saveSettings()
+        prefs.serverUrl = binding.etServerUrl.text?.toString()?.trim() ?: ""
+        prefs.apiToken = binding.etApiToken.text?.toString()?.trim() ?: ""
+
         binding.btnTestConnection.isEnabled = false
 
         lifecycleScope.launch {
