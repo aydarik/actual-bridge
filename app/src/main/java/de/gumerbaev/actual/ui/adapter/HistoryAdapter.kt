@@ -1,6 +1,7 @@
 package de.gumerbaev.actual.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -9,8 +10,7 @@ import de.gumerbaev.actual.databinding.ItemHistoryBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import kotlin.math.abs
 
 class HistoryAdapter(
@@ -32,6 +32,8 @@ class HistoryAdapter(
 
         with(holder.binding) {
             tvHistoryPayee.text = tx.payee
+            tvHistoryLocationIndicator.visibility =
+                if (tx.latitude != null && tx.longitude != null) View.VISIBLE else View.GONE
 
             val timeStr = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(record.timestamp))
             tvHistoryAccountDate.text = "${tx.account} • $timeStr"
