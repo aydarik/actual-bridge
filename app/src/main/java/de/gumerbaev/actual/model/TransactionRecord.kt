@@ -7,7 +7,7 @@ data class TransactionRecord(
     val id: String = UUID.randomUUID().toString(),
     val timestamp: Long = System.currentTimeMillis(),
     val sourcePackage: String,
-    val transaction: ActualTransaction,
+    var transaction: ActualTransaction,
     var status: String = STATUS_PARSED
 ) : Serializable {
 

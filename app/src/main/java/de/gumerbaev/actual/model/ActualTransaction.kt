@@ -1,5 +1,6 @@
 package de.gumerbaev.actual.model
 
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -23,16 +24,19 @@ data class ActualTransaction(
     val account: String,
 
     @SerializedName("amount")
-    val amount: Double = 0.0,
+    val amount: Double? = null,
 
     @SerializedName("payee")
-    val payee: String = "Unknown",
+    val payee: String? = null,
 
     @SerializedName("type")
-    val type: String = TYPE_PAYMENT,
+    val type: String? = null,
 
     @SerializedName("date")
     val date: String? = null,
+
+    @SerializedName("notes")
+    val notes: String? = null,
 
     @SerializedName("latitude")
     val latitude: Double? = null,
@@ -54,21 +58,17 @@ data class ActualTransaction(
      * Converts to JSON string matching required field specifications.
      */
     fun toJson(): String {
-        val gson = com.google.gson.GsonBuilder()
-            .setPrettyPrinting()
-            .create()
-
-        // Construct map without nulls for optional fields
         val map = linkedMapOf<String, Any>()
         map["account"] = account
-        map["amount"] = amount
-        map["payee"] = payee
-        map["type"] = type
+        amount?.let { map["amount"] = it }
+        payee?.let { map["payee"] = it }
+        type?.let { map["type"] = it }
         date?.let { map["date"] = it }
+        notes?.let { map["notes"] = it }
         if (latitude != null && longitude != null) {
             map["latitude"] = latitude
             map["longitude"] = longitude
         }
-        return gson.toJson(map)
+        return Gson().toJson(map)
     }
 }

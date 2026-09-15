@@ -74,7 +74,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
     private fun setupViews(tx: ActualTransaction) {
         binding.etPayee.setText(tx.payee)
-        binding.etAmount.setText(String.format(Locale.US, "%.2f", abs(tx.amount)))
+        binding.etAmount.setText(tx.amount?.let { "%.2f".format(Locale.US, abs(it)) })
         binding.etAccount.setText(tx.account)
         binding.etDate.setText(tx.date ?: ActualTransaction.todayFormatted())
 
@@ -209,32 +209,34 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
         val amountStr = binding.etAmount.text?.toString()?.trim() ?: ""
         val parsedAmount = amountStr.toDoubleOrNull()
-        if (parsedAmount == null || parsedAmount == 0.0) {
+        if (parsedAmount == null) {
             binding.layoutAmount.error = "Valid amount is required"
             return
         }
         binding.layoutAmount.error = null
 
         val payee = binding.etPayee.text?.toString()?.trim().let {
-            if (it.isNullOrBlank()) "Unknown" else it
+            if (it.isNullOrBlank()) null else it
         }
 
         val isDeposit = binding.toggleTypeGroup.checkedButtonId == R.id.btnTypeDeposit
         val type = if (isDeposit) ActualTransaction.TYPE_DEPOSIT else ActualTransaction.TYPE_PAYMENT
 
-        // Negative value for deposit per example specification
-        val finalAmount = if (isDeposit) -abs(parsedAmount) else abs(parsedAmount)
-
         val date = binding.etDate.text?.toString()?.trim().let {
             if (it.isNullOrBlank()) ActualTransaction.todayFormatted() else it
         }
 
+        val notes = binding.etNotes.text?.toString()?.trim().let {
+            if (it.isNullOrBlank()) null else it
+        }
+
         val finalTx = ActualTransaction(
             account = account,
-            amount = finalAmount,
+            amount = parsedAmount,
             payee = payee,
             type = type,
             date = date,
+            notes = notes,
             latitude = currentLatitude,
             longitude = currentLongitude
         )
@@ -256,7 +258,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
             if (result.success) {
                 recordId?.let { id ->
-                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT)
+                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT, finalTx)
                 }
                 cancelNotification()
 

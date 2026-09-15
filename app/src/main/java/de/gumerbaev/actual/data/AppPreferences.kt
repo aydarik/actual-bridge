@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken
 import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.model.TransactionRecord
 import androidx.core.content.edit
+import de.gumerbaev.actual.model.ActualTransaction
 
 class AppPreferences(context: Context) {
 
@@ -23,7 +24,7 @@ class AppPreferences(context: Context) {
         private const val KEY_DISMISS_ORIGINAL_NOTIFICATION = "dismiss_original_notification"
         private const val KEY_PARSING_RULES = "parsing_rules"
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
-        private const val MAX_HISTORY_SIZE = 100
+        private const val MAX_HISTORY_SIZE = 15
     }
 
     var serverUrl: String
@@ -111,12 +112,15 @@ class AppPreferences(context: Context) {
         prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
     }
 
-    fun updateHistoryRecord(recordId: String, status: String) {
+    fun updateHistoryRecord(recordId: String, status: String, transaction: ActualTransaction? = null) {
         val history = getHistory().toMutableList()
         val index = history.indexOfFirst { it.id == recordId }
         if (index != -1) {
             val existing = history[index]
             existing.status = status
+            if (transaction != null) {
+                existing.transaction = transaction
+            }
             val json = gson.toJson(history)
             prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
         }

@@ -22,7 +22,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.abs
 
 class ActualNotificationListenerService : NotificationListenerService() {
 
@@ -173,11 +175,9 @@ class ActualNotificationListenerService : NotificationListenerService() {
         if (result.success) {
             prefs.updateHistoryRecord(record.id, TransactionRecord.STATUS_SENT)
             if (showStatus) {
-                val amountDisplay = if (transaction.type == ActualTransaction.TYPE_DEPOSIT) {
-                    "+${kotlin.math.abs(transaction.amount)}"
-                } else {
-                    "-${kotlin.math.abs(transaction.amount)}"
-                }
+                val isDeposit = transaction.type == ActualTransaction.TYPE_DEPOSIT
+                val amountFormatted = "%.2f".format(Locale.US, transaction.amount?.let { abs(it) } ?: 0.0)
+                val amountDisplay = if (isDeposit) "+$amountFormatted" else "-$amountFormatted"
 
                 val sentNotification = NotificationCompat.Builder(
                     this,
@@ -264,11 +264,9 @@ class ActualNotificationListenerService : NotificationListenerService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val amountDisplay = if (transaction.type == ActualTransaction.TYPE_DEPOSIT) {
-            "+${kotlin.math.abs(transaction.amount)}"
-        } else {
-            "-${kotlin.math.abs(transaction.amount)}"
-        }
+        val isDeposit = transaction.type == ActualTransaction.TYPE_DEPOSIT
+        val amountFormatted = "%.2f".format(Locale.US, transaction.amount?.let { abs(it) } ?: 0.0)
+        val amountDisplay = if (isDeposit) "+$amountFormatted" else "-$amountFormatted"
 
         val notification = NotificationCompat.Builder(this, CHANNEL_TRANSACTIONS)
             .setSmallIcon(android.R.drawable.ic_dialog_info)

@@ -100,20 +100,17 @@ object NotificationParser {
         }
 
         // 4. Extract Amount
-        var amount = 0.0
         val rawAmount = extractGroup(matcher, rule.amountGroup)
-        if (rawAmount != null) {
-            amount = parseAmount(rawAmount)
-        }
+        val amount = rawAmount?.let { parseAmount(it) }
 
         // 5. Extract Payee
         var payee = extractGroup(matcher, rule.payeeGroup)?.trim()
         if (payee.isNullOrBlank()) {
-            payee = if (title.isNotBlank() && title != packageName) title.trim() else "Unknown"
+            payee = if (title.isNotBlank() && title != packageName) title.trim() else null
         }
 
         // Clean payee of trailing punctuation
-        payee = payee.trimEnd('.', ',', ':', ';', '-', ' ')
+        payee = payee?.trimEnd('.', ',', ':', ';', '-', ' ')?.trim()
 
         // 6. Extract Account
         var account = extractGroup(matcher, rule.accountGroup)?.trim()
@@ -127,18 +124,7 @@ object NotificationParser {
             type = rule.defaultType.lowercase()
         }
         if (type != ActualTransaction.TYPE_PAYMENT && type != ActualTransaction.TYPE_DEPOSIT) {
-            type = if (type.contains("dep") || type.contains("inc") || type.contains("rec") || type.contains("refund")) {
-                ActualTransaction.TYPE_DEPOSIT
-            } else {
-                ActualTransaction.TYPE_PAYMENT
-            }
-        }
-
-        // Adjust amount sign: "negative value is a deposit"
-        if (type == ActualTransaction.TYPE_DEPOSIT && amount > 0) {
-            amount = -amount
-        } else if (type == ActualTransaction.TYPE_PAYMENT && amount < 0) {
-            amount = -amount // Ensure positive for payment
+            type = null
         }
 
         // 8. Extract Date
@@ -181,7 +167,7 @@ object NotificationParser {
         }
     }
 
-    private fun parseAmount(raw: String): Double {
+    private fun parseAmount(raw: String): Double? {
         return try {
             // Remove currency symbols and non-numeric except dot, comma, minus
             var cleaned = raw.replace(Regex("[^0-9.,-]"), "").trim()
@@ -207,7 +193,7 @@ object NotificationParser {
             }
             cleaned.toDouble()
         } catch (_: Exception) {
-            0.0
+            null
         }
     }
 }

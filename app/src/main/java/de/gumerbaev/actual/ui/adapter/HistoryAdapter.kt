@@ -40,7 +40,7 @@ class HistoryAdapter(
             tvHistorySource.text = "from ${record.sourcePackage}"
 
             val isDeposit = tx.type == ActualTransaction.TYPE_DEPOSIT
-            val amountFormatted = String.format(Locale.US, "%.2f", abs(tx.amount))
+            val amountFormatted = "%.2f".format(Locale.US, tx.amount?.let { abs(it) } ?: 0.0)
 
             if (isDeposit) {
                 tvHistoryAmount.text = "+$amountFormatted"
