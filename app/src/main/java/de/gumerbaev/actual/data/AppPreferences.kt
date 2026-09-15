@@ -111,14 +111,12 @@ class AppPreferences(context: Context) {
         prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
     }
 
-    fun updateHistoryRecord(recordId: String, status: String, httpCode: Int? = null, responseDetails: String? = null) {
+    fun updateHistoryRecord(recordId: String, status: String) {
         val history = getHistory().toMutableList()
         val index = history.indexOfFirst { it.id == recordId }
         if (index != -1) {
             val existing = history[index]
             existing.status = status
-            existing.httpCode = httpCode
-            existing.responseDetails = responseDetails
             val json = gson.toJson(history)
             prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
         }

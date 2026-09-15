@@ -256,12 +256,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
             if (result.success) {
                 recordId?.let { id ->
-                    prefs.updateHistoryRecord(
-                        id,
-                        TransactionRecord.STATUS_SENT,
-                        result.httpCode,
-                        "Success"
-                    )
+                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT)
                 }
                 cancelNotification()
 
@@ -275,12 +270,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 finish()
             } else {
                 recordId?.let { id ->
-                    prefs.updateHistoryRecord(
-                        id,
-                        TransactionRecord.STATUS_FAILED,
-                        result.httpCode,
-                        result.errorMessage
-                    )
+                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_FAILED)
                 }
                 binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_error)
                 binding.tvStatusMessage.setTextColor(getColor(R.color.danger))

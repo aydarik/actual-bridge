@@ -57,12 +57,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                         try {
                             if (result.success) {
                                 if (recordId != null) {
-                                    prefs.updateHistoryRecord(
-                                        recordId,
-                                        TransactionRecord.STATUS_SENT,
-                                        result.httpCode,
-                                        "Success: ${result.responseBody}"
-                                    )
+                                    prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_SENT)
                                 }
                                 val sentNotification = NotificationCompat.Builder(
                                     context,
@@ -79,12 +74,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                                 Toast.makeText(context, "Transaction sent successfully!", Toast.LENGTH_SHORT).show()
                             } else {
                                 if (recordId != null) {
-                                    prefs.updateHistoryRecord(
-                                        recordId,
-                                        TransactionRecord.STATUS_FAILED,
-                                        result.httpCode,
-                                        result.errorMessage
-                                    )
+                                    prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_FAILED)
                                 }
                                 val errorNotification = NotificationCompat.Builder(
                                     context,

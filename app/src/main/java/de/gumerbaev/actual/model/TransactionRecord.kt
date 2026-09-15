@@ -7,12 +7,8 @@ data class TransactionRecord(
     val id: String = UUID.randomUUID().toString(),
     val timestamp: Long = System.currentTimeMillis(),
     val sourcePackage: String,
-    val sourceTitle: String,
-    val sourceText: String,
     val transaction: ActualTransaction,
-    var status: String = STATUS_PARSED,
-    var httpCode: Int? = null,
-    var responseDetails: String? = null
+    var status: String = STATUS_PARSED
 ) : Serializable {
 
     companion object {

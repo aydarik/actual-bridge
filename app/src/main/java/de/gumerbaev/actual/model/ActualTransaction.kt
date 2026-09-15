@@ -1,7 +1,6 @@
 package de.gumerbaev.actual.model
 
 import com.google.gson.annotations.SerializedName
-import org.json.JSONObject
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -57,7 +56,6 @@ data class ActualTransaction(
     fun toJson(): String {
         val gson = com.google.gson.GsonBuilder()
             .setPrettyPrinting()
-            .serializeNulls() // or default without nulls
             .create()
 
         // Construct map without nulls for optional fields
@@ -71,6 +69,6 @@ data class ActualTransaction(
             map["latitude"] = latitude
             map["longitude"] = longitude
         }
-        return com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(map)
+        return gson.toJson(map)
     }
 }

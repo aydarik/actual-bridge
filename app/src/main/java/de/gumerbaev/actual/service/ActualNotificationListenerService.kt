@@ -87,15 +87,13 @@ class ActualNotificationListenerService : NotificationListenerService() {
             Log.d(TAG, "Successfully parsed transaction: ${parseResult.transaction}")
             val sbnKey = sbn.key
             serviceScope.launch {
-                handleParsedTransaction(pkgName, title, effectiveText, parseResult.transaction, sbnKey)
+                handleParsedTransaction(pkgName, parseResult.transaction, sbnKey)
             }
         }
     }
 
     private suspend fun handleParsedTransaction(
         sourcePackage: String,
-        sourceTitle: String,
-        sourceText: String,
         transaction: ActualTransaction,
         sbnKey: String? = null
     ) {
@@ -115,8 +113,6 @@ class ActualNotificationListenerService : NotificationListenerService() {
         // Save record to history
         val record = TransactionRecord(
             sourcePackage = sourcePackage,
-            sourceTitle = sourceTitle,
-            sourceText = sourceText,
             transaction = finalTransaction,
             status = TransactionRecord.STATUS_PARSED
         )
@@ -175,32 +171,28 @@ class ActualNotificationListenerService : NotificationListenerService() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (result.success) {
-            prefs.updateHistoryRecord(
-                record.id,
-                TransactionRecord.STATUS_SENT,
-                result.httpCode,
-                "Success: ${result.responseBody}"
-            )
+            prefs.updateHistoryRecord(record.id, TransactionRecord.STATUS_SENT)
             if (showStatus) {
+                val amountDisplay = if (transaction.type == ActualTransaction.TYPE_DEPOSIT) {
+                    "+${kotlin.math.abs(transaction.amount)}"
+                } else {
+                    "-${kotlin.math.abs(transaction.amount)}"
+                }
+
                 val sentNotification = NotificationCompat.Builder(
                     this,
                     CHANNEL_TRANSACTIONS
                 )
                     .setSmallIcon(android.R.drawable.stat_sys_upload_done)
                     .setContentTitle(transaction.payee)
-                    .setContentText("${transaction.amount} recorded in ${transaction.account}")
+                    .setContentText("$amountDisplay | ${transaction.account}")
                     .setAutoCancel(true)
                     .build()
 
                 notificationManager.notify(notificationId, sentNotification)
             }
         } else {
-            prefs.updateHistoryRecord(
-                record.id,
-                TransactionRecord.STATUS_FAILED,
-                result.httpCode,
-                result.errorMessage
-            )
+            prefs.updateHistoryRecord(record.id, TransactionRecord.STATUS_FAILED)
             if (showStatus) {
                 val errorNotification = NotificationCompat.Builder(
                     this,
