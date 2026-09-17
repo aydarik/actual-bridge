@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
@@ -17,9 +16,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.databinding.ActivityMainBinding
@@ -30,40 +31,40 @@ import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.service.ActualNotificationListenerService
-import de.gumerbaev.actual.ui.adapter.HistoryAdapter
-import de.gumerbaev.actual.ui.adapter.RulesAdapter
 import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var prefs: AppPreferences
-
-    private lateinit var rulesAdapter: RulesAdapter
-    private lateinit var historyAdapter: HistoryAdapter
+    lateinit var prefs: AppPreferences
+        private set
 
     private var pendingNotificationSwitch: CompoundButton? = null
 
-    private val requestNotificationPermissionLauncher = registerForActivityResult(
+    val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
         } else {
             pendingNotificationSwitch?.isChecked = false
-            Toast.makeText(this, "Notification permission is required to display notifications", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Notification permission is required to display notifications",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         pendingNotificationSwitch = null
     }
 
-    private val requestBackgroundLocationLauncher = registerForActivityResult(
+    val requestBackgroundLocationLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             Toast.makeText(this, "Location permission granted", Toast.LENGTH_SHORT).show()
         } else {
-            binding.switchAttachLocation.isChecked = false
+            notifySettingsFragmentLocationDenied()
             Toast.makeText(
                 this,
                 "Background location permission ('Allow all the time') is required to capture location when the app is not open",
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val requestForegroundLocationLauncher = registerForActivityResult(
+    val requestForegroundLocationLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val granted = permissions.values.any { it }
@@ -81,14 +82,18 @@ class MainActivity : AppCompatActivity() {
                 requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             }
         } else {
-            binding.switchAttachLocation.isChecked = false
-            Toast.makeText(this, "Location permission is required to attach GPS coordinates", Toast.LENGTH_SHORT).show()
+            notifySettingsFragmentLocationDenied()
+            Toast.makeText(
+                this,
+                "Location permission is required to attach GPS coordinates",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     private val transactionUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            loadHistory()
+            getTransactionsFragment()?.loadHistory()
         }
     }
 
@@ -99,17 +104,13 @@ class MainActivity : AppCompatActivity() {
 
         prefs = AppPreferences(this)
 
-        setupUI()
-        loadSettings()
-        setupListeners()
-        loadRules()
-        loadHistory()
+        setupViewPagerAndTabs()
     }
 
     override fun onResume() {
         super.onResume()
-        updatePermissionStatuses()
-        loadHistory()
+        getSettingsFragment()?.updatePermissionStatuses()
+        getTransactionsFragment()?.loadHistory()
 
         val filter = IntentFilter(ActualNotificationListenerService.ACTION_TRANSACTION_PARSED)
         registerReceiver(transactionUpdateReceiver, filter, RECEIVER_NOT_EXPORTED)
@@ -124,198 +125,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupUI() {
-        // Rules RecyclerView
-        rulesAdapter = RulesAdapter(
-            rules = mutableListOf(),
-            onToggleEnabled = { rule, isEnabled ->
-                rule.enabled = isEnabled
-                prefs.updateRule(rule)
-            },
-            onEdit = { rule ->
-                showEditRuleDialog(rule)
-            },
-            onDelete = { rule ->
-                AlertDialog.Builder(this)
-                    .setTitle("Delete Rule")
-                    .setMessage("Are you sure you want to delete '${rule.name}'?")
-                    .setPositiveButton("Delete") { _, _ ->
-                        prefs.deleteRule(rule.id)
-                        loadRules()
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-        )
-        binding.rvRules.layoutManager = LinearLayoutManager(this)
-        binding.rvRules.adapter = rulesAdapter
+    private fun setupViewPagerAndTabs() {
+        val adapter = MainPagerAdapter(this)
+        binding.viewPager.adapter = adapter
 
-        // History RecyclerView
-        historyAdapter = HistoryAdapter(
-            records = mutableListOf(),
-            onResend = { record ->
-                val intent = Intent(this, ConfirmTransactionActivity::class.java).apply {
-                    putExtra(ConfirmTransactionActivity.EXTRA_TRANSACTION, record.transaction)
-                    putExtra(ConfirmTransactionActivity.EXTRA_RECORD_ID, record.id)
-                }
-                startActivity(intent)
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Transactions"
+                1 -> "Settings & Rules"
+                else -> ""
             }
-        )
-        binding.rvHistory.layoutManager = LinearLayoutManager(this)
-        binding.rvHistory.adapter = historyAdapter
+        }.attach()
+
+        // Conditional initial tab selection
+        val hasTransactions = prefs.getHistory().isNotEmpty()
+        binding.viewPager.currentItem = if (hasTransactions) 0 else 1
     }
 
-    private fun setupListeners() {
-        // Permissions
-        binding.btnGrantNotification.setOnClickListener {
-            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-            startActivity(intent)
-        }
+    // --- Helper Accessors for Active Fragments ---
 
-        binding.btnGrantOverlay.setOnClickListener {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                "package:$packageName".toUri()
-            )
-            startActivity(intent)
-        }
-
-        binding.switchAutoSend.setOnCheckedChangeListener { _, isChecked ->
-            prefs.autoSend = isChecked
-            updateAutoSendVisibility(isChecked)
-        }
-
-        binding.switchDismissNotification.setOnCheckedChangeListener { buttonView, isChecked ->
-            prefs.dismissOriginalNotification = isChecked
-            if (isChecked && !hasNotificationPermission()) {
-                pendingNotificationSwitch = buttonView
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-
-        binding.switchAutoPopup.setOnCheckedChangeListener { buttonView, isChecked ->
-            prefs.autoPopup = isChecked
-            if (isChecked && !hasNotificationPermission()) {
-                pendingNotificationSwitch = buttonView
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-
-        binding.switchAttachLocation.setOnCheckedChangeListener { _, isChecked ->
-            prefs.attachLocation = isChecked
-            if (isChecked) {
-                if (!LocationHelper.hasLocationPermission(this)) {
-                    requestForegroundLocationLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                    )
-                } else if (!LocationHelper.hasBackgroundLocationPermission(this)) {
-                    requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                }
-            }
-        }
-
-        // Test Connection
-        binding.btnTestConnection.setOnClickListener {
-            testConnection()
-        }
-
-        // Add Rule
-        binding.btnAddRule.setOnClickListener {
-            showEditRuleDialog(null)
-        }
-
-        // Test Rules Dialog
-        binding.btnTestRules.setOnClickListener {
-            showTestParserDialog()
-        }
-
-        // Clear History
-        binding.btnClearHistory.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Clear Transaction Log")
-                .setMessage("Clear all logged transactions?")
-                .setPositiveButton("Clear") { _, _ ->
-                    prefs.clearHistory()
-                    loadHistory()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
+    fun getTransactionsFragment(): TransactionsFragment? {
+        return supportFragmentManager.findFragmentByTag("f0") as? TransactionsFragment
     }
 
-    private fun hasNotificationPermission(): Boolean {
+    fun getSettingsFragment(): SettingsFragment? {
+        return supportFragmentManager.findFragmentByTag("f1") as? SettingsFragment
+    }
+
+    private fun notifySettingsFragmentLocationDenied() {
+        getSettingsFragment()?.onLocationPermissionDenied()
+    }
+
+    // --- Business & Navigation Logic Callbacks ---
+
+    fun hasNotificationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun updatePermissionStatuses() {
-        val hasNotificationAccess = ActualNotificationListenerService.isNotificationServiceEnabled(this)
-        if (hasNotificationAccess) {
-            binding.tvNotificationStatus.text = "Active - Notifications monitored"
-            binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(this, R.color.secondary))
-            binding.btnGrantNotification.text = "Granted"
-            binding.btnGrantNotification.isEnabled = false
-        } else {
-            binding.tvNotificationStatus.text = "Disabled - Tap to enable in Settings"
-            binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(this, R.color.danger))
-            binding.btnGrantNotification.text = "Grant"
-            binding.btnGrantNotification.isEnabled = true
-        }
-
-        val hasOverlayAccess = Settings.canDrawOverlays(this)
-        if (hasOverlayAccess) {
-            binding.tvOverlayStatus.text = "Active - Popups will show over other apps"
-            binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(this, R.color.secondary))
-            binding.btnGrantOverlay.text = "Granted"
-            binding.btnGrantOverlay.isEnabled = false
-        } else {
-            binding.tvOverlayStatus.text = "Disabled - Tap to enable popup overlay"
-            binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
-            binding.btnGrantOverlay.text = "Grant"
-            binding.btnGrantOverlay.isEnabled = true
-        }
+    fun requestNotificationPermission(switchView: CompoundButton) {
+        pendingNotificationSwitch = switchView
+        requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
-    private fun loadSettings() {
-        binding.etServerUrl.setText(prefs.serverUrl)
-        binding.etApiToken.setText(prefs.apiToken)
-        binding.switchAttachLocation.isChecked = prefs.attachLocation
-        binding.switchAutoPopup.isChecked = prefs.autoPopup
-        binding.switchAutoSend.isChecked = prefs.autoSend
-        binding.switchDismissNotification.isChecked = prefs.dismissOriginalNotification
-        updateAutoSendVisibility(prefs.autoSend)
-    }
-
-    private fun updateAutoSendVisibility(autoSendEnabled: Boolean) {
-        if (autoSendEnabled) {
-            binding.layoutAutoPopup.visibility = View.GONE
-            binding.switchAutoPopup.isEnabled = false
-
-            binding.layoutDismissNotification.visibility = View.VISIBLE
-            binding.switchDismissNotification.isEnabled = true
-        } else {
-            binding.layoutAutoPopup.visibility = View.VISIBLE
-            binding.switchAutoPopup.isEnabled = true
-
-            binding.layoutDismissNotification.visibility = View.GONE
-            binding.switchDismissNotification.isEnabled = false
-        }
-    }
-
-    private fun testConnection() {
-        prefs.serverUrl = binding.etServerUrl.text?.toString()?.trim() ?: ""
-        prefs.apiToken = binding.etApiToken.text?.toString()?.trim() ?: ""
-
-        binding.btnTestConnection.isEnabled = false
+    fun testConnection(serverUrl: String, apiToken: String, onComplete: () -> Unit) {
+        prefs.serverUrl = serverUrl
+        prefs.apiToken = apiToken
 
         lifecycleScope.launch {
             val result = ActualApiClient.testConnection(prefs.serverUrl, prefs.apiToken)
-            binding.btnTestConnection.isEnabled = true
+            onComplete()
 
             if (result.success || result.httpCode == 400) {
                 AlertDialog.Builder(this@MainActivity)
@@ -333,21 +194,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadRules() {
-        val rules = prefs.getRules()
-        rulesAdapter.updateData(rules)
-        val activeCount = rules.count { it.enabled }
-        binding.tvRulesCount.text = "$activeCount active of ${rules.size} rules"
-    }
-
-    private fun loadHistory() {
-        val history = prefs.getHistory()
-        historyAdapter.updateData(history)
-        binding.tvEmptyHistory.visibility = if (history.isEmpty()) View.VISIBLE else View.GONE
-        binding.rvHistory.visibility = if (history.isEmpty()) View.GONE else View.VISIBLE
-    }
-
-    private fun showEditRuleDialog(existingRule: ParsingRule?) {
+    fun showEditRuleDialog(existingRule: ParsingRule?, onRuleSaved: () -> Unit) {
         val dialogBinding = DialogEditRuleBinding.inflate(LayoutInflater.from(this))
         val isEditing = existingRule != null
 
@@ -407,7 +254,7 @@ class MainActivity : AppCompatActivity() {
                 prefs.addRule(ruleToSave)
             }
 
-            loadRules()
+            onRuleSaved()
             dialog.dismiss()
             Toast.makeText(this, "Rule saved", Toast.LENGTH_SHORT).show()
         }
@@ -415,7 +262,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showTestParserDialog() {
+    fun showTestParserDialog() {
         val dialogBinding = DialogTestParserBinding.inflate(LayoutInflater.from(this))
         var lastParsedTransaction: ActualTransaction? = null
 
@@ -424,13 +271,13 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         dialogBinding.btnSampleCoffee.setOnClickListener {
-            dialogBinding.etTestPackage.setText("com.google.android.apps.walletnfcrel")
+            dialogBinding.etTestPackage.setText("*")
             dialogBinding.etTestTitle.setText("Debit Card")
-            dialogBinding.etTestText.setText("Paid $10.50 at Starbucks from Checking")
+            dialogBinding.etTestText.setText("Paid $10.50 at Starbucks")
         }
 
         dialogBinding.btnSampleSalary.setOnClickListener {
-            dialogBinding.etTestPackage.setText("com.bank.app")
+            dialogBinding.etTestPackage.setText("*")
             dialogBinding.etTestTitle.setText("Account Credit")
             dialogBinding.etTestText.setText("Received $1,250.00 from TechCorp")
         }
@@ -475,5 +322,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private class MainPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> TransactionsFragment()
+                1 -> SettingsFragment()
+                else -> throw IllegalArgumentException("Invalid position: $position")
+            }
+        }
     }
 }

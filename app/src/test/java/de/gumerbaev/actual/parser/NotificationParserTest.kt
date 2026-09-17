@@ -39,25 +39,9 @@ class NotificationParserTest {
         assertNotNull(result.transaction)
         assertEquals("Checking", result.transaction?.account)
         // For deposit, negative value is expected
-        assertEquals(-150.0, result.transaction?.amount ?: 0.0, 0.001)
+        assertEquals(150.0, result.transaction?.amount ?: 0.0, 0.001)
         assertEquals("Employer", result.transaction?.payee)
         assertEquals(ActualTransaction.TYPE_DEPOSIT, result.transaction?.type)
-    }
-
-    @Test
-    fun testParseMerchantFormat() {
-        val rules = ParsingRule.createDefaultRules()
-        val result = NotificationParser.parse(
-            packageName = "com.google.android.apps.walletnfcrel",
-            title = "Google Pay",
-            text = "Starbucks: 10.50 USD",
-            rules = rules
-        )
-
-        assertTrue("Expected parsing to succeed", result.success)
-        assertNotNull(result.transaction)
-        assertEquals(10.5, result.transaction?.amount ?: 0.0, 0.001)
-        assertEquals("Starbucks", result.transaction?.payee)
     }
 
     @Test

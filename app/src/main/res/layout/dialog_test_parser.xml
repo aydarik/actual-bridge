@@ -67,7 +67,7 @@
                 android:id="@+id/etTestPackage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="com.bank.app" />
+                android:text="*" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Notification Title -->
@@ -82,7 +82,7 @@
                 android:id="@+id/etTestTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Debit Card Alert" />
+                android:text="Debit Card" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Notification Text -->

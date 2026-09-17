@@ -24,36 +24,24 @@ data class ParsingRule(
         fun createDefaultRules(): List<ParsingRule> {
             return listOf(
                 ParsingRule(
-                    id = "rule_default_1",
+                    id = UUID.randomUUID().toString(),
                     name = "Standard Card Payment (e.g., 'Paid $12.50 at Starbucks')",
                     enabled = true,
                     targetPackage = "*",
                     titleRegex = "",
-                    textRegex = "(?i)(?:paid|spent|purchase of)\\s*[$€£¥]?\\s*(?<amount>[0-9]+(?:[.,][0-9]{2})?)\\s*(?:at|to|in)\\s*(?<payee>[^.,\\n]+)",
+                    textRegex = "(?i)(?:paid|spent|purchase of)\\s*[$€£¥]?\\s*(?<amount>[0-9][0-9.,\\s]*[0-9]|[0-9]+)\\s*[$€£¥]?\\s*(?:at|to|in)\\s*(?<payee>[^.,\\n]+)",
                     account = "Checking",
                     defaultType = ActualTransaction.TYPE_PAYMENT,
                     amountGroup = "amount",
                     payeeGroup = "payee"
                 ),
                 ParsingRule(
-                    id = "rule_default_2",
-                    name = "Direct Debit / Card transaction (e.g., 'Starbucks: 10.50 USD')",
-                    enabled = true,
-                    targetPackage = "*",
-                    titleRegex = "",
-                    textRegex = "(?i)(?<payee>[A-Za-z0-9\\s&'-]+?):\\s*[$€£¥]?\\s*(?<amount>[0-9]+(?:[.,][0-9]{2})?)(?:\\s*[A-Z]{3})?",
-                    account = "Checking",
-                    defaultType = ActualTransaction.TYPE_PAYMENT,
-                    amountGroup = "amount",
-                    payeeGroup = "payee"
-                ),
-                ParsingRule(
-                    id = "rule_default_3",
+                    id = UUID.randomUUID().toString(),
                     name = "Income / Deposit (e.g., 'Received $150.00 from Employer')",
                     enabled = true,
                     targetPackage = "*",
                     titleRegex = "",
-                    textRegex = "(?i)(?:received|deposit of|refund of)\\s*[$€£¥]?\\s*(?<amount>[0-9]+(?:[.,][0-9]{2})?)\\s*(?:from|by)\\s*(?<payee>[^.,\\n]+)",
+                    textRegex = "(?i)(?:received|deposit of|refund of)\\s*[$€£¥]?\\s*(?<amount>[0-9][0-9.,\\s]*[0-9]|[0-9]+)\\s*[$€£¥]?\\s*(?:from|by)\\s*(?<payee>[^.,\\n]+)",
                     account = "Checking",
                     defaultType = ActualTransaction.TYPE_DEPOSIT,
                     amountGroup = "amount",

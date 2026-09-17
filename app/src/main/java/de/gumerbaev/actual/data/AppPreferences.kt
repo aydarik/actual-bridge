@@ -24,7 +24,7 @@ class AppPreferences(context: Context) {
         private const val KEY_DISMISS_ORIGINAL_NOTIFICATION = "dismiss_original_notification"
         private const val KEY_PARSING_RULES = "parsing_rules"
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
-        private const val MAX_HISTORY_SIZE = 15
+        private const val MAX_HISTORY_SIZE = 100
     }
 
     var serverUrl: String
