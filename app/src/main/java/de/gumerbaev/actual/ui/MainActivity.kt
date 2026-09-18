@@ -271,13 +271,13 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         dialogBinding.btnSampleCoffee.setOnClickListener {
-            dialogBinding.etTestPackage.setText("*")
+            dialogBinding.etTestPackage.setText("com.bank.app")
             dialogBinding.etTestTitle.setText("Debit Card")
             dialogBinding.etTestText.setText("Paid $10.50 at Starbucks")
         }
 
         dialogBinding.btnSampleSalary.setOnClickListener {
-            dialogBinding.etTestPackage.setText("*")
+            dialogBinding.etTestPackage.setText("com.bank.app")
             dialogBinding.etTestTitle.setText("Account Credit")
             dialogBinding.etTestText.setText("Received $1,250.00 from TechCorp")
         }

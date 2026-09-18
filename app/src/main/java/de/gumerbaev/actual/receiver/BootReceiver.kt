@@ -19,7 +19,7 @@ class BootReceiver : BroadcastReceiver() {
                 Toast.makeText(
                     context,
                     "Actual Bridge Service activated",
-                    Toast.LENGTH_LONG
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }

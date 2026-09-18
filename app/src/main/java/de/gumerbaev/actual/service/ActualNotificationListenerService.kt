@@ -3,6 +3,7 @@ package de.gumerbaev.actual.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
@@ -50,6 +51,12 @@ class ActualNotificationListenerService : NotificationListenerService() {
         prefs = AppPreferences(this)
         createNotificationChannel()
         Log.d(TAG, "ActualNotificationListenerService created")
+    }
+
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        requestRebind(ComponentName(this, ActualNotificationListenerService::class.java))
+        Log.d(TAG, "ActualNotificationListenerService rebind requested")
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
