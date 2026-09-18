@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Add permission to listen for reboot completion -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <!-- Network permissions for sending POST requests -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -37,7 +40,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Floating Popup Review Activity (bottom sheet style) -->
+        <!-- Floating Popup Review Activity -->
         <activity
             android:name=".ui.ConfirmTransactionActivity"
             android:exported="false"
@@ -64,6 +67,17 @@
             <intent-filter>
                 <action android:name="de.gumerbaev.actual.ACTION_CONFIRM_SEND" />
                 <action android:name="de.gumerbaev.actual.ACTION_DISCARD" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Register BroadcastReceiver for Boot Completed -->
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
