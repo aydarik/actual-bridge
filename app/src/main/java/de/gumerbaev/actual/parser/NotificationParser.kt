@@ -3,6 +3,8 @@ package de.gumerbaev.actual.parser
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.ParsingRule
 import java.util.regex.Matcher
+import de.gumerbaev.actual.R
+import de.gumerbaev.actual.util.UiText
 import java.util.regex.Pattern
 
 object NotificationParser {
@@ -11,7 +13,7 @@ object NotificationParser {
         val success: Boolean,
         val transaction: ActualTransaction? = null,
         val matchedRule: ParsingRule? = null,
-        val errorMessage: String? = null
+        val error: UiText? = null
     )
 
     /**
@@ -25,7 +27,7 @@ object NotificationParser {
     ): ParseResult {
         val enabledRules = rules.filter { it.enabled }
         if (enabledRules.isEmpty()) {
-            return ParseResult(false, errorMessage = "No active parsing rules configured.")
+            return ParseResult(false, error = UiText.res(R.string.err_no_active_rules))
         }
 
         for (rule in enabledRules) {
@@ -35,7 +37,7 @@ object NotificationParser {
             }
         }
 
-        return ParseResult(false, errorMessage = "Notification did not match any active rules.")
+        return ParseResult(false, error = UiText.res(R.string.err_no_rule_matched))
     }
 
     /**
@@ -55,7 +57,7 @@ object NotificationParser {
                         (target.endsWith("*") && packageName.startsWith(target.removeSuffix("*")))
             }
             if (!matchesPackage) {
-                return ParseResult(false, errorMessage = "Package '$packageName' does not match rule target '${rule.targetPackage}'")
+                return ParseResult(false, error = UiText.res(R.string.err_package_mismatch, packageName, rule.targetPackage))
             }
         }
 
@@ -64,22 +66,22 @@ object NotificationParser {
             val titlePattern = try {
                 Pattern.compile(rule.titleRegex, Pattern.CASE_INSENSITIVE)
             } catch (e: Exception) {
-                return ParseResult(false, errorMessage = "Invalid title regex: ${e.message}")
+                return ParseResult(false, error = UiText.res(R.string.err_invalid_title_regex, e.message.orEmpty()))
             }
             if (!titlePattern.matcher(title).find()) {
-                return ParseResult(false, errorMessage = "Title did not match pattern.")
+                return ParseResult(false, error = UiText.res(R.string.err_title_mismatch))
             }
         }
 
         // 3. Text regex matching
         if (rule.textRegex.isBlank()) {
-            return ParseResult(false, errorMessage = "Rule text regex is empty.")
+            return ParseResult(false, error = UiText.res(R.string.err_text_regex_empty))
         }
 
         val textPattern = try {
             Pattern.compile(rule.textRegex, Pattern.CASE_INSENSITIVE)
         } catch (e: Exception) {
-            return ParseResult(false, errorMessage = "Invalid text regex: ${e.message}")
+            return ParseResult(false, error = UiText.res(R.string.err_invalid_text_regex, e.message.orEmpty()))
         }
 
         // Search text first; if not found, also try title + " " + text
@@ -96,7 +98,7 @@ object NotificationParser {
         }
 
         if (!found) {
-            return ParseResult(false, errorMessage = "Notification text did not match rule regex.")
+            return ParseResult(false, error = UiText.res(R.string.err_text_mismatch))
         }
 
         // 4. Extract Amount

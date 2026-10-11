@@ -72,7 +72,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Review Transaction"
+                            android:text="@string/confirm_title"
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -81,7 +81,7 @@
                             android:id="@+id/tvSourceInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Detected from notification"
+                            android:text="@string/confirm_detected"
                             android:textColor="?android:attr/textColorSecondary"
                             android:textSize="13sp" />
                     </LinearLayout>
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TRANSACTION TYPE"
+                    android:text="@string/confirm_type_header"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -126,7 +126,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Payment / Expense" />
+                        android:text="@string/confirm_payment" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTypeDeposit"
@@ -134,7 +134,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Deposit / Income" />
+                        android:text="@string/confirm_deposit" />
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <!-- Payee -->
@@ -144,7 +144,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:hint="Payee / Merchant">
+                    android:hint="@string/confirm_payee">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPayee"
@@ -169,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
-                        android:hint="Amount">
+                        android:hint="@string/confirm_amount">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etAmount"
@@ -186,7 +186,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-                        android:hint="Account">
+                        android:hint="@string/confirm_account">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etAccount"
@@ -204,7 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:hint="Date (YYYY-MM-DD)"
+                    android:hint="@string/confirm_date"
                     app:endIconDrawable="@drawable/ic_calendar"
                     app:endIconMode="custom">
 
@@ -223,7 +223,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:hint="Notes">
+                    android:hint="@string/confirm_notes">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNotes"
@@ -256,7 +256,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:text="Location: Not attached"
+                        android:text="@string/confirm_location_none"
                         android:textColor="?android:attr/textColorSecondary"
                         android:textSize="12sp" />
 
@@ -265,7 +265,7 @@
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Attach GPS"
+                        android:text="@string/confirm_attach_gps"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -296,7 +296,7 @@
                         android:layout_height="52dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="Discard"
+                        android:text="@string/discard"
                         android:textColor="?android:attr/textColorSecondary" />
 
                     <com.google.android.material.button.MaterialButton
@@ -305,7 +305,7 @@
                         android:layout_width="0dp"
                         android:layout_height="52dp"
                         android:layout_weight="1.5"
-                        android:text="Send to Actual"
+                        android:text="@string/send_to_actual"
                         app:icon="@drawable/ic_send" />
                 </LinearLayout>
 

@@ -46,12 +46,12 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.notif_permission_granted), Toast.LENGTH_SHORT).show()
         } else {
             pendingNotificationSwitch?.isChecked = false
             Toast.makeText(
                 this,
-                "Notification permission is required to display notifications",
+                getString(R.string.notif_permission_required),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -62,12 +62,12 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Toast.makeText(this, "Location permission granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show()
         } else {
             notifyRulesFragmentLocationDenied()
             Toast.makeText(
                 this,
-                "Background location permission ('Allow all the time') is required to capture location when the app is not open",
+                getString(R.string.bg_location_required),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             notifyRulesFragmentLocationDenied()
             Toast.makeText(
                 this,
-                "Location permission is required to attach GPS coordinates",
+                getString(R.string.location_permission_required),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -131,9 +131,9 @@ class MainActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Transactions"
-                1 -> "Rules"
-                2 -> "Settings"
+                0 -> getString(R.string.tab_transactions)
+                1 -> getString(R.string.tab_rules)
+                2 -> getString(R.string.tab_settings)
                 else -> ""
             }
         }.attach()
@@ -186,15 +186,15 @@ class MainActivity : AppCompatActivity() {
 
             if (result.success || result.httpCode == 400) {
                 AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Connection Successful!")
-                    .setMessage("The server is reachable and accepted the test request.")
-                    .setPositiveButton("OK", null)
+                    .setTitle(getString(R.string.connection_success_title))
+                    .setMessage(getString(R.string.connection_success_message))
+                    .setPositiveButton(R.string.ok, null)
                     .show()
             } else {
                 AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Connection Failed")
-                    .setMessage("Could not connect to ${prefs.serverUrl}.\n\nError:\n${result.errorMessage}")
-                    .setPositiveButton("OK", null)
+                    .setTitle(getString(R.string.connection_failed_title))
+                    .setMessage(getString(R.string.connection_failed_message, prefs.serverUrl, result.error?.asString(this@MainActivity) ?: getString(R.string.unknown_error)))
+                    .setPositiveButton(R.string.ok, null)
                     .show()
             }
         }
@@ -204,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         val dialogBinding = DialogEditRuleBinding.inflate(LayoutInflater.from(this))
         val isEditing = existingRule != null
 
-        dialogBinding.tvDialogTitle.text = if (isEditing) "Edit Parsing Rule" else "New Parsing Rule"
+        dialogBinding.tvDialogTitle.text = getString(if (isEditing) R.string.edit_rule_title else R.string.new_rule_title)
 
         val types = listOf(ActualTransaction.TYPE_PAYMENT, ActualTransaction.TYPE_DEPOSIT)
         val typeAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, types)
@@ -235,11 +235,11 @@ class MainActivity : AppCompatActivity() {
             val textRegex = dialogBinding.etTextRegex.text?.toString()?.trim() ?: ""
 
             if (name.isBlank()) {
-                dialogBinding.etRuleName.error = "Rule name is required"
+                dialogBinding.etRuleName.error = getString(R.string.rule_name_required)
                 return@setOnClickListener
             }
             if (textRegex.isBlank()) {
-                dialogBinding.etTextRegex.error = "Text regex is required"
+                dialogBinding.etTextRegex.error = getString(R.string.text_regex_required)
                 return@setOnClickListener
             }
 
@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity() {
 
             onRuleSaved()
             dialog.dismiss()
-            Toast.makeText(this, "Rule saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.rule_saved), Toast.LENGTH_SHORT).show()
         }
 
         dialog.show()
@@ -304,15 +304,15 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.layoutTestResult.visibility = View.VISIBLE
             if (result.success && result.transaction != null) {
                 lastParsedTransaction = result.transaction
-                dialogBinding.tvTestStatus.text = "MATCHED: ${result.matchedRule?.name}"
+                dialogBinding.tvTestStatus.text = getString(R.string.test_matched, result.matchedRule?.name)
                 dialogBinding.tvTestStatus.setTextColor(ContextCompat.getColor(this, R.color.secondary))
                 dialogBinding.tvTestJson.text = result.transaction.toJson()
                 dialogBinding.btnSimulatePopup.visibility = View.VISIBLE
             } else {
                 lastParsedTransaction = null
-                dialogBinding.tvTestStatus.text = "NO MATCH: ${result.errorMessage}"
+                dialogBinding.tvTestStatus.text = getString(R.string.test_no_match, result.error?.asString(this@MainActivity).orEmpty())
                 dialogBinding.tvTestStatus.setTextColor(ContextCompat.getColor(this, R.color.danger))
-                dialogBinding.tvTestJson.text = "Check package name or adjust regex patterns in Parsing Rules."
+                dialogBinding.tvTestJson.text = getString(R.string.test_no_match_hint)
                 dialogBinding.btnSimulatePopup.visibility = View.GONE
             }
         }

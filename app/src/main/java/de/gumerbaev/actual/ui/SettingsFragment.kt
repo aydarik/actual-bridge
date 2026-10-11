@@ -6,7 +6,11 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import de.gumerbaev.actual.R
@@ -34,6 +38,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         loadSettings()
+        setupLanguageSelector()
         setupListeners()
     }
 
@@ -81,28 +86,71 @@ class SettingsFragment : Fragment() {
 
         val hasNotificationAccess = ActualNotificationListenerService.isNotificationServiceEnabled(requireContext())
         if (hasNotificationAccess) {
-            binding.tvNotificationStatus.text = "Active - Notifications monitored"
+            binding.tvNotificationStatus.text = getString(R.string.settings_notif_active)
             binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
-            binding.btnGrantNotification.text = "Granted"
+            binding.btnGrantNotification.text = getString(R.string.granted)
             binding.btnGrantNotification.isEnabled = false
         } else {
-            binding.tvNotificationStatus.text = "Disabled - Tap to enable in Settings"
+            binding.tvNotificationStatus.text = getString(R.string.settings_notif_disabled)
             binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.danger))
-            binding.btnGrantNotification.text = "Grant"
+            binding.btnGrantNotification.text = getString(R.string.grant)
             binding.btnGrantNotification.isEnabled = true
         }
 
         val hasOverlayAccess = Settings.canDrawOverlays(requireContext())
         if (hasOverlayAccess) {
-            binding.tvOverlayStatus.text = "Active - Popups will show over other apps"
+            binding.tvOverlayStatus.text = getString(R.string.settings_overlay_active)
             binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
-            binding.btnGrantOverlay.text = "Granted"
+            binding.btnGrantOverlay.text = getString(R.string.granted)
             binding.btnGrantOverlay.isEnabled = false
         } else {
-            binding.tvOverlayStatus.text = "Disabled - Tap to enable popup overlay"
+            binding.tvOverlayStatus.text = getString(R.string.settings_overlay_disabled)
             binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
-            binding.btnGrantOverlay.text = "Grant"
+            binding.btnGrantOverlay.text = getString(R.string.grant)
             binding.btnGrantOverlay.isEnabled = true
+        }
+    }
+
+    private fun setupLanguageSelector() {
+        val codes = resources.getStringArray(R.array.language_codes)
+        val labels = listOf(
+            getString(R.string.language_system),
+            "English",
+            "Deutsch",
+            "Русский"
+        )
+        // The adapter ignores filtering so the full list stays visible after a selection.
+        binding.actvLanguage.setAdapter(
+            object : ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                labels
+            ) {
+                override fun getFilter(): Filter = object : Filter() {
+                    override fun performFiltering(constraint: CharSequence?) =
+                        FilterResults().apply {
+                            values = labels
+                            count = labels.size
+                        }
+
+                    override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        )
+
+        val current = AppCompatDelegate.getApplicationLocales()
+        val currentCode = if (current.isEmpty) "" else current[0]?.language.orEmpty()
+        val currentIndex = codes.indexOf(currentCode).takeIf { it >= 0 } ?: 0
+        binding.actvLanguage.setText(labels[currentIndex], false)
+
+        binding.actvLanguage.setOnItemClickListener { _, _, position, _ ->
+            if (position == currentIndex) return@setOnItemClickListener
+            // An empty list restores the system language (English is the resource fallback).
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(codes[position])
+            )
         }
     }
 

@@ -1,6 +1,8 @@
 package de.gumerbaev.actual.network
 
 import de.gumerbaev.actual.model.ActualTransaction
+import de.gumerbaev.actual.R
+import de.gumerbaev.actual.util.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -15,7 +17,7 @@ object ActualApiClient {
         val success: Boolean,
         val httpCode: Int = 0,
         val responseBody: String? = null,
-        val errorMessage: String? = null
+        val error: UiText? = null
     )
 
     private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
@@ -61,7 +63,7 @@ object ActualApiClient {
         json: String
     ): ApiResult {
         if (serverUrl.isBlank()) {
-            return ApiResult(false, errorMessage = "Server URL cannot be empty.")
+            return ApiResult(false, error = UiText.res(R.string.err_server_url_empty))
         }
 
         val requestBody = json.toRequestBody(JSON_MEDIA_TYPE)
@@ -92,13 +94,13 @@ object ActualApiClient {
                     success = isSuccess,
                     httpCode = code,
                     responseBody = body,
-                    errorMessage = if (!isSuccess) "Server returned HTTP $code: $body" else null
+                    error = if (!isSuccess) UiText.res(R.string.err_server_http, code, body) else null
                 )
             }
         } catch (e: Exception) {
             ApiResult(
                 success = false,
-                errorMessage = e.localizedMessage ?: e.javaClass.simpleName
+                error = UiText.Raw(e.localizedMessage ?: e.javaClass.simpleName)
             )
         }
     }

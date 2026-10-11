@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.ui
 
+import de.gumerbaev.actual.R
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -60,13 +62,13 @@ class TransactionsFragment : Fragment() {
     private fun setupListeners() {
         binding.btnClearHistory.setOnClickListener {
             AlertDialog.Builder(requireContext())
-                .setTitle("Clear Transaction Log")
-                .setMessage("Clear all logged transactions?")
-                .setPositiveButton("Clear") { _, _ ->
+                .setTitle(getString(R.string.clear_log_title))
+                .setMessage(getString(R.string.clear_log_message))
+                .setPositiveButton(R.string.clear) { _, _ ->
                     mainActivity.prefs.clearHistory()
                     loadHistory()
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(R.string.cancel, null)
                 .show()
         }
     }

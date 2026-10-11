@@ -9,6 +9,7 @@ local.properties
 
 # Android build outputs
 *.apk
+*.idsig
 *.aar
 *.ap_
 *.aab

@@ -14,7 +14,7 @@
             android:id="@+id/tvDialogTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Parsing Rule"
+            android:text="@string/edit_rule_title"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
-            android:text="Configure regex patterns and extraction groups"
+            android:text="@string/edit_rule_desc"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="13sp" />
 
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Rule Name (e.g. Chase Card Alert)">
+            android:hint="@string/edit_rule_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etRuleName"
@@ -49,8 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="Use '*' for all apps, or comma-separated packages"
-            android:hint="Target App Package Name">
+            app:helperText="@string/edit_rule_target_helper"
+            android:hint="@string/edit_rule_target">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTargetPackage"
@@ -66,8 +66,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="Optional: Filter by notification title"
-            android:hint="Title Regex (Optional)">
+            app:helperText="@string/edit_rule_title_regex_helper"
+            android:hint="@string/edit_rule_title_regex">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitleRegex"
@@ -83,8 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="Required: Regex pattern matching the notification text"
-            android:hint="Text Regex Pattern">
+            app:helperText="@string/edit_rule_text_regex_helper"
+            android:hint="@string/edit_rule_text_regex">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTextRegex"
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:hint="Amount Group">
+                android:hint="@string/edit_rule_amount_group">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAmountGroup"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:hint="Payee Group">
+                android:hint="@string/edit_rule_payee_group">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPayeeGroup"
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:hint="Account">
+                android:hint="@string/confirm_account">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAccount"
@@ -163,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:hint="Type">
+                android:hint="@string/edit_rule_type">
 
                 <AutoCompleteTextView
                     android:id="@+id/actvDefaultType"
@@ -186,7 +186,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel" />
+                android:text="@string/cancel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveRule"
@@ -194,7 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Save Rule" />
+                android:text="@string/save_rule" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

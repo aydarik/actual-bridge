@@ -21,11 +21,14 @@ data class ParsingRule(
 ) : Serializable {
 
     companion object {
-        fun createDefaultRules(): List<ParsingRule> {
+        fun createDefaultRules(
+            paymentRuleName: String = "Standard Card Payment (e.g., 'Paid $12.50 at Starbucks')",
+            depositRuleName: String = "Income / Deposit (e.g., 'Received $150.00 from Employer')"
+        ): List<ParsingRule> {
             return listOf(
                 ParsingRule(
                     id = UUID.randomUUID().toString(),
-                    name = "Standard Card Payment (e.g., 'Paid $12.50 at Starbucks')",
+                    name = paymentRuleName,
                     enabled = true,
                     targetPackage = "*",
                     titleRegex = "",
@@ -37,7 +40,7 @@ data class ParsingRule(
                 ),
                 ParsingRule(
                     id = UUID.randomUUID().toString(),
-                    name = "Income / Deposit (e.g., 'Received $150.00 from Employer')",
+                    name = depositRuleName,
                     enabled = true,
                     targetPackage = "*",
                     titleRegex = "",

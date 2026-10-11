@@ -63,7 +63,7 @@ class HistoryAdapter(
             is Row.Header -> {
                 val header = (holder as HeaderViewHolder).binding
                 header.tvMonthTitle.text = row.title
-                header.tvMonthSpend.text = "Spent: %.2f".format(Locale.US, row.spend)
+                header.tvMonthSpend.text = header.root.context.getString(R.string.month_spent, "%.2f".format(Locale.US, row.spend))
             }
             is Row.Item -> bindItem((holder as HistoryViewHolder).binding, row.record)
         }
@@ -80,7 +80,7 @@ class HistoryAdapter(
 
             val timeStr = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(record.timestamp))
             tvHistoryAccountDate.text = "${tx.account} • $timeStr"
-            tvHistorySource.text = "from ${record.sourcePackage}"
+            tvHistorySource.text = context.getString(R.string.history_from, record.sourcePackage)
 
             val isDeposit = tx.type == ActualTransaction.TYPE_DEPOSIT
             val amountFormatted = "%.2f".format(Locale.US, tx.amount?.let { abs(it) } ?: 0.0)
@@ -95,31 +95,31 @@ class HistoryAdapter(
 
             when (record.status) {
                 TransactionRecord.STATUS_SENT -> {
-                    tvHistoryStatus.text = "SENT"
+                    tvHistoryStatus.text = context.getString(R.string.status_sent)
                     tvHistoryStatus.setBackgroundResource(R.drawable.bg_status_success)
                     tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.secondary))
-                    btnHistoryResend.text = "Sent"
+                    btnHistoryResend.text = context.getString(R.string.btn_sent)
                     btnHistoryResend.isEnabled = false
                 }
                 TransactionRecord.STATUS_FAILED -> {
-                    tvHistoryStatus.text = "FAILED"
+                    tvHistoryStatus.text = context.getString(R.string.status_failed)
                     tvHistoryStatus.setBackgroundResource(R.drawable.bg_status_error)
                     tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.danger))
-                    btnHistoryResend.text = "Retry"
+                    btnHistoryResend.text = context.getString(R.string.btn_retry)
                     btnHistoryResend.isEnabled = true
                 }
                 TransactionRecord.STATUS_DISCARDED -> {
-                    tvHistoryStatus.text = "DISCARDED"
+                    tvHistoryStatus.text = context.getString(R.string.status_discarded)
                     tvHistoryStatus.setBackgroundResource(R.drawable.bg_rounded_light)
                     tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.text_muted))
-                    btnHistoryResend.text = "Send"
+                    btnHistoryResend.text = context.getString(R.string.btn_send)
                     btnHistoryResend.isEnabled = true
                 }
                 else -> {
-                    tvHistoryStatus.text = "PARSED"
+                    tvHistoryStatus.text = context.getString(R.string.status_parsed)
                     tvHistoryStatus.setBackgroundResource(R.drawable.bg_rounded_light)
                     tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.primary))
-                    btnHistoryResend.text = "Send"
+                    btnHistoryResend.text = context.getString(R.string.btn_send)
                     btnHistoryResend.isEnabled = true
                 }
             }

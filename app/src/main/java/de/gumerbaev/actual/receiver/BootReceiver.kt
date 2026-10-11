@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.receiver
 
+import de.gumerbaev.actual.R
+
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -18,7 +20,7 @@ class BootReceiver : BroadcastReceiver() {
                 toggleNotificationListenerService(context)
                 Toast.makeText(
                     context,
-                    "Actual Bridge Service activated",
+                    context.getString(R.string.boot_service_activated),
                     Toast.LENGTH_SHORT
                 ).show()
             }

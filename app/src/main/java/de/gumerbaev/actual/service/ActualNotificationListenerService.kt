@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.service
 
+import de.gumerbaev.actual.R
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -206,8 +208,8 @@ class ActualNotificationListenerService : NotificationListenerService() {
                     CHANNEL_TRANSACTIONS
                 )
                     .setSmallIcon(android.R.drawable.stat_notify_error)
-                    .setContentTitle("Failed to send transaction")
-                    .setContentText(result.errorMessage ?: "Unknown error")
+                    .setContentTitle(getString(R.string.notif_send_failed_title))
+                    .setContentText(result.error?.asString(this) ?: getString(R.string.unknown_error))
                     .setAutoCancel(true)
                     .build()
 
@@ -277,8 +279,8 @@ class ActualNotificationListenerService : NotificationListenerService() {
 
         val notification = NotificationCompat.Builder(this, CHANNEL_TRANSACTIONS)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Actual Budget: ${transaction.payee} ($amountDisplay)")
-            .setContentText("Account: ${transaction.account} | Date: ${transaction.date ?: "Today"}")
+            .setContentTitle(getString(R.string.notif_review_title, transaction.payee, amountDisplay))
+            .setContentText(getString(R.string.notif_review_text, transaction.account, transaction.date ?: getString(R.string.today)))
             .setStyle(
                 NotificationCompat.BigTextStyle()
                     .bigText("Payee: ${transaction.payee}\nAmount: $amountDisplay\nAccount: ${transaction.account}\nType: ${transaction.type}\nDate: ${transaction.date ?: "Today"}")
@@ -288,9 +290,9 @@ class ActualNotificationListenerService : NotificationListenerService() {
             .setAutoCancel(true)
             .setContentIntent(reviewPendingIntent)
             .setFullScreenIntent(reviewPendingIntent, false)
-            .addAction(android.R.drawable.ic_menu_send, "Send to Actual", sendPendingIntent)
-            .addAction(android.R.drawable.ic_menu_edit, "Review / Edit", reviewPendingIntent)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Discard", discardPendingIntent)
+            .addAction(android.R.drawable.ic_menu_send, getString(R.string.send_to_actual), sendPendingIntent)
+            .addAction(android.R.drawable.ic_menu_edit, getString(R.string.action_review_edit), reviewPendingIntent)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.discard), discardPendingIntent)
             .build()
 
         notificationManager.notify(notificationId, notification)
@@ -299,10 +301,10 @@ class ActualNotificationListenerService : NotificationListenerService() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_TRANSACTIONS,
-            "Actual Budget Transactions",
+            getString(R.string.channel_name),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Alerts for parsed transactions from notifications"
+            description = getString(R.string.channel_desc)
             enableVibration(true)
         }
         val notificationManager = getSystemService(NotificationManager::class.java)

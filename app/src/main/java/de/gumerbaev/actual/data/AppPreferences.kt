@@ -1,6 +1,7 @@
 package de.gumerbaev.actual.data
 
 import android.content.Context
+import de.gumerbaev.actual.R
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -9,7 +10,7 @@ import de.gumerbaev.actual.model.TransactionRecord
 import androidx.core.content.edit
 import de.gumerbaev.actual.model.ActualTransaction
 
-class AppPreferences(context: Context) {
+class AppPreferences(private val context: Context) {
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
@@ -51,18 +52,23 @@ class AppPreferences(context: Context) {
         get() = prefs.getBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, false)
         set(value) = prefs.edit { putBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, value) }
 
+    private fun localizedDefaultRules(): List<ParsingRule> = ParsingRule.createDefaultRules(
+        paymentRuleName = context.getString(R.string.default_rule_payment),
+        depositRuleName = context.getString(R.string.default_rule_deposit)
+    )
+
     fun getRules(): List<ParsingRule> {
         val json = prefs.getString(KEY_PARSING_RULES, null)
         if (json.isNullOrBlank()) {
-            val defaults = ParsingRule.createDefaultRules()
+            val defaults = localizedDefaultRules()
             saveRules(defaults)
             return defaults
         }
         return try {
             val type = object : TypeToken<List<ParsingRule>>() {}.type
-            gson.fromJson(json, type) ?: ParsingRule.createDefaultRules()
+            gson.fromJson(json, type) ?: localizedDefaultRules()
         } catch (_: Exception) {
-            ParsingRule.createDefaultRules()
+            localizedDefaultRules()
         }
     }
 

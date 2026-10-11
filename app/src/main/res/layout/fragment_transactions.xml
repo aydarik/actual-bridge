@@ -37,7 +37,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="TRANSACTION LOG"
+                        android:text="@string/transactions_log_header"
                         android:textColor="@color/primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -47,7 +47,7 @@
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Clear"
+                        android:text="@string/clear"
                         app:icon="@drawable/ic_delete" />
                 </LinearLayout>
 
@@ -58,7 +58,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:text="No transactions captured yet.\nIncoming bank notifications will appear here."
+                    android:text="@string/transactions_empty"
                     android:textColor="@color/text_muted"
                     android:textSize="13sp" />
 

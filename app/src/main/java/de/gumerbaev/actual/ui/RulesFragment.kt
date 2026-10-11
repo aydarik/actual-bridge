@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.ui
 
+import de.gumerbaev.actual.R
+
 import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -53,13 +55,13 @@ class RulesFragment : Fragment() {
             },
             onDelete = { rule ->
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Rule")
-                    .setMessage("Are you sure you want to delete '${rule.name}'?")
-                    .setPositiveButton("Delete") { _, _ ->
+                    .setTitle(getString(R.string.delete_rule_title))
+                    .setMessage(getString(R.string.delete_rule_message, rule.name))
+                    .setPositiveButton(R.string.delete) { _, _ ->
                         mainActivity.prefs.deleteRule(rule.id)
                         loadRules()
                     }
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(R.string.cancel, null)
                     .show()
             }
         )
@@ -150,7 +152,7 @@ class RulesFragment : Fragment() {
         if (_binding == null) return
         val rulesList = rules ?: mainActivity.prefs.getRules()
         val activeCount = rulesList.count { it.enabled }
-        binding.tvRulesCount.text = "$activeCount active of ${rulesList.size} rules"
+        binding.tvRulesCount.text = getString(R.string.rules_count, activeCount, rulesList.size)
     }
 
     fun onLocationPermissionDenied() {

@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.ui.adapter
 
+import de.gumerbaev.actual.R
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +26,7 @@ class RulesAdapter(
         val rule = rules[position]
         with(holder.binding) {
             tvRuleName.text = rule.name
-            tvTargetPackage.text = "App: ${if (rule.targetPackage.isBlank()) "*" else rule.targetPackage}"
+            tvTargetPackage.text = root.context.getString(R.string.rule_app, if (rule.targetPackage.isBlank()) "*" else rule.targetPackage)
             tvRegexPreview.text = rule.textRegex
             tvAccountBadge.text = if (rule.account.isNotBlank()) "${rule.account} • ${rule.defaultType}" else rule.defaultType
 

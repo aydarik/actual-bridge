@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test Notification Parser"
+            android:text="@string/test_title"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="12dp"
-            android:text="Paste sample notification details to test your rules"
+            android:text="@string/test_desc"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="13sp" />
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="Sample Payment"
+                android:text="@string/test_sample_payment"
                 android:textSize="11sp" />
 
             <com.google.android.material.button.MaterialButton
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:text="Sample Deposit"
+                android:text="@string/test_sample_deposit"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:hint="Notification Source Package">
+            android:hint="@string/test_source_package">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTestPackage"
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:hint="Notification Title">
+            android:hint="@string/test_notif_title">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTestTitle"
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Notification Text">
+            android:hint="@string/test_notif_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTestText"
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
-            android:text="Test Parsing"
+            android:text="@string/test_parse_btn"
             app:icon="@drawable/ic_search" />
 
         <!-- Result Box -->
@@ -124,7 +124,7 @@
                 android:id="@+id/tvTestStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Match Status"
+                android:text="@string/test_match_status"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -143,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Simulate Popup Dialog"
+                android:text="@string/test_simulate_popup"
                 app:icon="@drawable/ic_view" />
         </LinearLayout>
     </LinearLayout>

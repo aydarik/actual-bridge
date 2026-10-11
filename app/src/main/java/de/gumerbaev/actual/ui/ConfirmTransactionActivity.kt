@@ -47,7 +47,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         if (granted) {
             fetchLocation()
         } else {
-            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -63,7 +63,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
 
         if (transaction == null) {
-            Toast.makeText(this, "No transaction data provided", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_transaction_data), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -107,7 +107,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 prefs.updateHistoryRecord(id, TransactionRecord.STATUS_DISCARDED)
             }
             cancelNotification()
-            Toast.makeText(this, "Transaction discarded", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.transaction_discarded), Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -146,14 +146,14 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     }
 
     private fun fetchLocation() {
-        binding.tvLocationCoords.text = "Fetching current GPS coordinates..."
+        binding.tvLocationCoords.text = getString(R.string.fetching_gps)
         lifecycleScope.launch {
             val loc = LocationHelper.getLastLocation(this@ConfirmTransactionActivity)
             if (loc != null) {
                 currentLatitude = loc.latitude
                 currentLongitude = loc.longitude
             } else {
-                Toast.makeText(this@ConfirmTransactionActivity, "Could not obtain current location", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ConfirmTransactionActivity, getString(R.string.location_failed), Toast.LENGTH_SHORT).show()
             }
             updateLocationDisplay()
         }
@@ -161,16 +161,15 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
     private fun updateLocationDisplay() {
         if (currentLatitude != null && currentLongitude != null) {
-            binding.tvLocationCoords.text = String.format(
-                Locale.US,
-                "Lat: %.4f, Lon: %.4f",
-                currentLatitude,
-                currentLongitude
+            binding.tvLocationCoords.text = getString(
+                R.string.location_coords,
+                String.format(Locale.US, "%.4f", currentLatitude),
+                String.format(Locale.US, "%.4f", currentLongitude)
             )
-            binding.btnLocationAction.text = "Clear"
+            binding.btnLocationAction.text = getString(R.string.clear)
         } else {
-            binding.tvLocationCoords.text = "Location: Not attached"
-            binding.btnLocationAction.text = "Attach GPS"
+            binding.tvLocationCoords.text = getString(R.string.confirm_location_none)
+            binding.btnLocationAction.text = getString(R.string.confirm_attach_gps)
         }
     }
 
@@ -202,7 +201,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     private fun sendTransaction() {
         val account = binding.etAccount.text?.toString()?.trim() ?: ""
         if (account.isBlank()) {
-            binding.layoutAccount.error = "Account is required"
+            binding.layoutAccount.error = getString(R.string.account_required)
             return
         }
         binding.layoutAccount.error = null
@@ -210,7 +209,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         val amountStr = binding.etAmount.text?.toString()?.trim() ?: ""
         val parsedAmount = amountStr.toDoubleOrNull()
         if (parsedAmount == null) {
-            binding.layoutAmount.error = "Valid amount is required"
+            binding.layoutAmount.error = getString(R.string.amount_required)
             return
         }
         binding.layoutAmount.error = null
@@ -264,10 +263,10 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
                 binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_success)
                 binding.tvStatusMessage.setTextColor(getColor(R.color.secondary))
-                binding.tvStatusMessage.text = "Successfully sent to Actual Budget!"
+                binding.tvStatusMessage.text = getString(R.string.sent_success_status)
                 binding.tvStatusMessage.visibility = View.VISIBLE
 
-                Toast.makeText(this@ConfirmTransactionActivity, "Transaction posted successfully!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ConfirmTransactionActivity, getString(R.string.posted_success), Toast.LENGTH_SHORT).show()
                 delay(800.milliseconds)
                 finish()
             } else {
@@ -276,7 +275,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 }
                 binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_error)
                 binding.tvStatusMessage.setTextColor(getColor(R.color.danger))
-                binding.tvStatusMessage.text = "Send failed: ${result.errorMessage}"
+                binding.tvStatusMessage.text = getString(R.string.send_failed, result.error?.asString(this@ConfirmTransactionActivity).orEmpty())
                 binding.tvStatusMessage.visibility = View.VISIBLE
             }
         }

@@ -1,5 +1,7 @@
 package de.gumerbaev.actual.receiver
 
+import de.gumerbaev.actual.R
+
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -41,7 +43,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 if (recordId != null) {
                     prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_DISCARDED)
                 }
-                Toast.makeText(context, "Transaction discarded", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.transaction_discarded), Toast.LENGTH_SHORT).show()
             }
 
             ACTION_CONFIRM_SEND -> {
@@ -64,14 +66,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
                                     ActualNotificationListenerService.CHANNEL_TRANSACTIONS
                                 )
                                     .setSmallIcon(android.R.drawable.stat_sys_upload_done)
-                                    .setContentTitle("Transaction Sent to Actual")
-                                    .setContentText("${transaction.payee} (${transaction.amount}) sent to ${transaction.account}")
+                                    .setContentTitle(context.getString(R.string.notif_sent_title))
+                                    .setContentText(context.getString(R.string.notif_sent_text, transaction.payee, transaction.amount.toString(), transaction.account))
                                     .setAutoCancel(true)
                                     .setTimeoutAfter(4000)
                                     .build()
 
                                 notificationManager.notify(notificationId, sentNotification)
-                                Toast.makeText(context, "Transaction sent successfully!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.posted_success), Toast.LENGTH_SHORT).show()
                             } else {
                                 if (recordId != null) {
                                     prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_FAILED)
@@ -81,13 +83,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
                                     ActualNotificationListenerService.CHANNEL_TRANSACTIONS
                                 )
                                     .setSmallIcon(android.R.drawable.stat_notify_error)
-                                    .setContentTitle("Failed to send transaction")
-                                    .setContentText(result.errorMessage ?: "Unknown error")
+                                    .setContentTitle(context.getString(R.string.notif_send_failed_title))
+                                    .setContentText(result.error?.asString(context) ?: context.getString(R.string.unknown_error))
                                     .setAutoCancel(true)
                                     .build()
 
                                 notificationManager.notify(notificationId, errorNotification)
-                                Toast.makeText(context, "Send failed: ${result.errorMessage}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, context.getString(R.string.send_failed, result.error?.asString(context).orEmpty()), Toast.LENGTH_LONG).show()
                             }
                         } finally {
                             pendingResult.finish()
