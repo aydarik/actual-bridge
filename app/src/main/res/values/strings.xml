@@ -169,6 +169,43 @@
     <string name="update_open_release">View Release</string>
     <string name="update_changelog_header">\n\nChangelog:\n%1$s</string>
 
+    <string name="settings_backup_header">BACKUP &amp; RESTORE</string>
+    <string name="settings_backup_desc">Export or import your settings, parsing rules, and transaction history</string>
+    <string name="btn_create_backup">Create Backup</string>
+    <string name="btn_restore_backup">Restore Backup</string>
+    <string name="settings_last_backup">Last backup: %1$s</string>
+    <string name="settings_no_backup_yet">No backup created yet</string>
+
+    <string name="backup_dialog_title">Create Backup</string>
+    <string name="backup_dialog_desc">Select what to include in the backup file:</string>
+    <string name="backup_include_settings">Settings &amp; Parsing Rules</string>
+    <string name="backup_include_settings_desc">Server configuration, app options, and %1$d rules</string>
+    <string name="backup_include_transactions">Transaction History</string>
+    <string name="backup_include_transactions_desc">%1$d captured transactions</string>
+    <string name="backup_credentials_notice">Note: The backup file will contain your server URL and API token if settings are included.</string>
+    <string name="backup_export_btn">Export</string>
+    <string name="backup_success">Backup saved successfully</string>
+    <string name="backup_error">Failed to create backup: %1$s</string>
+
+    <string name="restore_dialog_title">Restore Backup</string>
+    <string name="restore_info_created">Backup created: %1$s</string>
+    <string name="restore_info_version">App version: %1$s</string>
+    <string name="restore_select_items">Select data to restore:</string>
+    <string name="restore_settings_title">Settings &amp; Parsing Rules</string>
+    <string name="restore_settings_desc">Replaces current configuration with %1$d rules from backup</string>
+    <string name="restore_transactions_title">Transaction History</string>
+    <string name="restore_transactions_desc">%1$d transactions available in backup</string>
+    <string name="restore_merge_title">Merge with current history</string>
+    <string name="restore_merge_desc">Preserve existing transactions and append unique entries</string>
+    <string name="restore_confirm_btn">Restore</string>
+    <string name="restore_success_title">Restore Completed</string>
+    <string name="restore_success_msg">Backup restored successfully.\n\n%1$s</string>
+    <string name="restore_summary_settings">• Settings updated (%1$d rules restored)</string>
+    <string name="restore_summary_transactions">• %1$d transactions restored</string>
+    <string name="restore_error_title">Restore Failed</string>
+    <string name="restore_error_invalid_file">The selected file is not a valid Actual Budget Bridge backup or is unreadable.\n\nError: %1$s</string>
+    <string name="restore_nothing_selected">Please select at least one item to restore.</string>
+
     <string-array name="language_codes" translatable="false">
         <item />
         <item>en</item>

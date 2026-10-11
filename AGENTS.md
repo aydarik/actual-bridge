@@ -44,9 +44,11 @@ ActualApp/
 │       │   ├── AndroidManifest.xml   # Manifest (permissions, services, receivers, activities)
 │       │   ├── java/de/gumerbaev/actual/
 │       │   │   ├── data/
-│       │   │   │   └── AppPreferences.kt               # SharedPreferences wrapper (settings, rules, history)
+│       │   │   │   ├── AppPreferences.kt               # SharedPreferences wrapper (settings, rules, history)
+│       │   │   │   └── BackupManager.kt                # Export and import manager for settings & transactions
 │       │   │   ├── model/
 │       │   │   │   ├── ActualTransaction.kt            # Transaction data model & JSON payload format
+│       │   │   │   ├── BackupData.kt                   # Schema model for backup & restore files
 │       │   │   │   ├── ParsingRule.kt                  # Regex rule model & default preset rules
 │       │   │   │   └── TransactionRecord.kt            # History log entry model & status enum
 │       │   │   ├── network/
@@ -105,6 +107,11 @@ ActualApp/
 - Sends transactions via HTTP `POST` to the configured Actual Tap server URL.
 - Auth header format: Supports `Bearer <token>` and `x-api-key: <token>`.
 - Payload format matches Actual Tap specifications defined in `ActualTransaction.toJson()`.
+
+### 4.4 Backup & Restore (`BackupManager`)
+- Exports and imports JSON backup files via Android Storage Access Framework (SAF).
+- Payload schema (`BackupData`) supports backing up settings (server configuration, preferences, parsing rules) and transaction history.
+- Restoring supports replacing or merging transaction records (deduplicated by UUID) and dynamically updates active fragments via `MainActivity.notifyDataRestored()`.
 
 ---
 

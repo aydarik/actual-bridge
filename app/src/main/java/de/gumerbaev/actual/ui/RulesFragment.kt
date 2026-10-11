@@ -116,7 +116,7 @@ class RulesFragment : Fragment() {
         }
     }
 
-    private fun loadAppSettings() {
+    fun loadAppSettings() {
         val prefs = mainActivity.prefs
         binding.switchAttachLocation.isChecked = prefs.attachLocation
         binding.switchAutoPopup.isChecked = prefs.autoPopup
