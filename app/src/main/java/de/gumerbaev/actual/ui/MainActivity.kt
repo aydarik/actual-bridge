@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         if (isGranted) {
             Toast.makeText(this, "Location permission granted", Toast.LENGTH_SHORT).show()
         } else {
-            notifySettingsFragmentLocationDenied()
+            notifyRulesFragmentLocationDenied()
             Toast.makeText(
                 this,
                 "Background location permission ('Allow all the time') is required to capture location when the app is not open",
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             }
         } else {
-            notifySettingsFragmentLocationDenied()
+            notifyRulesFragmentLocationDenied()
             Toast.makeText(
                 this,
                 "Location permission is required to attach GPS coordinates",
@@ -132,14 +132,16 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Transactions"
-                1 -> "Settings & Rules"
+                1 -> "Rules"
+                2 -> "Settings"
                 else -> ""
             }
         }.attach()
 
         // Conditional initial tab selection
+        val hasServerUrl = prefs.serverUrl.isNotEmpty()
         val hasTransactions = prefs.getHistory().isNotEmpty()
-        binding.viewPager.currentItem = if (hasTransactions) 0 else 1
+        binding.viewPager.currentItem = if (hasTransactions) 0 else if (hasServerUrl) 1 else 2
     }
 
     // --- Helper Accessors for Active Fragments ---
@@ -148,12 +150,16 @@ class MainActivity : AppCompatActivity() {
         return supportFragmentManager.findFragmentByTag("f0") as? TransactionsFragment
     }
 
-    fun getSettingsFragment(): SettingsFragment? {
-        return supportFragmentManager.findFragmentByTag("f1") as? SettingsFragment
+    fun getRulesFragment(): RulesFragment? {
+        return supportFragmentManager.findFragmentByTag("f1") as? RulesFragment
     }
 
-    private fun notifySettingsFragmentLocationDenied() {
-        getSettingsFragment()?.onLocationPermissionDenied()
+    fun getSettingsFragment(): SettingsFragment? {
+        return supportFragmentManager.findFragmentByTag("f2") as? SettingsFragment
+    }
+
+    private fun notifyRulesFragmentLocationDenied() {
+        getRulesFragment()?.onLocationPermissionDenied()
     }
 
     // --- Business & Navigation Logic Callbacks ---
@@ -325,12 +331,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private class MainPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> TransactionsFragment()
-                1 -> SettingsFragment()
+                1 -> RulesFragment()
+                2 -> SettingsFragment()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
         }

@@ -1,30 +1,23 @@
 package de.gumerbaev.actual.ui
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.databinding.FragmentSettingsBinding
-import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.service.ActualNotificationListenerService
-import de.gumerbaev.actual.ui.adapter.RulesAdapter
-import de.gumerbaev.actual.util.LocationHelper
 
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var rulesAdapter: RulesAdapter
     private val mainActivity: MainActivity
         get() = requireActivity() as MainActivity
 
@@ -40,10 +33,8 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
         loadSettings()
         setupListeners()
-        loadRules()
     }
 
     override fun onResume() {
@@ -51,31 +42,9 @@ class SettingsFragment : Fragment() {
         updatePermissionStatuses()
     }
 
-    private fun setupRecyclerView() {
-        rulesAdapter = RulesAdapter(
-            rules = mutableListOf(),
-            onToggleEnabled = { rule, isEnabled ->
-                rule.enabled = isEnabled
-                mainActivity.prefs.updateRule(rule)
-                countRules()
-            },
-            onEdit = { rule ->
-                mainActivity.showEditRuleDialog(rule) { loadRules() }
-            },
-            onDelete = { rule ->
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Rule")
-                    .setMessage("Are you sure you want to delete '${rule.name}'?")
-                    .setPositiveButton("Delete") { _, _ ->
-                        mainActivity.prefs.deleteRule(rule.id)
-                        loadRules()
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-        )
-        binding.rvRules.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvRules.adapter = rulesAdapter
+    override fun onPause() {
+        super.onPause()
+        saveServerSettings()
     }
 
     private fun setupListeners() {
@@ -93,42 +62,6 @@ class SettingsFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Switches
-        binding.switchAutoSend.setOnCheckedChangeListener { _, isChecked ->
-            mainActivity.prefs.autoSend = isChecked
-            updateAutoSendVisibility(isChecked)
-        }
-
-        binding.switchDismissNotification.setOnCheckedChangeListener { buttonView, isChecked ->
-            mainActivity.prefs.dismissOriginalNotification = isChecked
-            if (isChecked && !mainActivity.hasNotificationPermission()) {
-                mainActivity.requestNotificationPermission(buttonView)
-            }
-        }
-
-        binding.switchAutoPopup.setOnCheckedChangeListener { buttonView, isChecked ->
-            mainActivity.prefs.autoPopup = isChecked
-            if (isChecked && !mainActivity.hasNotificationPermission()) {
-                mainActivity.requestNotificationPermission(buttonView)
-            }
-        }
-
-        binding.switchAttachLocation.setOnCheckedChangeListener { _, isChecked ->
-            mainActivity.prefs.attachLocation = isChecked
-            if (isChecked) {
-                if (!LocationHelper.hasLocationPermission(requireContext())) {
-                    mainActivity.requestForegroundLocationLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                    )
-                } else if (!LocationHelper.hasBackgroundLocationPermission(requireContext())) {
-                    mainActivity.requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                }
-            }
-        }
-
         // Action Buttons
         binding.btnTestConnection.setOnClickListener {
             binding.btnTestConnection.isEnabled = false
@@ -140,14 +73,6 @@ class SettingsFragment : Fragment() {
                     binding.btnTestConnection.isEnabled = true
                 }
             }
-        }
-
-        binding.btnAddRule.setOnClickListener {
-            mainActivity.showEditRuleDialog(null) { loadRules() }
-        }
-
-        binding.btnTestRules.setOnClickListener {
-            mainActivity.showTestParserDialog()
         }
     }
 
@@ -185,46 +110,16 @@ class SettingsFragment : Fragment() {
         val prefs = mainActivity.prefs
         binding.etServerUrl.setText(prefs.serverUrl)
         binding.etApiToken.setText(prefs.apiToken)
-        binding.switchAttachLocation.isChecked = prefs.attachLocation
-        binding.switchAutoPopup.isChecked = prefs.autoPopup
-        binding.switchAutoSend.isChecked = prefs.autoSend
-        binding.switchDismissNotification.isChecked = prefs.dismissOriginalNotification
-        updateAutoSendVisibility(prefs.autoSend)
     }
 
-    private fun updateAutoSendVisibility(autoSendEnabled: Boolean) {
-        if (autoSendEnabled) {
-            binding.layoutAutoPopup.visibility = View.GONE
-            binding.switchAutoPopup.isEnabled = false
-
-            binding.layoutDismissNotification.visibility = View.VISIBLE
-            binding.switchDismissNotification.isEnabled = true
-        } else {
-            binding.layoutAutoPopup.visibility = View.VISIBLE
-            binding.switchAutoPopup.isEnabled = true
-
-            binding.layoutDismissNotification.visibility = View.GONE
-            binding.switchDismissNotification.isEnabled = false
-        }
-    }
-
-    fun loadRules() {
-        if (_binding == null) return
-        val rules = mainActivity.prefs.getRules()
-        rulesAdapter.updateData(rules)
-        countRules(rules)
-    }
-
-    fun countRules(rules: List<ParsingRule>? = null) {
-        if (_binding == null) return
-        val rules = rules ?: mainActivity.prefs.getRules()
-        val activeCount = rules.count { it.enabled }
-        binding.tvRulesCount.text = "$activeCount active of ${rules.size} rules"
-    }
-
-    fun onLocationPermissionDenied() {
+    private fun saveServerSettings() {
         if (_binding != null) {
-            binding.switchAttachLocation.isChecked = false
+            val url = binding.etServerUrl.text?.toString()?.trim() ?: ""
+            val token = binding.etApiToken.text?.toString()?.trim() ?: ""
+            if (url.isNotEmpty()) {
+                mainActivity.prefs.serverUrl = url
+            }
+            mainActivity.prefs.apiToken = token
         }
     }
 

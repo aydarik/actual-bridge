@@ -28,7 +28,7 @@ class AppPreferences(context: Context) {
     }
 
     var serverUrl: String
-        get() = prefs.getString(KEY_SERVER_URL, "http://10.0.2.2:5006/transaction") ?: "http://10.0.2.2:5006/transaction"
+        get() = prefs.getString(KEY_SERVER_URL, "") ?: ""
         set(value) = prefs.edit { putString(KEY_SERVER_URL, value.trim()) }
 
     var apiToken: String
