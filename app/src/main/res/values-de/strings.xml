@@ -166,4 +166,41 @@
     <string name="update_download_apk">APK herunterladen</string>
     <string name="update_open_release">Release anzeigen</string>
     <string name="update_changelog_header">\n\nÄnderungsprotokoll:\n%1$s</string>
+
+    <string name="settings_backup_header">SICHERUNG &amp; WIEDERHERSTELLUNG</string>
+    <string name="settings_backup_desc">Einstellungen, Parsing-Regeln und Transaktionsverlauf exportieren oder importieren</string>
+    <string name="btn_create_backup">Sicherung erstellen</string>
+    <string name="btn_restore_backup">Sicherung wiederherstellen</string>
+    <string name="settings_last_backup">Letzte Sicherung: %1$s</string>
+    <string name="settings_no_backup_yet">Noch keine Sicherung erstellt</string>
+
+    <string name="backup_dialog_title">Sicherung erstellen</string>
+    <string name="backup_dialog_desc">Wählen Sie aus, was in der Sicherungsdatei enthalten sein soll:</string>
+    <string name="backup_include_settings">Einstellungen &amp; Parsing-Regeln</string>
+    <string name="backup_include_settings_desc">Serverkonfiguration, App-Optionen und %1$d Regeln</string>
+    <string name="backup_include_transactions">Transaktionsverlauf</string>
+    <string name="backup_include_transactions_desc">%1$d erfasste Transaktionen</string>
+    <string name="backup_credentials_notice">Hinweis: Die Sicherungsdatei enthält Ihre Server-URL und Ihr API-Token, wenn die Einstellungen ausgewählt sind.</string>
+    <string name="backup_export_btn">Exportieren</string>
+    <string name="backup_success">Sicherung erfolgreich gespeichert</string>
+    <string name="backup_error">Sicherung konnte nicht erstellt werden: %1$s</string>
+
+    <string name="restore_dialog_title">Sicherung wiederherstellen</string>
+    <string name="restore_info_created">Sicherung erstellt: %1$s</string>
+    <string name="restore_info_version">App-Version: %1$s</string>
+    <string name="restore_select_items">Wiederherzustellende Daten auswählen:</string>
+    <string name="restore_settings_title">Einstellungen &amp; Parsing-Regeln</string>
+    <string name="restore_settings_desc">Ersetzt die aktuelle Konfiguration durch %1$d Regeln aus der Sicherung</string>
+    <string name="restore_transactions_title">Transaktionsverlauf</string>
+    <string name="restore_transactions_desc">%1$d Transaktionen in der Sicherung verfügbar</string>
+    <string name="restore_merge_title">Mit aktuellem Verlauf zusammenführen</string>
+    <string name="restore_merge_desc">Vorhandene Transaktionen beibehalten und eindeutige Einträge hinzufügen</string>
+    <string name="restore_confirm_btn">Wiederherstellen</string>
+    <string name="restore_success_title">Wiederherstellung abgeschlossen</string>
+    <string name="restore_success_msg">Sicherung erfolgreich wiederhergestellt.\n\n%1$s</string>
+    <string name="restore_summary_settings">• Einstellungen aktualisiert (%1$d Regeln wiederhergestellt)</string>
+    <string name="restore_summary_transactions">• %1$d Transaktionen wiederhergestellt</string>
+    <string name="restore_error_title">Wiederherstellung fehlgeschlagen</string>
+    <string name="restore_error_invalid_file">Die ausgewählte Datei ist keine gültige Sicherungsdatei von Actual Budget Bridge oder kann nicht gelesen werden.\n\nFehler: %1$s</string>
+    <string name="restore_nothing_selected">Bitte wählen Sie mindestens ein Element zur Wiederherstellung aus.</string>
 </resources>

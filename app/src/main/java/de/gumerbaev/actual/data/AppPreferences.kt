@@ -9,6 +9,7 @@ import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.model.TransactionRecord
 import androidx.core.content.edit
 import de.gumerbaev.actual.model.ActualTransaction
+import de.gumerbaev.actual.model.AppSettingsBackup
 
 class AppPreferences(private val context: Context) {
 
@@ -25,7 +26,8 @@ class AppPreferences(private val context: Context) {
         private const val KEY_DISMISS_ORIGINAL_NOTIFICATION = "dismiss_original_notification"
         private const val KEY_PARSING_RULES = "parsing_rules"
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
-        private const val MAX_HISTORY_SIZE = 100
+        private const val KEY_LAST_BACKUP_TIMESTAMP = "last_backup_timestamp"
+        const val MAX_HISTORY_SIZE = 100
     }
 
     var serverUrl: String
@@ -134,5 +136,34 @@ class AppPreferences(private val context: Context) {
 
     fun clearHistory() {
         prefs.edit { remove(KEY_TRANSACTION_HISTORY) }
+    }
+
+    var lastBackupTimestamp: Long
+        get() = prefs.getLong(KEY_LAST_BACKUP_TIMESTAMP, 0L)
+        set(value) = prefs.edit { putLong(KEY_LAST_BACKUP_TIMESTAMP, value) }
+
+    fun restoreSettings(backup: AppSettingsBackup) {
+        serverUrl = backup.serverUrl
+        apiToken = backup.apiToken
+        attachLocation = backup.attachLocation
+        autoPopup = backup.autoPopup
+        autoSend = backup.autoSend
+        dismissOriginalNotification = backup.dismissOriginalNotification
+        saveRules(backup.parsingRules)
+    }
+
+    fun restoreTransactions(records: List<TransactionRecord>, merge: Boolean) {
+        val finalRecords = if (merge) {
+            val existing = getHistory()
+            val existingIds = existing.map { it.id }.toSet()
+            val newUnique = records.filter { it.id !in existingIds }
+            val combined = (existing + newUnique).sortedByDescending { it.timestamp }
+            if (combined.size > MAX_HISTORY_SIZE) combined.take(MAX_HISTORY_SIZE) else combined
+        } else {
+            val sorted = records.sortedByDescending { it.timestamp }
+            if (sorted.size > MAX_HISTORY_SIZE) sorted.take(MAX_HISTORY_SIZE) else sorted
+        }
+        val json = gson.toJson(finalRecords)
+        prefs.edit { putString(KEY_TRANSACTION_HISTORY, json) }
     }
 }

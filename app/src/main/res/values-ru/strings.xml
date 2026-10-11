@@ -87,7 +87,7 @@
     <string name="rules_auto_send">Отправлять автоматически 🚀</string>
     <string name="rules_auto_send_desc">Отправлять разобранные транзакции без подтверждения</string>
     <string name="rules_dismiss">Скрывать банковское уведомление и показывать статус</string>
-    <string name="rules_dismiss_desc">Заменить уведомление банка и статусом из приложения</string>
+    <string name="rules_dismiss_desc">Заменить уведомление банка статусом из приложения</string>
     <string name="rules_auto_popup">Автоматически показывать окно поверх приложений</string>
     <string name="rules_auto_popup_desc">Показывать окно сразу после разбора</string>
     <string name="rules_attach_gps">Добавлять GPS-координаты к транзакциям</string>
@@ -166,4 +166,41 @@
     <string name="update_download_apk">Скачать APK</string>
     <string name="update_open_release">Открыть релиз</string>
     <string name="update_changelog_header">\n\nСписок изменений:\n%1$s</string>
+
+    <string name="settings_backup_header">РЕЗЕРВНОЕ КОПИРОВАНИЕ И ВОССТАНОВЛЕНИЕ</string>
+    <string name="settings_backup_desc">Экспорт и импорт настроек, правил разбора и журнала транзакций</string>
+    <string name="btn_create_backup">Создать резервную копию</string>
+    <string name="btn_restore_backup">Восстановить из копии</string>
+    <string name="settings_last_backup">Последняя копия: %1$s</string>
+    <string name="settings_no_backup_yet">Резервная копия ещё не создавалась</string>
+
+    <string name="backup_dialog_title">Создание резервной копии</string>
+    <string name="backup_dialog_desc">Выберите данные для включения в резервную копию:</string>
+    <string name="backup_include_settings">Настройки и правила разбора</string>
+    <string name="backup_include_settings_desc">Конфигурация сервера, параметры приложения и %1$d правил</string>
+    <string name="backup_include_transactions">Журнал транзакций</string>
+    <string name="backup_include_transactions_desc">%1$d сохранённых транзакций</string>
+    <string name="backup_credentials_notice">Примечание: файл резервной копии будет содержать URL сервера и токен API, если выбраны настройки.</string>
+    <string name="backup_export_btn">Экспорт</string>
+    <string name="backup_success">Резервная копия успешно сохранена</string>
+    <string name="backup_error">Не удалось создать резервную копию: %1$s</string>
+
+    <string name="restore_dialog_title">Восстановление из копии</string>
+    <string name="restore_info_created">Создано: %1$s</string>
+    <string name="restore_info_version">Версия приложения: %1$s</string>
+    <string name="restore_select_items">Выберите данные для восстановления:</string>
+    <string name="restore_settings_title">Настройки и правила разбора</string>
+    <string name="restore_settings_desc">Заменяет текущие настройки и загружает %1$d правил из копии</string>
+    <string name="restore_transactions_title">Журнал транзакций</string>
+    <string name="restore_transactions_desc">В копии доступно %1$d транзакций</string>
+    <string name="restore_merge_title">Объединить с текущим журналом</string>
+    <string name="restore_merge_desc">Сохранить текущие транзакции и добавить новые без дубликатов</string>
+    <string name="restore_confirm_btn">Восстановить</string>
+    <string name="restore_success_title">Восстановление завершено</string>
+    <string name="restore_success_msg">Резервная копия успешно восстановлена.\n\n%1$s</string>
+    <string name="restore_summary_settings">• Настройки обновлены (восстановлено правил: %1$d)</string>
+    <string name="restore_summary_transactions">• Восстановлено транзакций: %1$d</string>
+    <string name="restore_error_title">Ошибка восстановления</string>
+    <string name="restore_error_invalid_file">Выбранный файл не является корректной резервной копией Actual Budget Bridge или повреждён.\n\nОшибка: %1$s</string>
+    <string name="restore_nothing_selected">Выберите хотя бы один пункт для восстановления.</string>
 </resources>

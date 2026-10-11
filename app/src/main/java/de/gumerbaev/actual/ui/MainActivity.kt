@@ -159,6 +159,15 @@ class MainActivity : AppCompatActivity() {
         return supportFragmentManager.findFragmentByTag("f2") as? SettingsFragment
     }
 
+    fun notifyDataRestored() {
+        getSettingsFragment()?.loadSettings()
+        getRulesFragment()?.let {
+            it.loadAppSettings()
+            it.loadRules()
+        }
+        getTransactionsFragment()?.loadHistory()
+    }
+
     private fun notifyRulesFragmentLocationDenied() {
         getRulesFragment()?.onLocationPermissionDenied()
     }
