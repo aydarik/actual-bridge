@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.databinding.ItemHistoryBinding
+import de.gumerbaev.actual.databinding.ItemMonthHeaderBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
 import java.text.SimpleDateFormat
@@ -14,23 +15,65 @@ import java.util.*
 import kotlin.math.abs
 
 class HistoryAdapter(
-    private var records: MutableList<TransactionRecord>,
+    records: MutableList<TransactionRecord>,
     private val onResend: (TransactionRecord) -> Unit
-) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    class HistoryViewHolder(val binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        val binding = ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HistoryViewHolder(binding)
+    private sealed class Row {
+        data class Header(val title: String, val spend: Double) : Row()
+        data class Item(val record: TransactionRecord) : Row()
     }
 
-    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        val record = records[position]
-        val tx = record.transaction
-        val context = holder.itemView.context
+    private var rows: List<Row> = buildRows(records)
 
-        with(holder.binding) {
+    class HistoryViewHolder(val binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)
+    class HeaderViewHolder(val binding: ItemMonthHeaderBinding) : RecyclerView.ViewHolder(binding.root)
+
+    private fun buildRows(records: List<TransactionRecord>): List<Row> {
+        val monthFormat = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
+        val result = mutableListOf<Row>()
+        records.sortedByDescending { it.timestamp }
+            .groupBy { monthFormat.format(Date(it.timestamp)) }
+            .forEach { (title, group) ->
+                val spend = group
+                    .filter { it.status != TransactionRecord.STATUS_DISCARDED }
+                    .map { it.transaction }
+                    .filter { it.type != ActualTransaction.TYPE_DEPOSIT }
+                    .sumOf { abs(it.amount ?: 0.0) }
+                result.add(Row.Header(title.replaceFirstChar { it.uppercase() }, spend))
+                group.forEach { result.add(Row.Item(it)) }
+            }
+        return result
+    }
+
+    override fun getItemViewType(position: Int): Int =
+        if (rows[position] is Row.Header) VIEW_TYPE_HEADER else VIEW_TYPE_ITEM
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == VIEW_TYPE_HEADER) {
+            HeaderViewHolder(ItemMonthHeaderBinding.inflate(inflater, parent, false))
+        } else {
+            HistoryViewHolder(ItemHistoryBinding.inflate(inflater, parent, false))
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val row = rows[position]) {
+            is Row.Header -> {
+                val header = (holder as HeaderViewHolder).binding
+                header.tvMonthTitle.text = row.title
+                header.tvMonthSpend.text = "Spent: %.2f".format(Locale.US, row.spend)
+            }
+            is Row.Item -> bindItem((holder as HistoryViewHolder).binding, row.record)
+        }
+    }
+
+    private fun bindItem(binding: ItemHistoryBinding, record: TransactionRecord) {
+        val tx = record.transaction
+        val context = binding.root.context
+
+        with(binding) {
             tvHistoryPayee.text = tx.payee
             tvHistoryLocationIndicator.visibility =
                 if (tx.latitude != null && tx.longitude != null) View.VISIBLE else View.GONE
@@ -87,11 +130,15 @@ class HistoryAdapter(
         }
     }
 
-    override fun getItemCount(): Int = records.size
+    override fun getItemCount(): Int = rows.size
 
     fun updateData(newRecords: List<TransactionRecord>) {
-        records.clear()
-        records.addAll(newRecords)
+        rows = buildRows(newRecords)
         notifyDataSetChanged()
+    }
+
+    companion object {
+        private const val VIEW_TYPE_HEADER = 0
+        private const val VIEW_TYPE_ITEM = 1
     }
 }

@@ -192,7 +192,7 @@ class ActualNotificationListenerService : NotificationListenerService() {
                 )
                     .setSmallIcon(android.R.drawable.stat_sys_upload_done)
                     .setContentTitle(transaction.payee)
-                    .setContentText("$amountDisplay | ${transaction.account}")
+                    .setContentText("$amountDisplay • ${transaction.account}")
                     .setAutoCancel(true)
                     .build()
 
