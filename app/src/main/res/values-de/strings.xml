@@ -6,7 +6,7 @@
     <string name="settings_perm_header">SYSTEMBERECHTIGUNGEN</string>
     <string name="settings_perm_desc">Erforderlich, um Benachrichtigungen zu erkennen und Popups anzuzeigen</string>
     <string name="settings_notif_access">Benachrichtigungszugriff</string>
-    <string name="settings_notif_disabled_short">Deaktiviert – zum Aktivieren tippen</string>
+    <string name="settings_notif_disabled_short">Deaktiviert - zum Aktivieren tippen</string>
     <string name="settings_configure">Konfigurieren</string>
     <string name="settings_overlay_title">Über anderen Apps anzeigen</string>
     <string name="settings_overlay_desc">Erforderlich für sofortige Popup-Dialoge</string>
@@ -20,10 +20,10 @@
     <string name="settings_language_desc">Sprache der App auswählen</string>
     <string name="settings_language_label">App-Sprache</string>
     <string name="language_system">Systemstandard</string>
-    <string name="settings_notif_active">Aktiv – Benachrichtigungen werden überwacht</string>
-    <string name="settings_notif_disabled">Deaktiviert – in den Einstellungen aktivieren</string>
-    <string name="settings_overlay_active">Aktiv – Popups erscheinen über anderen Apps</string>
-    <string name="settings_overlay_disabled">Deaktiviert – zum Aktivieren des Popup-Overlays tippen</string>
+    <string name="settings_notif_active">Aktiv - Benachrichtigungen werden überwacht</string>
+    <string name="settings_notif_disabled">Deaktiviert - in den Einstellungen aktivieren</string>
+    <string name="settings_overlay_active">Aktiv - Popups erscheinen über anderen Apps</string>
+    <string name="settings_overlay_disabled">Deaktiviert - zum Aktivieren des Popup-Overlays tippen</string>
     <string name="granted">Erteilt</string>
     <string name="grant">Erteilen</string>
     <string name="history_coords_recorded">Koordinaten aufgezeichnet</string>
@@ -72,7 +72,7 @@
     <string name="location_permission_denied">Standortberechtigung verweigert</string>
     <string name="no_transaction_data">Keine Transaktionsdaten vorhanden</string>
     <string name="transaction_discarded">Transaktion verworfen</string>
-    <string name="fetching_gps">Aktuelle GPS-Koordinaten werden abgerufen...</string>
+    <string name="fetching_gps">Aktuelle GPS-Koordinaten werden abgerufen…</string>
     <string name="location_failed">Aktueller Standort konnte nicht ermittelt werden</string>
     <string name="location_coords">Breite: %1$s, Länge: %2$s</string>
     <string name="account_required">Konto ist erforderlich</string>

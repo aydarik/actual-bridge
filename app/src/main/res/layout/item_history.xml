@@ -38,7 +38,6 @@
                         android:id="@+id/tvHistoryPayee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Starbucks"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -49,7 +48,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:contentDescription="@string/history_coords_recorded"
-                        android:text="📍"
                         android:textSize="13sp"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -59,7 +57,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Checking • 2026-07-01"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -68,7 +65,6 @@
                 android:id="@+id/tvHistoryAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-10.50"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -103,7 +99,6 @@
                 android:layout_weight="1"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="from com.bank.app"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
 

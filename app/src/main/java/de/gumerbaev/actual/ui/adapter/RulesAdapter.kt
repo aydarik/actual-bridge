@@ -1,5 +1,6 @@
 package de.gumerbaev.actual.ui.adapter
 
+import android.annotation.SuppressLint
 import de.gumerbaev.actual.R
 
 import android.view.LayoutInflater
@@ -44,6 +45,7 @@ class RulesAdapter(
 
     override fun getItemCount(): Int = rules.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newRules: List<ParsingRule>) {
         rules.clear()
         rules.addAll(newRules)

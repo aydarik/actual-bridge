@@ -1,6 +1,7 @@
 package de.gumerbaev.actual.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -268,6 +269,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    @SuppressLint("SetTextI18n")
     fun showTestParserDialog() {
         val dialogBinding = DialogTestParserBinding.inflate(LayoutInflater.from(this))
         var lastParsedTransaction: ActualTransaction? = null

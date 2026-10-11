@@ -8,7 +8,7 @@ import androidx.annotation.StringRes
  * so it always uses the currently selected app language.
  */
 sealed class UiText {
-    data class Res(@StringRes val resId: Int, val args: List<Any> = emptyList()) : UiText()
+    data class Res(@param:StringRes val resId: Int, val args: List<Any> = emptyList()) : UiText()
     data class Raw(val value: String) : UiText()
 
     fun asString(context: Context): String = when (this) {

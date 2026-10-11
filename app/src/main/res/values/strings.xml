@@ -73,7 +73,7 @@
     <string name="location_permission_denied">Location permission denied</string>
     <string name="no_transaction_data">No transaction data provided</string>
     <string name="transaction_discarded">Transaction discarded</string>
-    <string name="fetching_gps">Fetching current GPS coordinates...</string>
+    <string name="fetching_gps">Fetching current GPS coordinates…</string>
     <string name="location_failed">Could not obtain current location</string>
     <string name="location_coords">Lat: %1$s, Lon: %2$s</string>
     <string name="account_required">Account is required</string>
@@ -154,7 +154,7 @@
     <string name="default_rule_deposit">Income / Deposit (e.g., \'Received $150.00 from Employer\')</string>
 
     <string-array name="language_codes" translatable="false">
-        <item></item>
+        <item />
         <item>en</item>
         <item>de</item>
         <item>ru</item>

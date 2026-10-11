@@ -56,8 +56,7 @@
                 android:id="@+id/etTargetPackage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textUri"
-                android:text="*" />
+                android:inputType="textUri" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Title Regex -->
@@ -114,8 +113,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAmountGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="amount" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -129,8 +127,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPayeeGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="payee" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -153,8 +150,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAccount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Checking" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -169,8 +165,7 @@
                     android:id="@+id/actvDefaultType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:text="payment" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

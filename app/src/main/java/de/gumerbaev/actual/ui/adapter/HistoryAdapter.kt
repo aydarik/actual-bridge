@@ -1,5 +1,6 @@
 package de.gumerbaev.actual.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,7 @@ class HistoryAdapter(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindItem(binding: ItemHistoryBinding, record: TransactionRecord) {
         val tx = record.transaction
         val context = binding.root.context

@@ -42,7 +42,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="App: *"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -61,7 +60,6 @@
             android:background="@drawable/bg_rounded_light"
             android:fontFamily="monospace"
             android:padding="8dp"
-            android:text="regex pattern..."
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="11sp" />
 
@@ -81,7 +79,6 @@
                 android:paddingTop="2dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="2dp"
-                android:text="Checking"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
