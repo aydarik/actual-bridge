@@ -207,8 +207,9 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -236,18 +237,15 @@
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="13sp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                <Spinner
+                    android:id="@+id/spinnerLanguage"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/settings_language_label">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actvLanguage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_spinner"
+                    android:contentDescription="@string/settings_language_label"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="44dp"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -255,7 +253,6 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="20dp"

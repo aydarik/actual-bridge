@@ -6,8 +6,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Filter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -134,38 +134,35 @@ class SettingsFragment : Fragment() {
             "Deutsch",
             "Русский"
         )
-        // The adapter ignores filtering so the full list stays visible after a selection.
-        binding.actvLanguage.setAdapter(
-            object : ArrayAdapter<String>(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                labels
-            ) {
-                override fun getFilter(): Filter = object : Filter() {
-                    override fun performFiltering(constraint: CharSequence?) =
-                        FilterResults().apply {
-                            values = labels
-                            count = labels.size
-                        }
 
-                    override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                        notifyDataSetChanged()
-                    }
-                }
-            }
-        )
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.item_spinner_selected,
+            labels
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerLanguage.adapter = adapter
 
         val current = AppCompatDelegate.getApplicationLocales()
         val currentCode = if (current.isEmpty) "" else current[0]?.language.orEmpty()
         val currentIndex = codes.indexOf(currentCode).takeIf { it >= 0 } ?: 0
-        binding.actvLanguage.setText(labels[currentIndex], false)
+        binding.spinnerLanguage.setSelection(currentIndex, false)
 
-        binding.actvLanguage.setOnItemClickListener { _, _, position, _ ->
-            if (position == currentIndex) return@setOnItemClickListener
-            // An empty list restores the system language (English is the resource fallback).
-            AppCompatDelegate.setApplicationLocales(
-                LocaleListCompat.forLanguageTags(codes[position])
-            )
+        binding.spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCode = codes[position]
+                val activeLocales = AppCompatDelegate.getApplicationLocales()
+                val activeCode = if (activeLocales.isEmpty) "" else activeLocales[0]?.language.orEmpty()
+                if (selectedCode != activeCode) {
+                    // An empty list restores the system language (English is the resource fallback).
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(selectedCode)
+                    )
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
