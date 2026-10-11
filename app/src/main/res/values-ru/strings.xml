@@ -150,4 +150,20 @@
     <string name="err_server_http">Сервер вернул HTTP %1$d: %2$s</string>
     <string name="default_rule_payment">Обычный платёж картой (напр. «Paid $12.50 at Starbucks»)</string>
     <string name="default_rule_deposit">Доход / пополнение (напр. «Received $150.00 from Employer»)</string>
+
+    <string name="settings_about_header">ОБНОВЛЕНИЯ</string>
+    <string name="settings_about_desc">Проверка новых версий и управление обновлениями</string>
+    <string name="settings_app_version">Версия %1$s</string>
+    <string name="settings_check_update">Проверить обновления</string>
+    <string name="settings_checking_updates">Проверка обновлений…</string>
+    <string name="settings_view_releases">Релизы на GitHub</string>
+    <string name="update_available_title">Доступно обновление</string>
+    <string name="update_available_msg">Доступна новая версия Actual Budget Bridge.\n\nТекущая: %1$s\nНовая: %2$s</string>
+    <string name="update_latest_title">Обновлений не требуется</string>
+    <string name="update_latest_msg">Вы уже используете самую последнюю версию (%1$s).</string>
+    <string name="update_check_failed_title">Не удалось проверить обновления</string>
+    <string name="update_check_failed_msg">Не удалось получить данные о релизах с GitHub: %1$s\n\nОткрыть страницу релизов в браузере?</string>
+    <string name="update_download_apk">Скачать APK</string>
+    <string name="update_open_release">Открыть релиз</string>
+    <string name="update_changelog_header">\n\nСписок изменений:\n%1$s</string>
 </resources>

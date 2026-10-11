@@ -150,4 +150,20 @@
     <string name="err_server_http">Server hat HTTP %1$d zurückgegeben: %2$s</string>
     <string name="default_rule_payment">Standard-Kartenzahlung (z. B. \'Paid $12.50 at Starbucks\')</string>
     <string name="default_rule_deposit">Einnahme / Einzahlung (z. B. \'Received $150.00 from Employer\')</string>
+
+    <string name="settings_about_header">UPDATES</string>
+    <string name="settings_about_desc">Nach neuen Versionen suchen und Updates verwalten</string>
+    <string name="settings_app_version">Version %1$s</string>
+    <string name="settings_check_update">Nach Updates suchen</string>
+    <string name="settings_checking_updates">Suche nach Updates…</string>
+    <string name="settings_view_releases">GitHub-Releases</string>
+    <string name="update_available_title">Update verfügbar</string>
+    <string name="update_available_msg">Eine neue Version von Actual Budget Bridge ist verfügbar.\n\nAktuell: %1$s\nNeueste: %2$s</string>
+    <string name="update_latest_title">Auf dem neuesten Stand</string>
+    <string name="update_latest_msg">Sie verwenden bereits die neueste Version (%1$s).</string>
+    <string name="update_check_failed_title">Update-Prüfung fehlgeschlagen</string>
+    <string name="update_check_failed_msg">Release-Informationen konnten nicht von GitHub abgerufen werden: %1$s\n\nMöchten Sie die Release-Seite im Browser öffnen?</string>
+    <string name="update_download_apk">APK herunterladen</string>
+    <string name="update_open_release">Release anzeigen</string>
+    <string name="update_changelog_header">\n\nÄnderungsprotokoll:\n%1$s</string>
 </resources>

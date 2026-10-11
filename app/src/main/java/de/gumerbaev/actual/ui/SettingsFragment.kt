@@ -8,14 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import de.gumerbaev.actual.BuildConfig
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.databinding.FragmentSettingsBinding
+import de.gumerbaev.actual.network.UpdateChecker
 import de.gumerbaev.actual.service.ActualNotificationListenerService
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
 
@@ -78,6 +84,15 @@ class SettingsFragment : Fragment() {
                     binding.btnTestConnection.isEnabled = true
                 }
             }
+        }
+
+        // Version & Updates
+        binding.btnCheckUpdate.setOnClickListener {
+            checkForAppUpdates()
+        }
+
+        binding.btnViewReleases.setOnClickListener {
+            openUrl(UpdateChecker.RELEASES_WEB_URL)
         }
     }
 
@@ -158,6 +173,88 @@ class SettingsFragment : Fragment() {
         val prefs = mainActivity.prefs
         binding.etServerUrl.setText(prefs.serverUrl)
         binding.etApiToken.setText(prefs.apiToken)
+        binding.tvAppVersion.text = getString(R.string.settings_app_version, BuildConfig.VERSION_NAME)
+    }
+
+    private fun checkForAppUpdates() {
+        binding.btnCheckUpdate.isEnabled = false
+        binding.btnCheckUpdate.text = getString(R.string.settings_checking_updates)
+        binding.progressCheckUpdate.visibility = View.VISIBLE
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = UpdateChecker.checkForUpdates(BuildConfig.VERSION_NAME)
+            if (_binding == null) return@launch
+
+            binding.progressCheckUpdate.visibility = View.GONE
+            binding.btnCheckUpdate.isEnabled = true
+            binding.btnCheckUpdate.text = getString(R.string.settings_check_update)
+
+            handleUpdateResult(result)
+        }
+    }
+
+    private fun handleUpdateResult(result: UpdateChecker.CheckResult) {
+        val context = context ?: return
+        when (result) {
+            is UpdateChecker.CheckResult.NewUpdate -> {
+                val messageBuilder = StringBuilder()
+                messageBuilder.append(
+                    getString(R.string.update_available_msg, result.currentVersion, result.release.tagName)
+                )
+                if (!result.release.body.isNullOrBlank()) {
+                    messageBuilder.append(
+                        getString(R.string.update_changelog_header, result.release.body.trim())
+                    )
+                }
+
+                val hasApk = result.release.apkDownloadUrl != null
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.update_available_title)
+                    .setMessage(messageBuilder.toString())
+                    .setPositiveButton(if (hasApk) R.string.update_download_apk else R.string.update_open_release) { _, _ ->
+                        val targetUrl = result.release.apkDownloadUrl ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
+                        openUrl(targetUrl)
+                    }
+                    .setNeutralButton(R.string.settings_view_releases) { _, _ ->
+                        openUrl(UpdateChecker.RELEASES_WEB_URL)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            }
+            is UpdateChecker.CheckResult.UpToDate -> {
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.update_latest_title)
+                    .setMessage(getString(R.string.update_latest_msg, result.currentVersion))
+                    .setPositiveButton(R.string.ok, null)
+                    .setNeutralButton(R.string.settings_view_releases) { _, _ ->
+                        openUrl(UpdateChecker.RELEASES_WEB_URL)
+                    }
+                    .show()
+            }
+            is UpdateChecker.CheckResult.Error -> {
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.update_check_failed_title)
+                    .setMessage(getString(R.string.update_check_failed_msg, result.error.asString(context)))
+                    .setPositiveButton(R.string.settings_view_releases) { _, _ ->
+                        openUrl(UpdateChecker.RELEASES_WEB_URL)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            }
+        }
+    }
+
+    private fun openUrl(url: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                e.localizedMessage ?: getString(R.string.unknown_error),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun saveServerSettings() {

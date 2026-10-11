@@ -153,6 +153,22 @@
     <string name="default_rule_payment">Standard Card Payment (e.g., \'Paid $12.50 at Starbucks\')</string>
     <string name="default_rule_deposit">Income / Deposit (e.g., \'Received $150.00 from Employer\')</string>
 
+    <string name="settings_about_header">UPDATES</string>
+    <string name="settings_about_desc">Check for new releases and manage updates</string>
+    <string name="settings_app_version">Version %1$s</string>
+    <string name="settings_check_update">Check for Updates</string>
+    <string name="settings_checking_updates">Checking for updates…</string>
+    <string name="settings_view_releases">GitHub Releases</string>
+    <string name="update_available_title">Update Available</string>
+    <string name="update_available_msg">A new version of Actual Budget Bridge is available.\n\nCurrent: %1$s\nLatest: %2$s</string>
+    <string name="update_latest_title">Up to Date</string>
+    <string name="update_latest_msg">You are already using the latest version (%1$s).</string>
+    <string name="update_check_failed_title">Update Check Failed</string>
+    <string name="update_check_failed_msg">Could not fetch release information from GitHub: %1$s\n\nWould you like to open the releases page in your browser?</string>
+    <string name="update_download_apk">Download APK</string>
+    <string name="update_open_release">View Release</string>
+    <string name="update_changelog_header">\n\nChangelog:\n%1$s</string>
+
     <string-array name="language_codes" translatable="false">
         <item />
         <item>en</item>
