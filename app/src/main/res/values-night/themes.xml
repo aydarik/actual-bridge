@@ -40,6 +40,7 @@
         <item name="android:backgroundDimAmount">0.65</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxBackgroundColor">@color/text_input_box_background</item>
         <item name="hintTextColor">?colorPrimary</item>
