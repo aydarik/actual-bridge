@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.gumerbaev.actual.databinding.FragmentTransactionsBinding
 import de.gumerbaev.actual.ui.adapter.HistoryAdapter
+import de.gumerbaev.actual.util.LocationHelper
 
 class TransactionsFragment : Fragment() {
 
@@ -53,6 +54,9 @@ class TransactionsFragment : Fragment() {
                     putExtra(ConfirmTransactionActivity.EXTRA_RECORD_ID, record.id)
                 }
                 startActivity(intent)
+            },
+            onLocationClick = { lat, lng ->
+                LocationHelper.openInMaps(requireContext(), lat, lng)
             }
         )
         binding.rvHistory.layoutManager = LinearLayoutManager(requireContext())

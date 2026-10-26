@@ -95,6 +95,6 @@ jobs:
         with:
           files: actual-budget-bridge-${{ env.VERSION_NAME }}.apk
           name: Release ${{ github.ref_name }}
-          draft: false
+          draft: true
           prerelease: false
           generate_release_notes: true

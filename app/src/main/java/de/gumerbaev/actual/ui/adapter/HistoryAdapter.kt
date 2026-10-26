@@ -11,13 +11,15 @@ import de.gumerbaev.actual.databinding.ItemHistoryBinding
 import de.gumerbaev.actual.databinding.ItemMonthHeaderBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
+import de.gumerbaev.actual.util.LocationHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
 class HistoryAdapter(
     records: MutableList<TransactionRecord>,
-    private val onResend: (TransactionRecord) -> Unit
+    private val onResend: (TransactionRecord) -> Unit,
+    private val onLocationClick: ((lat: Double, lng: Double) -> Unit)? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private sealed class Row {
@@ -77,8 +79,17 @@ class HistoryAdapter(
 
         with(binding) {
             tvHistoryPayee.text = tx.payee
-            tvHistoryLocationIndicator.visibility =
-                if (tx.latitude != null && tx.longitude != null) View.VISIBLE else View.GONE
+            val lat = tx.latitude
+            val lng = tx.longitude
+            val hasLocation = lat != null && lng != null
+            tvHistoryLocationIndicator.visibility = if (hasLocation) View.VISIBLE else View.GONE
+            if (hasLocation) {
+                tvHistoryLocationIndicator.setOnClickListener {
+                    onLocationClick?.invoke(lat, lng) ?: LocationHelper.openInMaps(context, lat, lng)
+                }
+            } else {
+                tvHistoryLocationIndicator.setOnClickListener(null)
+            }
 
             val timeStr = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(record.timestamp))
             tvHistoryAccountDate.text = "${tx.account} • $timeStr"
@@ -134,6 +145,7 @@ class HistoryAdapter(
 
     override fun getItemCount(): Int = rows.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newRecords: List<TransactionRecord>) {
         rows = buildRows(newRecords)
         notifyDataSetChanged()

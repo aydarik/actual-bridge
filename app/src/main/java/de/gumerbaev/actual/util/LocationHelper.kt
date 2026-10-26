@@ -2,11 +2,15 @@ package de.gumerbaev.actual.util
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -61,6 +65,42 @@ object LocationHelper {
             bestLocation
         } catch (_: Exception) {
             null
+        }
+    }
+
+    fun openInMaps(context: Context, latitude: Double, longitude: Double) {
+        val uri = "geo:$latitude,$longitude?q=$latitude,$longitude".toUri()
+        val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
+            setPackage("com.google.android.apps.maps")
+            if (context !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        }
+        try {
+            context.startActivity(mapIntent)
+        } catch (_: ActivityNotFoundException) {
+            val genericIntent = Intent(Intent.ACTION_VIEW, uri).apply {
+                if (context !is Activity) {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            }
+            try {
+                context.startActivity(genericIntent)
+            } catch (_: ActivityNotFoundException) {
+                val webIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude".toUri()
+                ).apply {
+                    if (context !is Activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                }
+                try {
+                    context.startActivity(webIntent)
+                } catch (_: ActivityNotFoundException) {
+                    // Ignored if no app or browser can handle the intent
+                }
+            }
         }
     }
 }

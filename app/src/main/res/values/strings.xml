@@ -28,6 +28,7 @@
     <string name="granted">Granted</string>
     <string name="grant">Grant</string>
     <string name="history_coords_recorded">Coordinates recorded</string>
+    <string name="history_location_indicator" translatable="false">📍</string>
     <string name="history_resend">Resend</string>
     <string name="history_from">from %1$s</string>
     <string name="status_sent">SENT</string>
