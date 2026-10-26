@@ -2,11 +2,16 @@ package de.gumerbaev.actual.ui
 
 import android.app.DatePickerDialog
 import android.app.NotificationManager
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.AppPreferences
@@ -56,6 +61,8 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         binding = ActivityConfirmTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupWindowInsets()
+
         prefs = AppPreferences(this)
 
         val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION, ActualTransaction::class.java)
@@ -72,7 +79,77 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         setupListeners()
     }
 
+    private fun setupWindowInsets() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val defaultCardPaddingBottom = binding.layoutCardContent.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            applyInsets(insets, defaultCardPaddingBottom)
+            insets
+        }
+
+        ViewCompat.setWindowInsetsAnimationCallback(
+            binding.root,
+            object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_STOP) {
+                override fun onProgress(
+                    insets: WindowInsetsCompat,
+                    runningAnimations: MutableList<WindowInsetsAnimationCompat>
+                ): WindowInsetsCompat {
+                    applyInsets(insets, defaultCardPaddingBottom)
+                    return insets
+                }
+
+                override fun onEnd(animation: WindowInsetsAnimationCompat) {
+                    super.onEnd(animation)
+                    currentFocus?.let { focusedView ->
+                        focusedView.post {
+                            val rect = Rect(0, 0, focusedView.width, focusedView.height)
+                            binding.scrollView.requestChildRectangleOnScreen(focusedView, rect, false)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private fun applyInsets(insets: WindowInsetsCompat, defaultCardPaddingBottom: Int) {
+        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+        val isImeVisible = imeInsets.bottom > 0
+        val bottomPadding = if (isImeVisible) imeInsets.bottom else 0
+
+        binding.root.setPadding(
+            systemBars.left,
+            systemBars.top,
+            systemBars.right,
+            bottomPadding
+        )
+
+        val cardBottomPadding = if (isImeVisible) {
+            defaultCardPaddingBottom
+        } else {
+            maxOf(defaultCardPaddingBottom, systemBars.bottom)
+        }
+        binding.layoutCardContent.setPadding(
+            binding.layoutCardContent.paddingLeft,
+            binding.layoutCardContent.paddingTop,
+            binding.layoutCardContent.paddingRight,
+            cardBottomPadding
+        )
+    }
+
     private fun setupViews(tx: ActualTransaction) {
+        val cornerRadius = resources.displayMetrics.density * 24f
+        binding.cardContainer.shapeAppearanceModel = binding.cardContainer.shapeAppearanceModel
+            .toBuilder()
+            .setTopLeftCornerSize(cornerRadius)
+            .setTopRightCornerSize(cornerRadius)
+            .setBottomLeftCornerSize(0f)
+            .setBottomRightCornerSize(0f)
+            .build()
+
         binding.etPayee.setText(tx.payee)
         binding.etAmount.setText(tx.amount?.let { "%.2f".format(Locale.US, abs(it)) })
         binding.etAccount.setText(tx.account)
@@ -94,9 +171,26 @@ class ConfirmTransactionActivity : AppCompatActivity() {
             dismissAndFinish()
         }
 
+        binding.scrollView.setOnClickListener {
+            dismissAndFinish()
+        }
+
         binding.cardContainer.setOnClickListener {
             // Consume clicks inside the bottom sheet card to prevent dismissal
         }
+
+        val focusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                v.post {
+                    val rect = Rect(0, 0, v.width, v.height)
+                    binding.scrollView.requestChildRectangleOnScreen(v, rect, false)
+                }
+            }
+        }
+        binding.etPayee.onFocusChangeListener = focusChangeListener
+        binding.etAmount.onFocusChangeListener = focusChangeListener
+        binding.etAccount.onFocusChangeListener = focusChangeListener
+        binding.etNotes.onFocusChangeListener = focusChangeListener
 
         binding.btnClose.setOnClickListener {
             dismissAndFinish()
