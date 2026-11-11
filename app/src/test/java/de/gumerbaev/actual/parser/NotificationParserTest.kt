@@ -109,6 +109,47 @@ class NotificationParserTest {
     }
 
     @Test
+    fun testDefaultAccountGroupAndTitleAccountExtraction() {
+        // When accountGroup is left blank, a named (?<account>...) group in textRegex or titleRegex should still be extracted
+        val ruleWithTextAccount = ParsingRule(
+            name = "Implicit Account Group",
+            enabled = true,
+            targetPackage = "*",
+            textRegex = "(?i)Paid \\$(?<amount>[0-9.]+) at (?<payee>[^.,]+) using (?<account>[^.,]+)",
+            account = "Fallback Checking"
+        )
+
+        val textResult = NotificationParser.parseWithRule(
+            packageName = "com.bank.app",
+            title = "Alert",
+            text = "Paid $19.99 at Bookstore using Credit Card.",
+            rule = ruleWithTextAccount
+        )
+        assertTrue(textResult.success)
+        assertEquals("Credit Card", textResult.transaction?.account)
+
+        // When notification comes with account in the title
+        val ruleWithTitleAccount = ParsingRule(
+            name = "Title Account Group",
+            enabled = true,
+            targetPackage = "*",
+            titleRegex = "(?i)Card: (?<account>.+)",
+            textRegex = "(?i)Paid \\$(?<amount>[0-9.]+) at (?<payee>[^.,]+)",
+            account = "Fallback Checking",
+            accountGroup = "account"
+        )
+
+        val titleResult = NotificationParser.parseWithRule(
+            packageName = "com.bank.app",
+            title = "Card: Joint Checking",
+            text = "Paid $32.00 at Pharmacy",
+            rule = ruleWithTitleAccount
+        )
+        assertTrue(titleResult.success)
+        assertEquals("Joint Checking", titleResult.transaction?.account)
+    }
+
+    @Test
     fun testPackageDependentAccountRule() {
         val ruleA = ParsingRule(
             name = "Bank A Rule",

@@ -62,15 +62,18 @@ object NotificationParser {
         }
 
         // 2. Title filter (if specified)
+        var titleMatcher: Matcher? = null
         if (rule.titleRegex.isNotBlank()) {
             val titlePattern = try {
                 Pattern.compile(rule.titleRegex, Pattern.CASE_INSENSITIVE)
             } catch (e: Exception) {
                 return ParseResult(false, error = UiText.res(R.string.err_invalid_title_regex, e.message.orEmpty()))
             }
-            if (!titlePattern.matcher(title).find()) {
+            val tm = titlePattern.matcher(title)
+            if (!tm.find()) {
                 return ParseResult(false, error = UiText.res(R.string.err_title_mismatch))
             }
+            titleMatcher = tm
         }
 
         // 3. Text regex matching
@@ -115,7 +118,10 @@ object NotificationParser {
         payee = payee?.trimEnd('.', ',', ':', ';', '-', ' ')?.trim()
 
         // 6. Extract Account
-        var account = extractGroup(matcher, rule.accountGroup)?.trim()
+        var account = (extractGroup(matcher, rule.accountGroup)
+            ?: titleMatcher?.let { extractGroup(it, rule.accountGroup) })
+            ?.trimEnd('.', ',', ':', ';', ' ')
+            ?.trim()
         if (account.isNullOrBlank()) {
             account = rule.account.trim()
         }

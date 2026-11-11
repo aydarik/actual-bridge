@@ -112,6 +112,8 @@
     <string name="edit_rule_text_regex_helper">Erforderlich: Regex-Muster für den Benachrichtigungstext</string>
     <string name="edit_rule_amount_group">Betragsgruppe</string>
     <string name="edit_rule_payee_group">Empfängergruppe</string>
+    <string name="edit_rule_account_group">Kontogruppe (optional)</string>
+    <string name="edit_rule_account_group_helper">Optional: Regex-Gruppe für das Konto. Wenn aus einer Benachrichtigung erkannt, muss der Name exakt mit dem Konto im Actual-Server übereinstimmen.</string>
     <string name="edit_rule_type">Typ</string>
     <string name="save_rule">Regel speichern</string>
     <string name="rule_name_required">Regelname ist erforderlich</string>

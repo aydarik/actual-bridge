@@ -123,7 +123,8 @@ The app includes default preset rules for standard card payments and income depo
 - **Text Regex**: A regex pattern with named capture groups to extract transaction fields:
   - `(?<amount>...)`: Captured transaction amount.
   - `(?<payee>...)`: Captured merchant or payee name.
-- **Account & Default Type**: Assign a default account name (e.g., `Checking`) and transaction type (`Payment` or `Deposit`).
+  - `(?<account>...)`: *(Optional)* Captured account name. **Important:** When parsing the account from a notification, the extracted value must exactly match the account name as defined in your Actual Server.
+- **Account & Default Type**: Assign a default/fallback account name (e.g., `Checking`) and transaction type (`Payment` or `Deposit`).
 
 #### 🧪 Testing Rules in the App
 

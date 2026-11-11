@@ -114,6 +114,8 @@
     <string name="edit_rule_text_regex_helper">Required: Regex pattern matching the notification text</string>
     <string name="edit_rule_amount_group">Amount Group</string>
     <string name="edit_rule_payee_group">Payee Group</string>
+    <string name="edit_rule_account_group">Account Group (Optional)</string>
+    <string name="edit_rule_account_group_helper">Optional: Regex group for account. If parsed from a notification, it must exactly match the account name in Actual Server.</string>
     <string name="edit_rule_type">Type</string>
     <string name="save_rule">Save Rule</string>
     <string name="rule_name_required">Rule name is required</string>

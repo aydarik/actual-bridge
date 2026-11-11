@@ -112,6 +112,8 @@
     <string name="edit_rule_text_regex_helper">Обязательно: регулярное выражение для текста уведомления</string>
     <string name="edit_rule_amount_group">Группа суммы</string>
     <string name="edit_rule_payee_group">Группа получателя</string>
+    <string name="edit_rule_account_group">Группа счёта (необязательно)</string>
+    <string name="edit_rule_account_group_helper">Необязательно: regex-группа для счёта. При разборе из уведомления название должно в точности совпадать со счётом на сервере Actual.</string>
     <string name="edit_rule_type">Тип</string>
     <string name="save_rule">Сохранить правило</string>
     <string name="rule_name_required">Укажите название правила</string>

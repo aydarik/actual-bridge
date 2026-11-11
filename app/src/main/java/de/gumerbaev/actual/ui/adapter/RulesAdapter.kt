@@ -29,7 +29,13 @@ class RulesAdapter(
             tvRuleName.text = rule.name
             tvTargetPackage.text = root.context.getString(R.string.rule_app, if (rule.targetPackage.isBlank()) "*" else rule.targetPackage)
             tvRegexPreview.text = rule.textRegex
-            tvAccountBadge.text = if (rule.account.isNotBlank()) "${rule.account} • ${rule.defaultType}" else rule.defaultType
+            val accountLabel = when {
+                rule.account.isNotBlank() && rule.accountGroup.isNotBlank() -> "${rule.account} (?<${rule.accountGroup}>)"
+                rule.account.isNotBlank() -> rule.account
+                rule.accountGroup.isNotBlank() -> "?<${rule.accountGroup}>"
+                else -> ""
+            }
+            tvAccountBadge.text = if (accountLabel.isNotBlank()) "$accountLabel • ${rule.defaultType}" else rule.defaultType
 
             switchEnabled.setOnCheckedChangeListener(null)
             switchEnabled.isChecked = rule.enabled

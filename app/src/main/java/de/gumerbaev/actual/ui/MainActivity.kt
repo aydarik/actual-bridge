@@ -227,10 +227,10 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.etTextRegex.setText(existingRule.textRegex)
             dialogBinding.etAmountGroup.setText(existingRule.amountGroup)
             dialogBinding.etPayeeGroup.setText(existingRule.payeeGroup)
+            dialogBinding.etAccountGroup.setText(existingRule.accountGroup)
             dialogBinding.etAccount.setText(existingRule.account)
             dialogBinding.actvDefaultType.setText(existingRule.defaultType, false)
         } else {
-            dialogBinding.etAccount.setText("")
             dialogBinding.actvDefaultType.setText(ActualTransaction.TYPE_PAYMENT, false)
         }
 
@@ -260,6 +260,7 @@ class MainActivity : AppCompatActivity() {
                 this.textRegex = textRegex
                 this.amountGroup = dialogBinding.etAmountGroup.text?.toString()?.trim() ?: "amount"
                 this.payeeGroup = dialogBinding.etPayeeGroup.text?.toString()?.trim() ?: "payee"
+                this.accountGroup = dialogBinding.etAccountGroup.text?.toString()?.trim() ?: "account"
                 this.account = dialogBinding.etAccount.text?.toString()?.trim() ?: ""
                 this.defaultType = dialogBinding.actvDefaultType.text?.toString()?.trim() ?: ActualTransaction.TYPE_PAYMENT
             }

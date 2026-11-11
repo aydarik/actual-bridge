@@ -15,7 +15,7 @@ data class ParsingRule(
     // Group names or indices (1-based)
     var amountGroup: String = "amount",
     var payeeGroup: String = "payee",
-    var accountGroup: String = "",
+    var accountGroup: String = "account",
     var typeGroup: String = "",
     var dateGroup: String = ""
 ) : Serializable {
