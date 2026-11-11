@@ -27,6 +27,7 @@ class AppPreferences(private val context: Context) {
         private const val KEY_PARSING_RULES = "parsing_rules"
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
         private const val KEY_LAST_BACKUP_TIMESTAMP = "last_backup_timestamp"
+        private const val KEY_LAST_UPDATE_CHECK_TIMESTAMP = "last_update_check_timestamp"
         const val MAX_HISTORY_SIZE = 100
     }
 
@@ -141,6 +142,10 @@ class AppPreferences(private val context: Context) {
     var lastBackupTimestamp: Long
         get() = prefs.getLong(KEY_LAST_BACKUP_TIMESTAMP, 0L)
         set(value) = prefs.edit { putLong(KEY_LAST_BACKUP_TIMESTAMP, value) }
+
+    var lastUpdateCheckTimestamp: Long
+        get() = prefs.getLong(KEY_LAST_UPDATE_CHECK_TIMESTAMP, 0L)
+        set(value) = prefs.edit { putLong(KEY_LAST_UPDATE_CHECK_TIMESTAMP, value) }
 
     fun restoreSettings(backup: AppSettingsBackup) {
         serverUrl = backup.serverUrl

@@ -73,4 +73,22 @@ class UpdateCheckerTest {
             release.apkDownloadUrl
         )
     }
+
+    @Test
+    fun testShouldAutoCheckOncePerDay() {
+        val now = 1_700_000_000_000L
+        val oneDayMs = 24 * 60 * 60 * 1000L
+
+        // Never checked before -> should check
+        assertTrue(UpdateChecker.shouldAutoCheck(0L, now))
+
+        // Checked less than 24h ago -> should NOT check
+        assertFalse(UpdateChecker.shouldAutoCheck(now, now))
+        assertFalse(UpdateChecker.shouldAutoCheck(now - 60_000L, now))
+        assertFalse(UpdateChecker.shouldAutoCheck(now - oneDayMs + 1L, now))
+
+        // Checked 24h or more ago -> should check
+        assertTrue(UpdateChecker.shouldAutoCheck(now - oneDayMs, now))
+        assertTrue(UpdateChecker.shouldAutoCheck(now - (2 * oneDayMs), now))
+    }
 }

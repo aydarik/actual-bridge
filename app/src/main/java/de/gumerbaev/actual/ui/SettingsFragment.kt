@@ -419,6 +419,7 @@ class SettingsFragment : Fragment() {
         binding.btnCheckUpdate.text = getString(R.string.settings_checking_updates)
         binding.progressCheckUpdate.visibility = View.VISIBLE
 
+        mainActivity.prefs.lastUpdateCheckTimestamp = System.currentTimeMillis()
         viewLifecycleOwner.lifecycleScope.launch {
             val result = UpdateChecker.checkForUpdates(BuildConfig.VERSION_NAME)
             if (_binding == null) return@launch
@@ -435,29 +436,7 @@ class SettingsFragment : Fragment() {
         val context = context ?: return
         when (result) {
             is UpdateChecker.CheckResult.NewUpdate -> {
-                val messageBuilder = StringBuilder()
-                messageBuilder.append(
-                    getString(R.string.update_available_msg, result.currentVersion, result.release.tagName)
-                )
-                if (!result.release.body.isNullOrBlank()) {
-                    messageBuilder.append(
-                        getString(R.string.update_changelog_header, result.release.body.trim())
-                    )
-                }
-
-                val hasApk = result.release.apkDownloadUrl != null
-                AlertDialog.Builder(context)
-                    .setTitle(R.string.update_available_title)
-                    .setMessage(messageBuilder.toString())
-                    .setPositiveButton(if (hasApk) R.string.update_download_apk else R.string.update_open_release) { _, _ ->
-                        val targetUrl = result.release.apkDownloadUrl ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
-                        openUrl(targetUrl)
-                    }
-                    .setNeutralButton(R.string.settings_view_releases) { _, _ ->
-                        openUrl(UpdateChecker.RELEASES_WEB_URL)
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
+                mainActivity.showUpdateAvailableDialog(result)
             }
             is UpdateChecker.CheckResult.UpToDate -> {
                 AlertDialog.Builder(context)
@@ -483,16 +462,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun openUrl(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(
-                requireContext(),
-                e.localizedMessage ?: getString(R.string.unknown_error),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        mainActivity.openUrl(url)
     }
 
     private fun saveServerSettings() {

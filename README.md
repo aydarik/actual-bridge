@@ -17,7 +17,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **Actual Budget Bridge** captures financial transaction notifications from your mobile banking and payment apps in real-time. Using configurable regular expressions, it extracts transaction details - such as payee, amount, account, date, and payment type - and syncs them directly to your self-hosted [Actual Budget](https://actualbudget.org/) instance via [Actual Tap](https://github.com/MattFaz/actualtap).
 
@@ -29,7 +29,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 - **⚡ Real-Time Capture**: Intercepts status bar notifications from payment apps and digital wallets (Google Wallet, bank apps, fintech cards) the moment they arrive.
 - **🎯 Flexible Regex Parsing Engine**:
@@ -54,7 +54,7 @@
 
 ---
 
-## 🏗️ Architecture & Workflow
+## Architecture & Workflow
 
 ```mermaid
 flowchart LR
@@ -81,7 +81,7 @@ Actual Budget Bridge requires both of the following installed and running on you
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Download & Install
 
@@ -126,7 +126,7 @@ The app includes default preset rules for standard card payments and income depo
   - `(?<account>...)`: *(Optional)* Captured account name. **Important:** When parsing the account from a notification, the extracted value must exactly match the account name as defined in your Actual Server.
 - **Account & Default Type**: Assign a default/fallback account name (e.g., `Checking`) and transaction type (`Payment` or `Deposit`).
 
-#### 🧪 Testing Rules in the App
+#### Testing Rules in the App
 
 Use the **Test Notification Parser** section on the Rules tab:
 1. Paste a sample notification title and text (or tap **Sample Payment** / **Sample Deposit**).
@@ -135,7 +135,7 @@ Use the **Test Notification Parser** section on the Rules tab:
 
 ---
 
-## 🛠️ Development & Building from Source
+## Development & Building from Source
 
 ### Prerequisites
 - **JDK 24** or newer
@@ -186,7 +186,7 @@ Make sure **Attach Location** is toggled ON in Settings and the permission is se
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, bug reports, and feature requests are welcome!
 
@@ -195,6 +195,6 @@ Contributions, bug reports, and feature requests are welcome!
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).

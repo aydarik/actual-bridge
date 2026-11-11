@@ -17,11 +17,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import de.gumerbaev.actual.BuildConfig
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.databinding.ActivityMainBinding
@@ -30,6 +32,7 @@ import de.gumerbaev.actual.databinding.DialogTestParserBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.network.ActualApiClient
+import de.gumerbaev.actual.network.UpdateChecker
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.service.ActualNotificationListenerService
 import de.gumerbaev.actual.util.LocationHelper
@@ -115,6 +118,8 @@ class MainActivity : AppCompatActivity() {
 
         val filter = IntentFilter(ActualNotificationListenerService.ACTION_TRANSACTION_PARSED)
         registerReceiver(transactionUpdateReceiver, filter, RECEIVER_NOT_EXPORTED)
+
+        checkForUpdatesIfNeeded()
     }
 
     override fun onPause() {
@@ -207,6 +212,58 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(R.string.ok, null)
                     .show()
             }
+        }
+    }
+
+    private fun checkForUpdatesIfNeeded() {
+        val now = System.currentTimeMillis()
+        if (!UpdateChecker.shouldAutoCheck(prefs.lastUpdateCheckTimestamp, now)) return
+
+        prefs.lastUpdateCheckTimestamp = now
+        lifecycleScope.launch {
+            val result = UpdateChecker.checkForUpdates(BuildConfig.VERSION_NAME)
+            if (!isFinishing && !isDestroyed && result is UpdateChecker.CheckResult.NewUpdate) {
+                showUpdateAvailableDialog(result)
+            }
+        }
+    }
+
+    fun showUpdateAvailableDialog(result: UpdateChecker.CheckResult.NewUpdate) {
+        val messageBuilder = StringBuilder()
+        messageBuilder.append(
+            getString(R.string.update_available_msg, result.currentVersion, result.release.tagName)
+        )
+        if (!result.release.body.isNullOrBlank()) {
+            messageBuilder.append(
+                getString(R.string.update_changelog_header, result.release.body.trim())
+            )
+        }
+
+        val hasApk = result.release.apkDownloadUrl != null
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available_title)
+            .setMessage(messageBuilder.toString())
+            .setPositiveButton(if (hasApk) R.string.update_download_apk else R.string.update_open_release) { _, _ ->
+                val targetUrl = result.release.apkDownloadUrl ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
+                openUrl(targetUrl)
+            }
+            .setNeutralButton(R.string.settings_view_releases) { _, _ ->
+                openUrl(UpdateChecker.RELEASES_WEB_URL)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    fun openUrl(url: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.localizedMessage ?: getString(R.string.unknown_error),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

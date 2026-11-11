@@ -14,6 +14,15 @@ object UpdateChecker {
 
     const val RELEASES_WEB_URL = "https://github.com/aydarik/actual-bridge/releases"
     private const val GITHUB_API_LATEST_RELEASE = "https://api.github.com/repos/aydarik/actual-bridge/releases/latest"
+    val AUTO_CHECK_INTERVAL_MS: Long = TimeUnit.DAYS.toMillis(1)
+
+    /**
+     * Returns true if at least 24 hours have passed since [lastCheckTimestamp].
+     */
+    fun shouldAutoCheck(lastCheckTimestamp: Long, now: Long = System.currentTimeMillis()): Boolean {
+        if (lastCheckTimestamp <= 0L) return true
+        return (now - lastCheckTimestamp) >= AUTO_CHECK_INTERVAL_MS
+    }
 
     sealed class CheckResult {
         data class NewUpdate(val release: GitHubRelease, val currentVersion: String) : CheckResult()
