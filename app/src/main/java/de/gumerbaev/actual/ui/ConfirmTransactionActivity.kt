@@ -260,15 +260,22 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     }
 
     private fun updateLocationDisplay() {
-        if (currentLatitude != null && currentLongitude != null) {
+        val lat = currentLatitude
+        val lng = currentLongitude
+        if (lat != null && lng != null) {
             binding.tvLocationCoords.text = getString(
                 R.string.location_coords,
-                String.format(Locale.US, "%.4f", currentLatitude),
-                String.format(Locale.US, "%.4f", currentLongitude)
+                String.format(Locale.US, "%.4f", lat),
+                String.format(Locale.US, "%.4f", lng)
             )
+            binding.tvLocationCoords.setOnClickListener {
+                LocationHelper.openInMaps(this, lat, lng)
+            }
             binding.btnLocationAction.text = getString(R.string.clear)
         } else {
             binding.tvLocationCoords.text = getString(R.string.confirm_location_none)
+            binding.tvLocationCoords.setOnClickListener(null)
+            binding.tvLocationCoords.isClickable = false
             binding.btnLocationAction.text = getString(R.string.confirm_attach_gps)
         }
     }

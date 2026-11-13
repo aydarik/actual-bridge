@@ -73,37 +73,20 @@ object LocationHelper {
 
     fun openInMaps(context: Context, latitude: Double, longitude: Double) {
         val uri = "geo:$latitude,$longitude?q=$latitude,$longitude".toUri()
-        val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
-            setPackage("com.google.android.apps.maps")
+        val geoIntent = Intent(Intent.ACTION_VIEW, uri).apply {
+            if (context !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        }
+        val chooserIntent = Intent.createChooser(geoIntent, null).apply {
             if (context !is Activity) {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
         }
         try {
-            context.startActivity(mapIntent)
+            context.startActivity(chooserIntent)
         } catch (_: ActivityNotFoundException) {
-            val genericIntent = Intent(Intent.ACTION_VIEW, uri).apply {
-                if (context !is Activity) {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-            }
-            try {
-                context.startActivity(genericIntent)
-            } catch (_: ActivityNotFoundException) {
-                val webIntent = Intent(
-                    Intent.ACTION_VIEW,
-                    "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude".toUri()
-                ).apply {
-                    if (context !is Activity) {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                }
-                try {
-                    context.startActivity(webIntent)
-                } catch (_: ActivityNotFoundException) {
-                    // Ignored if no app or browser can handle the intent
-                }
-            }
+            // Ignored if no app can handle the intent
         }
     }
 }
