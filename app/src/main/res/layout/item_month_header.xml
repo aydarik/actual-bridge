@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingHorizontal="4dp"
-    android:paddingTop="16dp"
+    android:paddingTop="14dp"
     android:paddingBottom="8dp">
 
     <TextView
@@ -14,13 +15,19 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/text_primary"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:text="November 2026" />
 
     <TextView
         android:id="@+id/tvMonthSpend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_muted"
-        android:textSize="14sp" />
+        android:background="@drawable/bg_rounded_light"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="Spent: 142.50" />
 </LinearLayout>

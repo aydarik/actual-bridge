@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.gumerbaev.actual.databinding.FragmentRulesBinding
 import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.ui.adapter.RulesAdapter
@@ -54,7 +54,7 @@ class RulesFragment : Fragment() {
                 mainActivity.showEditRuleDialog(rule) { loadRules() }
             },
             onDelete = { rule ->
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.delete_rule_title))
                     .setMessage(getString(R.string.delete_rule_message, rule.name))
                     .setPositiveButton(R.string.delete) { _, _ ->
@@ -70,6 +70,20 @@ class RulesFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        // Row Click Targets
+        binding.rowAutoSend.setOnClickListener {
+            binding.switchAutoSend.toggle()
+        }
+        binding.layoutDismissNotification.setOnClickListener {
+            binding.switchDismissNotification.toggle()
+        }
+        binding.layoutAutoPopup.setOnClickListener {
+            binding.switchAutoPopup.toggle()
+        }
+        binding.rowAttachLocation.setOnClickListener {
+            binding.switchAttachLocation.toggle()
+        }
+
         // Switches
         binding.switchAutoSend.setOnCheckedChangeListener { _, isChecked ->
             mainActivity.prefs.autoSend = isChecked

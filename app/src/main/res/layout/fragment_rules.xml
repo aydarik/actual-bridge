@@ -2,14 +2,19 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp">
 
         <!-- SECTION: APP SETTINGS (TOGGLES) -->
         <com.google.android.material.card.MaterialCardView
@@ -32,6 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/rules_app_settings_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -42,14 +48,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/rules_app_settings_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="6dp"
                     android:background="@color/card_stroke" />
 
                 <!-- Send Automatically Switch -->
@@ -57,14 +63,34 @@
                     android:id="@+id/rowAutoSend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:paddingVertical="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:minHeight="52dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_bolt"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -72,15 +98,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/rules_auto_send"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:text="@string/rules_auto_send_desc"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -95,14 +122,34 @@
                     android:id="@+id/layoutDismissNotification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:paddingVertical="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:minHeight="52dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_notifications"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -110,15 +157,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/rules_dismiss"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:text="@string/rules_dismiss_desc"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -133,14 +181,34 @@
                     android:id="@+id/layoutAutoPopup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:paddingVertical="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:minHeight="52dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_view"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -148,15 +216,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/rules_auto_popup"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:text="@string/rules_auto_popup_desc"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -171,14 +240,34 @@
                     android:id="@+id/rowAttachLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:paddingVertical="8dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:minHeight="52dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -186,15 +275,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/rules_attach_gps"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:text="@string/rules_attach_gps_desc"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -208,77 +298,75 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- SECTION: PARSING RULES -->
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/card_stroke"
-            app:strokeWidth="1dp">
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:letterSpacing="0.06"
+                    android:text="@string/rules_header"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/rules_header"
-                            android:textColor="@color/primary"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvRulesCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3 active rules"
-                            android:textColor="?android:attr/textColorSecondary"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTestRules"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/rules_test_regex"
-                        app:icon="@drawable/ic_search" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnAddRule"
-                        style="@style/Widget.MaterialComponents.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="@string/add"
-                        app:icon="@drawable/ic_add" />
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvRules"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvRulesCount"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    tools:text="2 active of 2 rules" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTestRules"
+                style="@style/Widget.ActualApp.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="12dp"
+                android:text="@string/rules_test_regex"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_search"
+                app:iconSize="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddRule"
+                style="@style/Widget.ActualApp.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="14dp"
+                android:text="@string/add"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_add"
+                app:iconSize="16dp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

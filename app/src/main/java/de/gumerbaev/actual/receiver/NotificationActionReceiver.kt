@@ -42,6 +42,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 }
                 if (recordId != null) {
                     prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_DISCARDED)
+                    notifyTransactionUpdated(context, recordId)
                 }
                 Toast.makeText(context, context.getString(R.string.transaction_discarded), Toast.LENGTH_SHORT).show()
             }
@@ -60,6 +61,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                             if (result.success) {
                                 if (recordId != null) {
                                     prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_SENT)
+                                    notifyTransactionUpdated(context, recordId)
                                 }
                                 val sentNotification = NotificationCompat.Builder(
                                     context,
@@ -77,6 +79,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                             } else {
                                 if (recordId != null) {
                                     prefs.updateHistoryRecord(recordId, TransactionRecord.STATUS_FAILED)
+                                    notifyTransactionUpdated(context, recordId)
                                 }
                                 val errorNotification = NotificationCompat.Builder(
                                     context,
@@ -98,5 +101,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 }
             }
         }
+    }
+
+    private fun notifyTransactionUpdated(context: Context, recordId: String) {
+        val updateIntent = Intent(ActualNotificationListenerService.ACTION_TRANSACTION_PARSED).apply {
+            putExtra(EXTRA_RECORD_ID, recordId)
+            setPackage(context.packageName)
+        }
+        context.sendBroadcast(updateIntent)
     }
 }

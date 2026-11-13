@@ -48,6 +48,7 @@ data class ActualTransaction(
     companion object {
         const val TYPE_PAYMENT = "payment"
         const val TYPE_DEPOSIT = "deposit"
+        private val gson = Gson()
 
         fun todayFormatted(): String {
             return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
@@ -69,6 +70,6 @@ data class ActualTransaction(
             map["latitude"] = latitude
             map["longitude"] = longitude
         }
-        return Gson().toJson(map)
+        return gson.toJson(map)
     }
 }

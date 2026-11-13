@@ -2,50 +2,103 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="?android:attr/colorBackground">
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:background="?attr/colorSurface"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="20dp"
-            android:paddingTop="24dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="12dp">
+            android:paddingTop="18dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="10dp">
+
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_circle"
+                android:importantForAccessibility="noHideDescendants">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_agenda"
+                    app:tint="@color/primary" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/app_name"
+                    android:textColor="@color/text_primary"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/app_subtitle"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/tvServiceStatusPill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actual Budget Bridge"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/app_subtitle"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="14sp" />
+                android:background="@drawable/bg_status_success"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:textColor="@color/secondary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="Listener Active" />
         </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+            android:background="?attr/colorSurface"
+            app:tabIndicator="@drawable/bg_tab_indicator"
+            app:tabIndicatorColor="@color/primary"
             app:tabIndicatorFullWidth="false"
-            app:tabMode="fixed" />
+            app:tabIndicatorHeight="3dp"
+            app:tabInlineLabel="true"
+            app:tabMode="fixed"
+            app:tabRippleColor="@color/primary_light"
+            app:tabSelectedTextColor="@color/primary"
+            app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Button"
+            app:tabTextColor="@color/text_secondary" />
 
         <View
             android:layout_width="match_parent"

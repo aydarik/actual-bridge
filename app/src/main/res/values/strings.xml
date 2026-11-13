@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="PluralsCandidate">
     <string name="app_name" translatable="false">Actual Budget Bridge</string>
     <string name="tab_transactions">Transactions</string>
     <string name="tab_rules">Rules</string>
@@ -127,9 +127,8 @@
     <string name="bg_location_required">Background location permission (\'Allow all the time\') is required to capture location when the app is not open</string>
     <string name="location_permission_required">Location permission is required to attach GPS coordinates</string>
     <string name="connection_success_title">Connection Successful!</string>
-    <string name="connection_success_message">The server is reachable and accepted the test request.</string>
     <string name="connection_failed_title">Connection Failed</string>
-    <string name="connection_failed_message">Could not connect to %1$s.\n\nError:\n%2$s</string>
+    <string name="settings_testing_connection">Testing connection…</string>
     <string name="ok">OK</string>
     <string name="notif_send_failed_title">Failed to send transaction</string>
     <string name="unknown_error">Unknown error</string>
@@ -158,19 +157,22 @@
 
     <string name="settings_about_header">UPDATES</string>
     <string name="settings_about_desc">Check for new releases and manage updates</string>
+    <string name="settings_auto_check_update">Check for updates automatically</string>
+    <string name="settings_auto_check_update_desc">Check GitHub for new releases on startup</string>
     <string name="settings_app_version">Version %1$s</string>
     <string name="settings_check_update">Check for Updates</string>
     <string name="settings_checking_updates">Checking for updates…</string>
     <string name="settings_view_releases">GitHub Releases</string>
     <string name="update_available_title">Update Available</string>
-    <string name="update_available_msg">A new version of Actual Budget Bridge is available.\n\nCurrent: %1$s\nLatest: %2$s</string>
+    <string name="update_available_subtitle">A new version of Actual Budget Bridge is available</string>
+    <string name="update_whats_new">WHAT\'S NEW</string>
+    <string name="update_full_changelog">Full Changelog</string>
     <string name="update_latest_title">Up to Date</string>
     <string name="update_latest_msg">You are already using the latest version (%1$s).</string>
     <string name="update_check_failed_title">Update Check Failed</string>
     <string name="update_check_failed_msg">Could not fetch release information from GitHub: %1$s\n\nWould you like to open the releases page in your browser?</string>
     <string name="update_download_apk">Download APK</string>
     <string name="update_open_release">View Release</string>
-    <string name="update_changelog_header">\n\nChangelog:\n%1$s</string>
 
     <string name="settings_backup_header">BACKUP &amp; RESTORE</string>
     <string name="settings_backup_desc">Export or import your settings, parsing rules, and transaction history</string>
@@ -207,7 +209,10 @@
     <string name="restore_summary_transactions">• %1$d transactions restored</string>
     <string name="restore_error_title">Restore Failed</string>
     <string name="restore_error_invalid_file">The selected file is not a valid Actual Budget Bridge backup or is unreadable.\n\nError: %1$s</string>
-    <string name="restore_nothing_selected">Please select at least one item to restore.</string>
+
+    <string name="service_status_active">Listener Active</string>
+    <string name="service_status_inactive">Setup Required</string>
+    <string name="transactions_empty_title">No transactions yet</string>
 
     <string-array name="language_codes" translatable="false">
         <item />

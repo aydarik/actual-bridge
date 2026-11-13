@@ -28,6 +28,7 @@ class AppPreferences(private val context: Context) {
         private const val KEY_TRANSACTION_HISTORY = "transaction_history"
         private const val KEY_LAST_BACKUP_TIMESTAMP = "last_backup_timestamp"
         private const val KEY_LAST_UPDATE_CHECK_TIMESTAMP = "last_update_check_timestamp"
+        private const val KEY_AUTO_CHECK_UPDATES = "auto_check_updates"
         const val MAX_HISTORY_SIZE = 100
     }
 
@@ -54,6 +55,10 @@ class AppPreferences(private val context: Context) {
     var dismissOriginalNotification: Boolean
         get() = prefs.getBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, false)
         set(value) = prefs.edit { putBoolean(KEY_DISMISS_ORIGINAL_NOTIFICATION, value) }
+
+    var autoCheckUpdates: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_CHECK_UPDATES, true)
+        set(value) = prefs.edit { putBoolean(KEY_AUTO_CHECK_UPDATES, value) }
 
     private fun localizedDefaultRules(): List<ParsingRule> = ParsingRule.createDefaultRules(
         paymentRuleName = context.getString(R.string.default_rule_payment),
@@ -154,6 +159,7 @@ class AppPreferences(private val context: Context) {
         autoPopup = backup.autoPopup
         autoSend = backup.autoSend
         dismissOriginalNotification = backup.dismissOriginalNotification
+        autoCheckUpdates = backup.autoCheckUpdates
         saveRules(backup.parsingRules)
     }
 

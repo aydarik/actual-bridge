@@ -34,9 +34,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
-                android:paddingTop="12dp"
+                android:paddingTop="10dp"
                 android:paddingEnd="20dp"
-                android:paddingBottom="28dp">
+                android:paddingBottom="24dp">
 
                 <!-- Drag Handle -->
                 <View
@@ -44,24 +44,30 @@
                     android:layout_height="4dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="16dp"
-                    android:background="@color/card_stroke"
-                    android:backgroundTint="@color/text_muted" />
+                    android:background="@drawable/bg_drag_handle" />
 
                 <!-- Header Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                    <FrameLayout
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
                         android:background="@drawable/bg_icon_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_agenda"
-                        app:tint="@color/primary" />
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_agenda"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -74,16 +80,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/confirm_title"
-                            android:textColor="?android:attr/textColorPrimary"
-                            android:textSize="20sp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="19sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvSourceInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
                             android:text="@string/confirm_detected"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -92,6 +99,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/cancel"
                         android:src="@drawable/ic_close"
                         app:tint="@color/text_muted" />
                 </LinearLayout>
@@ -106,8 +114,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/confirm_type_header"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
@@ -123,25 +132,27 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTypePayment"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.ActualApp.Button.ToggleButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="44dp"
                         android:layout_weight="1"
-                        android:text="@string/confirm_payment" />
+                        android:text="@string/confirm_payment"
+                        android:textSize="13sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTypeDeposit"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.ActualApp.Button.ToggleButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="44dp"
                         android:layout_weight="1"
-                        android:text="@string/confirm_deposit" />
+                        android:text="@string/confirm_deposit"
+                        android:textSize="13sp" />
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <!-- Payee -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutPayee"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
@@ -165,7 +176,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layoutAmount"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="6dp"
@@ -182,7 +193,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layoutAccount"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
@@ -201,7 +212,7 @@
                 <!-- Date -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutDate"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
@@ -220,7 +231,7 @@
                 <!-- Notes -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutNotes"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
@@ -230,8 +241,8 @@
                         android:id="@+id/etNotes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:maxLines="1" />
+                        android:inputType="textCapSentences"
+                        android:maxLines="2" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Location Row -->
@@ -243,11 +254,13 @@
                     android:background="@drawable/bg_rounded_light"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="12dp">
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_location"
                         app:tint="@color/primary" />
 
@@ -258,14 +271,16 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:text="@string/confirm_location_none"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLocationAction"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.ActualApp.Button.TextButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:text="@string/confirm_attach_gps"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -277,7 +292,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_status_error"
-                    android:padding="10dp"
+                    android:padding="12dp"
                     android:textColor="@color/danger"
                     android:textSize="13sp"
                     android:visibility="gone"
@@ -292,17 +307,17 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDiscard"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.ActualApp.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="52dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:text="@string/discard"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:textColor="@color/text_secondary" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSend"
-                        style="@style/Widget.MaterialComponents.Button"
+                        style="@style/Widget.ActualApp.Button"
                         android:layout_width="0dp"
                         android:layout_height="52dp"
                         android:layout_weight="1.5"
@@ -315,7 +330,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:visibility="gone" />
 
             </LinearLayout>

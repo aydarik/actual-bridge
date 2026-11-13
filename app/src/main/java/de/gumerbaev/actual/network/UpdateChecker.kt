@@ -30,6 +30,84 @@ object UpdateChecker {
         data class Error(val error: UiText) : CheckResult()
     }
 
+    data class ChangelogSection(
+        val title: String?,
+        val items: List<String>
+    )
+
+    data class ParsedChangelog(
+        val sections: List<ChangelogSection>,
+        val compareUrl: String? = null
+    )
+
+    private val FULL_CHANGELOG_REGEX = Regex("""(?i)^\s*\*{0,2}Full Changelog\*{0,2}:\s*(https?://\S+)\s*$""")
+    private val HEADER_REGEX = Regex("""^\s*#{1,6}\s+(.+?)\s*$""")
+    private val BULLET_REGEX = Regex("""^\s*[-*•]\s+(.+?)\s*$""")
+    private val BOLD_REGEX = Regex("""\*\*(.+?)\*\*|__(.+?)__""")
+    private val CODE_REGEX = Regex("""`([^`]+)`""")
+    private val LINK_REGEX = Regex("""\[([^\]]+)]\((https?://[^)]+)\)""")
+
+    fun cleanInlineMarkdown(text: String): String {
+        return text
+            .replace(LINK_REGEX, "$1")
+            .replace(BOLD_REGEX) { match -> match.groupValues[1].ifEmpty { match.groupValues[2] } }
+            .replace(CODE_REGEX, "$1")
+            .trim()
+    }
+
+    fun parseChangelog(rawBody: String?): ParsedChangelog {
+        if (rawBody.isNullOrBlank()) return ParsedChangelog(emptyList(), null)
+
+        val lines = rawBody.replace("\r\n", "\n").replace('\r', '\n').lines()
+        val sections = mutableListOf<ChangelogSection>()
+        var currentTitle: String? = null
+        var currentItems = mutableListOf<String>()
+        var compareUrl: String? = null
+
+        fun flushSection() {
+            if (currentTitle != null || currentItems.isNotEmpty()) {
+                sections.add(ChangelogSection(currentTitle, currentItems.toList()))
+                currentTitle = null
+                currentItems = mutableListOf()
+            }
+        }
+
+        for (rawLine in lines) {
+            val line = rawLine.trim()
+            if (line.isEmpty()) continue
+
+            val fullChangelogMatch = FULL_CHANGELOG_REGEX.matchEntire(line)
+            if (fullChangelogMatch != null) {
+                compareUrl = fullChangelogMatch.groupValues[1]
+                continue
+            }
+
+            val headerMatch = HEADER_REGEX.matchEntire(line)
+            if (headerMatch != null) {
+                flushSection()
+                currentTitle = cleanInlineMarkdown(headerMatch.groupValues[1])
+                continue
+            }
+
+            val bulletMatch = BULLET_REGEX.matchEntire(line)
+            if (bulletMatch != null) {
+                val cleaned = cleanInlineMarkdown(bulletMatch.groupValues[1])
+                if (cleaned.isNotEmpty()) {
+                    currentItems.add(cleaned)
+                }
+                continue
+            }
+
+            val cleanedLine = cleanInlineMarkdown(line)
+            if (cleanedLine.isNotEmpty()) {
+                currentItems.add(cleanedLine)
+            }
+        }
+
+        flushSection()
+        return ParsedChangelog(sections, compareUrl)
+    }
+
     private val client: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)

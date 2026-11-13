@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:clipToPadding="false"
+    android:padding="22dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/restore_dialog_title"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
         <!-- Backup Info Card -->
@@ -25,8 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="14dp"
+            app:cardBackgroundColor="@color/surface_variant"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -35,13 +36,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="14dp">
 
                 <TextView
                     android:id="@+id/tvRestoreCreated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -50,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -58,7 +59,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="10dp"
+            android:letterSpacing="0.06"
             android:text="@string/restore_select_items"
             android:textColor="@color/primary"
             android:textSize="12sp"
@@ -71,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -80,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="14dp">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbRestoreSettings"
@@ -88,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/restore_settings_title"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -97,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -109,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -118,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="14dp">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbRestoreTransactions"
@@ -126,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/restore_transactions_title"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -135,7 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
                 <!-- Merge Sub-Option -->
@@ -153,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:text="@string/restore_merge_title"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:textColor="@color/text_primary"
                         android:textSize="13sp" />
 
                     <TextView
@@ -162,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:text="@string/restore_merge_desc"
-                        android:textColor="?android:attr/textColorSecondary"
+                        android:textColor="@color/text_secondary"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -177,14 +179,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelRestore"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.ActualApp.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnConfirmRestore"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/Widget.ActualApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

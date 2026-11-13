@@ -46,6 +46,9 @@ data class AppSettingsBackup(
     @SerializedName("dismissOriginalNotification")
     val dismissOriginalNotification: Boolean = false,
 
+    @SerializedName("autoCheckUpdates")
+    val autoCheckUpdates: Boolean = true,
+
     @SerializedName("parsingRules")
     val parsingRules: List<ParsingRule> = emptyList()
 ) : Serializable

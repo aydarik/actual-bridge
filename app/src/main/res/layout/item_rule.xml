@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
+    app:rippleColor="@color/primary_light"
     app:strokeColor="@color/card_stroke"
     app:strokeWidth="1dp">
 
@@ -25,6 +29,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -33,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/rule_name_default"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -42,8 +47,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="12sp" />
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    tools:text="App: *" />
             </LinearLayout>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -56,17 +62,21 @@
             android:id="@+id/tvRegexPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_rounded_light"
+            android:ellipsize="end"
             android:fontFamily="monospace"
-            android:padding="8dp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="11sp" />
+            android:maxLines="3"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            tools:text="(?i)(?:paid|spent)\s*\$?(?&lt;amount>[0-9.,]+)" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -74,14 +84,13 @@
                 android:id="@+id/tvAccountBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_rounded_light"
-                android:paddingStart="8dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="2dp"
+                android:background="@drawable/bg_badge_primary"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Checking • payment" />
 
             <View
                 android:layout_width="0dp"
@@ -90,18 +99,20 @@
 
             <ImageButton
                 android:id="@+id/btnEditRule"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/edit_rule_title"
                 android:src="@drawable/ic_edit"
-                app:tint="?android:attr/textColorSecondary" />
+                app:tint="@color/text_secondary" />
 
             <ImageButton
                 android:id="@+id/btnDeleteRule"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/delete_rule_title"
                 android:src="@drawable/ic_delete"
                 app:tint="@color/danger" />
         </LinearLayout>

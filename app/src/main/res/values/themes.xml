@@ -6,8 +6,8 @@
         <item name="colorPrimaryVariant">@color/primary_variant</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color -->
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorSecondary">@color/primary</item>
+        <item name="colorSecondaryVariant">@color/primary_variant</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Backgrounds -->
         <item name="android:windowBackground">@color/background</item>
@@ -15,7 +15,14 @@
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
-        <!-- TextInputLayout: visible unfocused stroke & filled background -->
+        <item name="android:navigationBarColor">@color/background</item>
+        <!-- Modern Component Defaults -->
+        <item name="textInputStyle">@style/Widget.ActualApp.TextInputLayout.OutlinedBox</item>
+        <item name="materialButtonStyle">@style/Widget.ActualApp.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.ActualApp.Button.OutlinedButton</item>
+        <item name="borderlessButtonStyle">@style/Widget.ActualApp.Button.TextButton</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ActualApp.MaterialAlertDialog</item>
+        <item name="switchStyle">@style/Widget.ActualApp.Switch</item>
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxBackgroundColor">@color/text_input_box_background</item>
         <item name="hintTextColor">?colorPrimary</item>
@@ -26,8 +33,8 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_variant</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorSecondary">@color/primary</item>
+        <item name="colorSecondaryVariant">@color/primary_variant</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorSurface">@color/surface</item>
         <item name="android:colorBackground">@color/background</item>
@@ -37,10 +44,16 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.ActualApp.BottomSheet</item>
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.55</item>
+        <item name="android:backgroundDimAmount">0.40</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="textInputStyle">@style/Widget.ActualApp.TextInputLayout.OutlinedBox</item>
+        <item name="materialButtonStyle">@style/Widget.ActualApp.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.ActualApp.Button.OutlinedButton</item>
+        <item name="borderlessButtonStyle">@style/Widget.ActualApp.Button.TextButton</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ActualApp.MaterialAlertDialog</item>
+        <item name="switchStyle">@style/Widget.ActualApp.Switch</item>
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxBackgroundColor">@color/text_input_box_background</item>
         <item name="hintTextColor">?colorPrimary</item>
@@ -59,5 +72,76 @@
         <item name="cornerSizeTopRight">24dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="ShapeAppearance.ActualApp.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="Widget.ActualApp.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxBackgroundColor">@color/text_input_box_background</item>
+        <item name="hintTextColor">?colorPrimary</item>
+    </style>
+
+    <style name="Widget.ActualApp.TextInputLayout.OutlinedBox.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxBackgroundColor">@color/text_input_box_background</item>
+        <item name="hintTextColor">?colorPrimary</item>
+    </style>
+
+    <style name="Widget.ActualApp.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="elevation">0dp</item>
+        <item name="backgroundTint">@color/btn_primary_bg_tint</item>
+        <item name="android:textColor">@color/btn_primary_text_color</item>
+        <item name="iconTint">@color/btn_primary_text_color</item>
+    </style>
+
+    <style name="Widget.ActualApp.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="strokeColor">@color/btn_outlined_stroke_color</item>
+    </style>
+
+    <style name="Widget.ActualApp.Button.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="backgroundTint">@color/btn_toggle_bg_tint</item>
+        <item name="strokeColor">@color/btn_toggle_stroke_color</item>
+        <item name="android:textColor">@color/btn_toggle_text_color</item>
+        <item name="iconTint">@color/btn_toggle_text_color</item>
+    </style>
+
+    <style name="Widget.ActualApp.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="Widget.ActualApp.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="useMaterialThemeColors">false</item>
+        <item name="thumbTint">@color/switch_thumb_tint</item>
+        <item name="trackTint">@color/switch_track_tint</item>
+    </style>
+
+    <style name="ThemeOverlay.ActualApp.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ActualApp.Dialog</item>
+        <item name="backgroundInsetTop">16dp</item>
+        <item name="backgroundInsetBottom">16dp</item>
+        <item name="colorSurface">@color/surface</item>
     </style>
 </resources>

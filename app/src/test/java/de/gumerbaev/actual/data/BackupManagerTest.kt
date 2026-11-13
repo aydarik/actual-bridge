@@ -64,7 +64,8 @@ class BackupManagerTest {
             transactions = transactions,
             includeSettings = true,
             includeTransactions = true,
-            appVersion = "1.2.0"
+            appVersion = "1.2.0",
+            autoCheckUpdates = false
         )
 
         assertEquals(BackupData.CURRENT_VERSION, backupData.version)
@@ -75,6 +76,7 @@ class BackupManagerTest {
         assertEquals("test-token-123", backupData.settings?.apiToken)
         assertTrue(backupData.settings?.attachLocation == true)
         assertTrue(backupData.settings?.autoSend == true)
+        assertEquals(false, backupData.settings?.autoCheckUpdates)
         assertEquals(1, backupData.settings?.parsingRules?.size)
         assertEquals(1, backupData.transactions?.size)
 
@@ -89,6 +91,7 @@ class BackupManagerTest {
         assertEquals("1.2.0", deserialized.appVersion)
         assertEquals(backupData.settings?.serverUrl, deserialized.settings?.serverUrl)
         assertEquals(backupData.settings?.apiToken, deserialized.settings?.apiToken)
+        assertEquals(false, deserialized.settings?.autoCheckUpdates)
         assertEquals(1, deserialized.settings?.parsingRules?.size)
         assertEquals(1, deserialized.transactions?.size)
     }

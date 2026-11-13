@@ -91,4 +91,51 @@ class UpdateCheckerTest {
         assertTrue(UpdateChecker.shouldAutoCheck(now - oneDayMs, now))
         assertTrue(UpdateChecker.shouldAutoCheck(now - (2 * oneDayMs), now))
     }
+
+    @Test
+    fun testParseChangelogTemplate() {
+        val body = "### Added\r\n- Optional account group to parse from the notification.\r\n- Automatically check for new versions.\r\n\r\n**Full Changelog**: https://github.com/aydarik/actual-bridge/compare/v1.0.7...v1.0.8"
+        val parsed = UpdateChecker.parseChangelog(body)
+
+        assertEquals(1, parsed.sections.size)
+        assertEquals("Added", parsed.sections[0].title)
+        assertEquals(
+            listOf(
+                "Optional account group to parse from the notification.",
+                "Automatically check for new versions."
+            ),
+            parsed.sections[0].items
+        )
+        assertEquals(
+            "https://github.com/aydarik/actual-bridge/compare/v1.0.7...v1.0.8",
+            parsed.compareUrl
+        )
+
+        val multiSection = """
+            ### Fixed
+            * Resolved crash when `amount` is **missing**.
+            - See [details](https://example.com/issue/1).
+
+            ## Changed
+            Improved **UI** contrast.
+        """.trimIndent()
+        val parsedMulti = UpdateChecker.parseChangelog(multiSection)
+        assertEquals(2, parsedMulti.sections.size)
+        assertEquals("Fixed", parsedMulti.sections[0].title)
+        assertEquals(
+            listOf(
+                "Resolved crash when amount is missing.",
+                "See details."
+            ),
+            parsedMulti.sections[0].items
+        )
+        assertEquals("Changed", parsedMulti.sections[1].title)
+        assertEquals(listOf("Improved UI contrast."), parsedMulti.sections[1].items)
+        assertNull(parsedMulti.compareUrl)
+
+        val plain = UpdateChecker.parseChangelog("Simple plain text release notes.")
+        assertEquals(1, plain.sections.size)
+        assertNull(plain.sections[0].title)
+        assertEquals(listOf("Simple plain text release notes."), plain.sections[0].items)
+    }
 }

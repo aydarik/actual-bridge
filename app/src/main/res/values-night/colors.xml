@@ -1,45 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand colors for Dark Theme -->
-    <color name="primary">#818CF8</color>
-    <color name="primary_variant">#6366F1</color>
-    <color name="primary_light">#1E1B4B</color>
+    <!-- Brand colors for Dark Theme (Bright Sky Blue & Mint-Emerald) -->
+    <color name="primary">#60A5FA</color>
+    <color name="primary_variant">#3B82F6</color>
+    <color name="primary_light">#283A5E</color>
+    <color name="primary_stroke">#3B5998</color>
     <color name="secondary">#34D399</color>
-    <color name="secondary_variant">#10B981</color>
-    <color name="secondary_light">#064E3B</color>
-    <color name="secondary_stroke">#065F46</color>
+    <color name="secondary_light">#19423B</color>
+    <color name="secondary_stroke">#236B5D</color>
 
-    <!-- Backgrounds & Surfaces (Dark Slate) -->
-    <color name="background">#0F172A</color>
-    <color name="surface">#1E293B</color>
-    <color name="card_stroke">#334155</color>
+    <!-- Backgrounds & Surfaces (Soft Lifted Slate) -->
+    <color name="background">#182030</color>
+    <color name="surface">#222C40</color>
+    <color name="surface_variant">#2A364F</color>
+    <color name="card_stroke">#354463</color>
 
     <!-- Text colors -->
     <color name="text_primary">#F8FAFC</color>
-    <color name="text_secondary">#94A3B8</color>
-    <color name="text_muted">#64748B</color>
+    <color name="text_secondary">#CBD5E1</color>
+    <color name="text_muted">#94A3B8</color>
 
     <!-- Status & Alerts -->
-    <color name="success">#34D399</color>
     <color name="danger">#F87171</color>
-    <color name="danger_light">#450A0A</color>
-    <color name="danger_stroke">#7F1D1D</color>
+    <color name="danger_light">#45222A</color>
+    <color name="danger_stroke">#82333D</color>
     <color name="warning">#FBBF24</color>
-    <color name="warning_light">#451A03</color>
+    <color name="warning_light">#453418</color>
+    <color name="warning_stroke">#805B20</color>
 
-    <!-- Input Fields (Dark Theme: recessed & distinct) -->
-    <color name="input_background">#0F172A</color>
-    <color name="input_background_focused">#1E293B</color>
-    <color name="input_stroke">#475569</color>
+    <!-- Input Fields (Softly elevated above card surface) -->
+    <color name="input_background">#29354D</color>
+    <color name="input_background_focused">#303E5A</color>
+    <color name="input_stroke">#475878</color>
     <color name="input_stroke_hover">#64748B</color>
-    <color name="input_stroke_focused">#818CF8</color>
+    <color name="input_stroke_focused">#60A5FA</color>
 
-    <!-- Legacy compatibility colors -->
-    <color name="purple_200">#818CF8</color>
-    <color name="purple_500">#6366F1</color>
-    <color name="purple_700">#4F46E5</color>
-    <color name="teal_200">#34D399</color>
-    <color name="teal_700">#10B981</color>
-    <color name="black">#000000</color>
+    <!-- Base constants -->
     <color name="white">#FFFFFF</color>
 </resources>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:clipToPadding="false"
+    android:padding="22dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/edit_rule_title"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
         <TextView
@@ -25,12 +27,12 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:text="@string/edit_rule_desc"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
         <!-- Rule Name -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -45,12 +47,12 @@
 
         <!-- Target App Package -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="@string/edit_rule_target_helper"
-            android:hint="@string/edit_rule_target">
+            android:hint="@string/edit_rule_target"
+            app:helperText="@string/edit_rule_target_helper">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTargetPackage"
@@ -61,12 +63,12 @@
 
         <!-- Title Regex -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="@string/edit_rule_title_regex_helper"
-            android:hint="@string/edit_rule_title_regex">
+            android:hint="@string/edit_rule_title_regex"
+            app:helperText="@string/edit_rule_title_regex_helper">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitleRegex"
@@ -78,12 +80,12 @@
 
         <!-- Text Regex -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="@string/edit_rule_text_regex_helper"
-            android:hint="@string/edit_rule_text_regex">
+            android:hint="@string/edit_rule_text_regex"
+            app:helperText="@string/edit_rule_text_regex_helper">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTextRegex"
@@ -103,7 +105,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
@@ -117,7 +119,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
@@ -133,12 +135,12 @@
 
         <!-- Account Group (Optional) -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:helperText="@string/edit_rule_account_group_helper"
-            android:hint="@string/edit_rule_account_group">
+            android:hint="@string/edit_rule_account_group"
+            app:helperText="@string/edit_rule_account_group_helper">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAccountGroup"
@@ -150,12 +152,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="20dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
@@ -169,7 +171,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
@@ -180,7 +182,8 @@
                     android:id="@+id/actvDefaultType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -193,14 +196,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelRule"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.ActualApp.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveRule"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/Widget.ActualApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

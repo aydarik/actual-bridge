@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:clipToPadding="false"
+    android:padding="22dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/backup_dialog_title"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
         <TextView
@@ -26,7 +27,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:text="@string/backup_dialog_desc"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
         <!-- Settings & Rules Option -->
@@ -35,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -44,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="14dp">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbBackupSettings"
@@ -52,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/backup_include_settings"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -61,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/card_stroke"
             app:strokeWidth="1dp">
@@ -81,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="14dp">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbBackupTransactions"
@@ -89,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="@string/backup_include_transactions"
-                    android:textColor="?android:attr/textColorPrimary"
+                    android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -98,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -109,8 +110,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_status_warning"
+            android:padding="10dp"
             android:text="@string/backup_credentials_notice"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/warning"
             android:textSize="12sp" />
 
         <!-- Buttons -->
@@ -122,14 +125,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelBackup"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.ActualApp.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnConfirmBackup"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/Widget.ActualApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

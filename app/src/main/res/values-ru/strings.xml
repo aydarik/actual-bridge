@@ -125,9 +125,8 @@
     <string name="bg_location_required">Для определения местоположения при закрытом приложении нужно разрешение «Разрешить всегда»</string>
     <string name="location_permission_required">Для добавления GPS-координат нужно разрешение на местоположение</string>
     <string name="connection_success_title">Соединение установлено!</string>
-    <string name="connection_success_message">Сервер доступен и принял тестовый запрос.</string>
     <string name="connection_failed_title">Не удалось подключиться</string>
-    <string name="connection_failed_message">Не удалось подключиться к %1$s.\n\nОшибка:\n%2$s</string>
+    <string name="settings_testing_connection">Проверка соединения…</string>
     <string name="ok">OK</string>
     <string name="notif_send_failed_title">Не удалось отправить транзакцию</string>
     <string name="unknown_error">Неизвестная ошибка</string>
@@ -155,19 +154,22 @@
 
     <string name="settings_about_header">ОБНОВЛЕНИЯ</string>
     <string name="settings_about_desc">Проверка новых версий и управление обновлениями</string>
+    <string name="settings_auto_check_update">Проверять обновления автоматически</string>
+    <string name="settings_auto_check_update_desc">Проверять наличие новых версий на GitHub при запуске</string>
     <string name="settings_app_version">Версия %1$s</string>
     <string name="settings_check_update">Проверить обновления</string>
     <string name="settings_checking_updates">Проверка обновлений…</string>
     <string name="settings_view_releases">Релизы на GitHub</string>
     <string name="update_available_title">Доступно обновление</string>
-    <string name="update_available_msg">Доступна новая версия Actual Budget Bridge.\n\nТекущая: %1$s\nНовая: %2$s</string>
+    <string name="update_available_subtitle">Доступна новая версия Actual Budget Bridge</string>
+    <string name="update_whats_new">ЧТО НОВОГО</string>
+    <string name="update_full_changelog">Все изменения</string>
     <string name="update_latest_title">Обновлений не требуется</string>
     <string name="update_latest_msg">Вы уже используете самую последнюю версию (%1$s).</string>
     <string name="update_check_failed_title">Не удалось проверить обновления</string>
     <string name="update_check_failed_msg">Не удалось получить данные о релизах с GitHub: %1$s\n\nОткрыть страницу релизов в браузере?</string>
     <string name="update_download_apk">Скачать APK</string>
     <string name="update_open_release">Открыть релиз</string>
-    <string name="update_changelog_header">\n\nСписок изменений:\n%1$s</string>
 
     <string name="settings_backup_header">РЕЗЕРВНОЕ КОПИРОВАНИЕ И ВОССТАНОВЛЕНИЕ</string>
     <string name="settings_backup_desc">Экспорт и импорт настроек, правил разбора и журнала транзакций</string>
@@ -204,5 +206,8 @@
     <string name="restore_summary_transactions">• Восстановлено транзакций: %1$d</string>
     <string name="restore_error_title">Ошибка восстановления</string>
     <string name="restore_error_invalid_file">Выбранный файл не является корректной резервной копией Actual Budget Bridge или повреждён.\n\nОшибка: %1$s</string>
-    <string name="restore_nothing_selected">Выберите хотя бы один пункт для восстановления.</string>
+
+    <string name="service_status_active">Служба активна</string>
+    <string name="service_status_inactive">Требуется настройка</string>
+    <string name="transactions_empty_title">Пока нет транзакций</string>
 </resources>

@@ -1,11 +1,10 @@
 package de.gumerbaev.actual.ui.adapter
 
-import android.annotation.SuppressLint
-import de.gumerbaev.actual.R
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import de.gumerbaev.actual.R
 import de.gumerbaev.actual.databinding.ItemRuleBinding
 import de.gumerbaev.actual.model.ParsingRule
 
@@ -27,7 +26,10 @@ class RulesAdapter(
         val rule = rules[position]
         with(holder.binding) {
             tvRuleName.text = rule.name
-            tvTargetPackage.text = root.context.getString(R.string.rule_app, if (rule.targetPackage.isBlank()) "*" else rule.targetPackage)
+            tvTargetPackage.text = root.context.getString(
+                R.string.rule_app,
+                if (rule.targetPackage.isBlank()) "*" else rule.targetPackage
+            )
             tvRegexPreview.text = rule.textRegex
             val accountLabel = when {
                 rule.account.isNotBlank() && rule.accountGroup.isNotBlank() -> "${rule.account} (?<${rule.accountGroup}>)"
@@ -37,13 +39,17 @@ class RulesAdapter(
             }
             tvAccountBadge.text = if (accountLabel.isNotBlank()) "$accountLabel • ${rule.defaultType}" else rule.defaultType
 
+            root.alpha = if (rule.enabled) 1.0f else 0.65f
+
             switchEnabled.setOnCheckedChangeListener(null)
             switchEnabled.isChecked = rule.enabled
             switchEnabled.setOnCheckedChangeListener { _, isChecked ->
                 rule.enabled = isChecked
+                root.animate().alpha(if (isChecked) 1.0f else 0.65f).setDuration(150).start()
                 onToggleEnabled(rule, isChecked)
             }
 
+            root.setOnClickListener { onEdit(rule) }
             btnEditRule.setOnClickListener { onEdit(rule) }
             btnDeleteRule.setOnClickListener { onDelete(rule) }
         }
@@ -51,10 +57,23 @@ class RulesAdapter(
 
     override fun getItemCount(): Int = rules.size
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newRules: List<ParsingRule>) {
+        val oldList = rules.map { it.copy() }
+        val newList = newRules.map { it.copy() }
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldList.size
+            override fun getNewListSize(): Int = newList.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldList[oldItemPosition].id == newList[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldList[oldItemPosition] == newList[newItemPosition]
+            }
+        })
         rules.clear()
         rules.addAll(newRules)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }

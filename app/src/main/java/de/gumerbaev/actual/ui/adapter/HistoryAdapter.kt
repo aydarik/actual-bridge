@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.databinding.ItemHistoryBinding
@@ -99,9 +100,15 @@ class HistoryAdapter(
             val amountFormatted = "%.2f".format(Locale.US, tx.amount?.let { abs(it) } ?: 0.0)
 
             if (isDeposit) {
+                layoutHistoryTypeIcon.setBackgroundResource(R.drawable.bg_icon_circle_secondary)
+                ivHistoryTypeIcon.setImageResource(R.drawable.ic_arrow_down_left)
+                ivHistoryTypeIcon.setColorFilter(ContextCompat.getColor(context, R.color.secondary))
                 tvHistoryAmount.text = "+$amountFormatted"
                 tvHistoryAmount.setTextColor(ContextCompat.getColor(context, R.color.secondary))
             } else {
+                layoutHistoryTypeIcon.setBackgroundResource(R.drawable.bg_icon_circle)
+                ivHistoryTypeIcon.setImageResource(R.drawable.ic_arrow_up_right)
+                ivHistoryTypeIcon.setColorFilter(ContextCompat.getColor(context, R.color.primary))
                 tvHistoryAmount.text = "-$amountFormatted"
                 tvHistoryAmount.setTextColor(ContextCompat.getColor(context, R.color.text_primary))
             }
@@ -130,11 +137,15 @@ class HistoryAdapter(
                 }
                 else -> {
                     tvHistoryStatus.text = context.getString(R.string.status_parsed)
-                    tvHistoryStatus.setBackgroundResource(R.drawable.bg_rounded_light)
-                    tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.primary))
+                    tvHistoryStatus.setBackgroundResource(R.drawable.bg_status_warning)
+                    tvHistoryStatus.setTextColor(ContextCompat.getColor(context, R.color.warning))
                     btnHistoryResend.text = context.getString(R.string.btn_send)
                     btnHistoryResend.isEnabled = true
                 }
+            }
+
+            root.setOnClickListener {
+                onResend(record)
             }
 
             btnHistoryResend.setOnClickListener {
@@ -145,10 +156,29 @@ class HistoryAdapter(
 
     override fun getItemCount(): Int = rows.size
 
-    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newRecords: List<TransactionRecord>) {
-        rows = buildRows(newRecords)
-        notifyDataSetChanged()
+        val oldRows = rows
+        val newRows = buildRows(newRecords)
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldRows.size
+            override fun getNewListSize(): Int = newRows.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldItem = oldRows[oldItemPosition]
+                val newItem = newRows[newItemPosition]
+                return when {
+                    oldItem is Row.Header && newItem is Row.Header -> oldItem.title == newItem.title
+                    oldItem is Row.Item && newItem is Row.Item -> oldItem.record.id == newItem.record.id
+                    else -> false
+                }
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldRows[oldItemPosition] == newRows[newItemPosition]
+            }
+        })
+        rows = newRows
+        diffResult.dispatchUpdatesTo(this)
     }
 
     companion object {

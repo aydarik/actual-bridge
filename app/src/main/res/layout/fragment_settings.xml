@@ -2,14 +2,19 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp">
 
         <!-- SECTION: SYSTEM PERMISSIONS -->
         <com.google.android.material.card.MaterialCardView
@@ -31,6 +36,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/settings_perm_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -41,14 +47,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/settings_perm_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp"
                     android:background="@color/card_stroke" />
 
                 <!-- Notification Access -->
@@ -58,9 +64,26 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <FrameLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_notifications"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -68,7 +91,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/settings_notif_access"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
 
@@ -76,6 +99,7 @@
                             android:id="@+id/tvNotificationStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:text="@string/settings_notif_disabled_short"
                             android:textColor="@color/danger"
                             android:textSize="12sp" />
@@ -83,23 +107,43 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGrantNotification"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.ActualApp.Button.OutlinedButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/settings_configure" />
+                        android:layout_height="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/settings_configure"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <!-- Overlay Permission -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:importantForAccessibility="noHideDescendants">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -107,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/settings_overlay_title"
-                            android:textColor="?android:attr/textColorPrimary"
+                            android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
 
@@ -115,17 +159,21 @@
                             android:id="@+id/tvOverlayStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:text="@string/settings_overlay_desc"
-                            android:textColor="?android:attr/textColorSecondary"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGrantOverlay"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        style="@style/Widget.ActualApp.Button.OutlinedButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/settings_configure" />
+                        android:layout_height="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/settings_configure"
+                        android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -150,6 +198,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/settings_server_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -161,11 +210,11 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="16dp"
                     android:text="@string/settings_server_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
@@ -180,11 +229,12 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:hint="@string/settings_api_token">
+                    android:hint="@string/settings_api_token"
+                    app:endIconMode="password_toggle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etApiToken"
@@ -195,7 +245,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTestConnection"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.ActualApp.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="@string/settings_test_connection"
@@ -203,7 +253,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-
+        <!-- SECTION: LANGUAGE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,6 +273,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/settings_language_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -232,15 +283,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="14dp"
                     android:text="@string/settings_language_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <Spinner
                     android:id="@+id/spinnerLanguage"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/bg_spinner"
                     android:contentDescription="@string/settings_language_label"
                     android:paddingStart="16dp"
@@ -269,6 +320,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/settings_backup_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -278,9 +330,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/settings_backup_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <TextView
@@ -288,13 +340,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_light"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
                     android:text="@string/settings_no_backup_yet"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCreateBackup"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.ActualApp.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="@string/btn_create_backup"
@@ -302,7 +357,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRestoreBackup"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.ActualApp.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="8dp"
@@ -315,7 +370,6 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
@@ -331,6 +385,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.06"
                     android:text="@string/settings_about_header"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
@@ -341,7 +396,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/settings_about_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <LinearLayout
@@ -356,9 +411,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:textColor="@color/text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Version 1.0.8" />
 
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/progressCheckUpdate"
@@ -373,13 +429,56 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@color/card_stroke" />
+
+                <LinearLayout
+                    android:id="@+id/rowAutoCheckUpdates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:orientation="horizontal"
+                    android:paddingVertical="6dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_auto_check_update"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:text="@string/settings_auto_check_update_desc"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchAutoCheckUpdates"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCheckUpdate"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.ActualApp.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:text="@string/settings_check_update"
@@ -387,7 +486,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnViewReleases"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/Widget.ActualApp.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"

@@ -1,7 +1,7 @@
 package de.gumerbaev.actual.ui
 
-import android.app.DatePickerDialog
 import android.app.NotificationManager
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
@@ -13,18 +13,22 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.MaterialDatePicker
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.databinding.ActivityConfirmTransactionBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
 import de.gumerbaev.actual.network.ActualApiClient
+import de.gumerbaev.actual.receiver.NotificationActionReceiver
+import de.gumerbaev.actual.service.ActualNotificationListenerService
 import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -154,6 +158,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         binding.etAmount.setText(tx.amount?.let { "%.2f".format(Locale.US, abs(it)) })
         binding.etAccount.setText(tx.account)
         binding.etDate.setText(tx.date ?: ActualTransaction.todayFormatted())
+        binding.etNotes.setText(tx.notes)
 
         if (tx.type == ActualTransaction.TYPE_DEPOSIT) {
             binding.toggleTypeGroup.check(R.id.btnTypeDeposit)
@@ -199,6 +204,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
         binding.btnDiscard.setOnClickListener {
             recordId?.let { id ->
                 prefs.updateHistoryRecord(id, TransactionRecord.STATUS_DISCARDED)
+                notifyTransactionUpdated(id)
             }
             cancelNotification()
             Toast.makeText(this, getString(R.string.transaction_discarded), Toast.LENGTH_SHORT).show()
@@ -268,28 +274,28 @@ class ConfirmTransactionActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
-        val parts = binding.etDate.text?.toString()?.split("-")
-        if (parts != null && parts.size == 3) {
-            parts[0].toIntOrNull()?.let { calendar.set(Calendar.YEAR, it) }
-            parts[1].toIntOrNull()?.let { calendar.set(Calendar.MONTH, it - 1) }
-            parts[2].toIntOrNull()?.let { calendar.set(Calendar.DAY_OF_MONTH, it) }
+        val utc = TimeZone.getTimeZone("UTC")
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { timeZone = utc }
+        val currentText = binding.etDate.text?.toString()?.trim()
+        val initialSelection = if (!currentText.isNullOrBlank()) {
+            try {
+                sdf.parse(currentText)?.time ?: MaterialDatePicker.todayInUtcMilliseconds()
+            } catch (_: Exception) {
+                MaterialDatePicker.todayInUtcMilliseconds()
+            }
+        } else {
+            MaterialDatePicker.todayInUtcMilliseconds()
         }
 
-        val dpd = DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                val selectedCalendar = Calendar.getInstance().apply {
-                    set(year, month, dayOfMonth)
-                }
-                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                binding.etDate.setText(sdf.format(selectedCalendar.time))
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        dpd.show()
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(R.string.confirm_date)
+            .setSelection(initialSelection)
+            .build()
+
+        picker.addOnPositiveButtonClickListener { selection ->
+            binding.etDate.setText(sdf.format(Date(selection)))
+        }
+        picker.show(supportFragmentManager, "transaction_date_picker")
     }
 
     private fun sendTransaction() {
@@ -352,6 +358,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
             if (result.success) {
                 recordId?.let { id ->
                     prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT, finalTx)
+                    notifyTransactionUpdated(id)
                 }
                 cancelNotification()
 
@@ -366,6 +373,7 @@ class ConfirmTransactionActivity : AppCompatActivity() {
             } else {
                 recordId?.let { id ->
                     prefs.updateHistoryRecord(id, TransactionRecord.STATUS_FAILED)
+                    notifyTransactionUpdated(id)
                 }
                 binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_error)
                 binding.tvStatusMessage.setTextColor(getColor(R.color.danger))
@@ -373,6 +381,14 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 binding.tvStatusMessage.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun notifyTransactionUpdated(id: String) {
+        val updateIntent = Intent(ActualNotificationListenerService.ACTION_TRANSACTION_PARSED).apply {
+            putExtra(NotificationActionReceiver.EXTRA_RECORD_ID, id)
+            setPackage(packageName)
+        }
+        sendBroadcast(updateIntent)
     }
 
     private fun cancelNotification() {

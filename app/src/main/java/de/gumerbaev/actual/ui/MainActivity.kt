@@ -7,14 +7,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.LeadingMarginSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -22,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import de.gumerbaev.actual.BuildConfig
 import de.gumerbaev.actual.R
@@ -29,6 +35,7 @@ import de.gumerbaev.actual.data.AppPreferences
 import de.gumerbaev.actual.databinding.ActivityMainBinding
 import de.gumerbaev.actual.databinding.DialogEditRuleBinding
 import de.gumerbaev.actual.databinding.DialogTestParserBinding
+import de.gumerbaev.actual.databinding.DialogUpdateAvailableBinding
 import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.ParsingRule
 import de.gumerbaev.actual.network.ActualApiClient
@@ -109,10 +116,14 @@ class MainActivity : AppCompatActivity() {
         prefs = AppPreferences(this)
 
         setupViewPagerAndTabs()
+        binding.tvServiceStatusPill.setOnClickListener {
+            binding.viewPager.currentItem = 2
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        updateServiceStatusPill()
         getSettingsFragment()?.updatePermissionStatuses()
         getTransactionsFragment()?.loadHistory()
 
@@ -128,6 +139,19 @@ class MainActivity : AppCompatActivity() {
             unregisterReceiver(transactionUpdateReceiver)
         } catch (_: Exception) {
             // Ignored
+        }
+    }
+
+    private fun updateServiceStatusPill() {
+        val isActive = ActualNotificationListenerService.isNotificationServiceEnabled(this)
+        if (isActive) {
+            binding.tvServiceStatusPill.text = getString(R.string.service_status_active)
+            binding.tvServiceStatusPill.setBackgroundResource(R.drawable.bg_status_success)
+            binding.tvServiceStatusPill.setTextColor(ContextCompat.getColor(this, R.color.secondary))
+        } else {
+            binding.tvServiceStatusPill.text = getString(R.string.service_status_inactive)
+            binding.tvServiceStatusPill.setBackgroundResource(R.drawable.bg_status_warning)
+            binding.tvServiceStatusPill.setTextColor(ContextCompat.getColor(this, R.color.warning))
         }
     }
 
@@ -191,31 +215,18 @@ class MainActivity : AppCompatActivity() {
         requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
-    fun testConnection(serverUrl: String, apiToken: String, onComplete: () -> Unit) {
+    fun testConnection(serverUrl: String, apiToken: String, onResult: (ActualApiClient.ApiResult) -> Unit) {
         prefs.serverUrl = serverUrl
         prefs.apiToken = apiToken
 
         lifecycleScope.launch {
             val result = ActualApiClient.testConnection(prefs.serverUrl, prefs.apiToken)
-            onComplete()
-
-            if (result.success || result.httpCode == 400) {
-                AlertDialog.Builder(this@MainActivity)
-                    .setTitle(getString(R.string.connection_success_title))
-                    .setMessage(getString(R.string.connection_success_message))
-                    .setPositiveButton(R.string.ok, null)
-                    .show()
-            } else {
-                AlertDialog.Builder(this@MainActivity)
-                    .setTitle(getString(R.string.connection_failed_title))
-                    .setMessage(getString(R.string.connection_failed_message, prefs.serverUrl, result.error?.asString(this@MainActivity) ?: getString(R.string.unknown_error)))
-                    .setPositiveButton(R.string.ok, null)
-                    .show()
-            }
+            onResult(result)
         }
     }
 
     private fun checkForUpdatesIfNeeded() {
+        if (!prefs.autoCheckUpdates) return
         val now = System.currentTimeMillis()
         if (!UpdateChecker.shouldAutoCheck(prefs.lastUpdateCheckTimestamp, now)) return
 
@@ -228,30 +239,87 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun showUpdateAvailableDialog(result: UpdateChecker.CheckResult.NewUpdate) {
-        val messageBuilder = StringBuilder()
-        messageBuilder.append(
-            getString(R.string.update_available_msg, result.currentVersion, result.release.tagName)
-        )
-        if (!result.release.body.isNullOrBlank()) {
-            messageBuilder.append(
-                getString(R.string.update_changelog_header, result.release.body.trim())
-            )
+        val dialogBinding = DialogUpdateAvailableBinding.inflate(LayoutInflater.from(this))
+        dialogBinding.tvCurrentVersion.text = "v${result.currentVersion.trimStart('v', 'V')}"
+        dialogBinding.tvLatestVersion.text = "v${result.release.cleanVersion}"
+
+        val parsedChangelog = UpdateChecker.parseChangelog(result.release.body)
+        if (parsedChangelog.sections.isNotEmpty()) {
+            dialogBinding.layoutChangelogSection.visibility = View.VISIBLE
+            dialogBinding.tvChangelog.text = formatChangelogText(parsedChangelog.sections)
+        } else {
+            dialogBinding.layoutChangelogSection.visibility = View.GONE
         }
 
         val hasApk = result.release.apkDownloadUrl != null
-        AlertDialog.Builder(this)
-            .setTitle(R.string.update_available_title)
-            .setMessage(messageBuilder.toString())
-            .setPositiveButton(if (hasApk) R.string.update_download_apk else R.string.update_open_release) { _, _ ->
-                val targetUrl = result.release.apkDownloadUrl ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
-                openUrl(targetUrl)
+        dialogBinding.btnUpdatePrimary.setText(
+            if (hasApk) R.string.update_download_apk else R.string.update_open_release
+        )
+
+        val changelogUrl = parsedChangelog.compareUrl
+            ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
+        dialogBinding.btnViewChangelog.setText(
+            if (parsedChangelog.compareUrl != null) R.string.update_full_changelog else R.string.settings_view_releases
+        )
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.btnUpdateCancel.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnViewChangelog.setOnClickListener {
+            dialog.dismiss()
+            openUrl(changelogUrl)
+        }
+        dialogBinding.btnUpdatePrimary.setOnClickListener {
+            val targetUrl = result.release.apkDownloadUrl
+                ?: result.release.htmlUrl.ifBlank { UpdateChecker.RELEASES_WEB_URL }
+            dialog.dismiss()
+            openUrl(targetUrl)
+        }
+
+        dialog.show()
+    }
+
+    private fun formatChangelogText(sections: List<UpdateChecker.ChangelogSection>): CharSequence {
+        val builder = SpannableStringBuilder()
+        val primaryColor = ContextCompat.getColor(this, R.color.primary)
+        val bulletIndentPx = (14 * resources.displayMetrics.density).toInt()
+
+        sections.forEachIndexed { sectionIndex, section ->
+            if (sectionIndex > 0 && builder.isNotEmpty()) {
+                builder.append("\n\n")
             }
-            .setNeutralButton(R.string.settings_view_releases) { _, _ ->
-                openUrl(UpdateChecker.RELEASES_WEB_URL)
+
+            if (!section.title.isNullOrBlank()) {
+                val titleStart = builder.length
+                builder.append(section.title)
+                val titleEnd = builder.length
+                builder.setSpan(StyleSpan(Typeface.BOLD), titleStart, titleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                builder.setSpan(ForegroundColorSpan(primaryColor), titleStart, titleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (section.items.isNotEmpty()) {
+                    builder.append("\n")
+                }
             }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+
+            section.items.forEachIndexed { itemIndex, item ->
+                if (itemIndex > 0) {
+                    builder.append("\n")
+                }
+                val itemStart = builder.length
+                builder.append("•  ").append(item)
+                val itemEnd = builder.length
+                builder.setSpan(
+                    LeadingMarginSpan.Standard(0, bulletIndentPx),
+                    itemStart,
+                    itemEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+        return builder
     }
 
     fun openUrl(url: String) {
@@ -291,7 +359,7 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.actvDefaultType.setText(ActualTransaction.TYPE_PAYMENT, false)
         }
 
-        val dialog = AlertDialog.Builder(this)
+        val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
             .create()
 
@@ -341,7 +409,7 @@ class MainActivity : AppCompatActivity() {
         val dialogBinding = DialogTestParserBinding.inflate(LayoutInflater.from(this))
         var lastParsedTransaction: ActualTransaction? = null
 
-        val dialog = AlertDialog.Builder(this)
+        val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
             .create()
 
@@ -373,12 +441,14 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.layoutTestResult.visibility = View.VISIBLE
             if (result.success && result.transaction != null) {
                 lastParsedTransaction = result.transaction
+                dialogBinding.layoutTestResult.setBackgroundResource(R.drawable.bg_status_success)
                 dialogBinding.tvTestStatus.text = getString(R.string.test_matched, result.matchedRule?.name)
                 dialogBinding.tvTestStatus.setTextColor(ContextCompat.getColor(this, R.color.secondary))
                 dialogBinding.tvTestJson.text = result.transaction.toJson()
                 dialogBinding.btnSimulatePopup.visibility = View.VISIBLE
             } else {
                 lastParsedTransaction = null
+                dialogBinding.layoutTestResult.setBackgroundResource(R.drawable.bg_status_error)
                 dialogBinding.tvTestStatus.text = getString(R.string.test_no_match, result.error?.asString(this@MainActivity).orEmpty())
                 dialogBinding.tvTestStatus.setTextColor(ContextCompat.getColor(this, R.color.danger))
                 dialogBinding.tvTestJson.text = getString(R.string.test_no_match_hint)

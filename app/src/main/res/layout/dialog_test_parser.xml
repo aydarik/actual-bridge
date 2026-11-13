@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:clipToPadding="false"
+    android:padding="22dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,50 +15,86 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/test_title"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="14dp"
             android:text="@string/test_desc"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
-        <!-- Quick Sample Chips -->
+        <!-- Quick Sample Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="14dp"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSampleCoffee"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.ActualApp.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="40dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:singleLine="true"
                 android:text="@string/test_sample_payment"
-                android:textSize="11sp" />
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary_light"
+                app:cornerRadius="20dp"
+                app:icon="@drawable/ic_arrow_up_right"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconSize="16dp"
+                app:iconTint="@color/primary"
+                app:strokeColor="@color/primary_stroke"
+                app:strokeWidth="1dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSampleSalary"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.ActualApp.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="40dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:singleLine="true"
                 android:text="@string/test_sample_deposit"
-                android:textSize="11sp" />
+                android:textColor="@color/secondary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/secondary_light"
+                app:cornerRadius="20dp"
+                app:icon="@drawable/ic_arrow_down_left"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconSize="16dp"
+                app:iconTint="@color/secondary"
+                app:strokeColor="@color/secondary_stroke"
+                app:strokeWidth="1dp" />
         </LinearLayout>
 
         <!-- Notification Package Name -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -71,7 +108,7 @@
 
         <!-- Notification Title -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -85,7 +122,7 @@
 
         <!-- Notification Text -->
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.ActualApp.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -100,7 +137,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRunTest"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.ActualApp.Button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
@@ -114,7 +151,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_rounded_light"
             android:orientation="vertical"
-            android:padding="12dp"
+            android:padding="14dp"
             android:visibility="gone">
 
             <TextView
@@ -131,17 +168,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:fontFamily="monospace"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSimulatePopup"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.ActualApp.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="@string/test_simulate_popup"
-                app:icon="@drawable/ic_view" />
+                android:textColor="@color/secondary"
+                app:backgroundTint="?attr/colorSurface"
+                app:icon="@drawable/ic_view"
+                app:iconTint="@color/secondary"
+                app:strokeColor="@color/secondary_stroke" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

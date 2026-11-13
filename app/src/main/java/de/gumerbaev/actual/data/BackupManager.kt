@@ -42,6 +42,7 @@ class BackupManager(
             autoPopup = currentPrefs.autoPopup,
             autoSend = currentPrefs.autoSend,
             dismissOriginalNotification = currentPrefs.dismissOriginalNotification,
+            autoCheckUpdates = currentPrefs.autoCheckUpdates,
             rules = currentPrefs.getRules(),
             transactions = currentPrefs.getHistory(),
             includeSettings = includeSettings,
@@ -61,7 +62,8 @@ class BackupManager(
         transactions: List<TransactionRecord>,
         includeSettings: Boolean,
         includeTransactions: Boolean,
-        appVersion: String
+        appVersion: String,
+        autoCheckUpdates: Boolean = true
     ): BackupData {
         if (!includeSettings && !includeTransactions) {
             throw IllegalArgumentException("At least one item (settings or transactions) must be selected")
@@ -75,6 +77,7 @@ class BackupManager(
                 autoPopup = autoPopup,
                 autoSend = autoSend,
                 dismissOriginalNotification = dismissOriginalNotification,
+                autoCheckUpdates = autoCheckUpdates,
                 parsingRules = rules
             )
         } else null

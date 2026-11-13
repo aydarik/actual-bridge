@@ -1,6 +1,8 @@
 package de.gumerbaev.actual.ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -11,13 +13,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.gumerbaev.actual.BuildConfig
 import de.gumerbaev.actual.R
 import de.gumerbaev.actual.data.BackupManager
@@ -102,14 +106,45 @@ class SettingsFragment : Fragment() {
         }
 
         // Action Buttons
+        binding.etServerUrl.doAfterTextChanged { resetTestConnectionButton() }
+        binding.etApiToken.doAfterTextChanged { resetTestConnectionButton() }
+
         binding.btnTestConnection.setOnClickListener {
+            if (_binding == null) return@setOnClickListener
+            resetTestConnectionButton()
             binding.btnTestConnection.isEnabled = false
+            binding.btnTestConnection.text = getString(R.string.settings_testing_connection)
             val url = binding.etServerUrl.text?.toString()?.trim() ?: ""
             val token = binding.etApiToken.text?.toString()?.trim() ?: ""
 
-            mainActivity.testConnection(url, token) {
-                if (_binding != null) {
-                    binding.btnTestConnection.isEnabled = true
+            mainActivity.testConnection(url, token) { result ->
+                if (_binding == null) return@testConnection
+                val currentCtx = context ?: return@testConnection
+                binding.btnTestConnection.isEnabled = true
+                if (result.success || result.httpCode == 400) {
+                    val color = ContextCompat.getColor(currentCtx, R.color.secondary)
+                    val stroke = ContextCompat.getColor(currentCtx, R.color.secondary_stroke)
+                    val bg = ContextCompat.getColor(currentCtx, R.color.secondary_light)
+                    binding.btnTestConnection.text = getString(R.string.connection_success_title)
+                    binding.btnTestConnection.setIconResource(R.drawable.ic_check)
+                    binding.btnTestConnection.setTextColor(color)
+                    binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
+                    binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
+                    binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
+                } else {
+                    val color = ContextCompat.getColor(currentCtx, R.color.danger)
+                    val stroke = ContextCompat.getColor(currentCtx, R.color.danger_stroke)
+                    val bg = ContextCompat.getColor(currentCtx, R.color.danger_light)
+                    binding.btnTestConnection.text = if (result.httpCode > 0) {
+                        "${getString(R.string.connection_failed_title)} (HTTP ${result.httpCode})"
+                    } else {
+                        getString(R.string.connection_failed_title)
+                    }
+                    binding.btnTestConnection.setIconResource(R.drawable.ic_close)
+                    binding.btnTestConnection.setTextColor(color)
+                    binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
+                    binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
+                    binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
                 }
             }
         }
@@ -124,6 +159,14 @@ class SettingsFragment : Fragment() {
         }
 
         // Version & Updates
+        binding.rowAutoCheckUpdates.setOnClickListener {
+            binding.switchAutoCheckUpdates.toggle()
+        }
+
+        binding.switchAutoCheckUpdates.setOnCheckedChangeListener { _, isChecked ->
+            mainActivity.prefs.autoCheckUpdates = isChecked
+        }
+
         binding.btnCheckUpdate.setOnClickListener {
             checkForAppUpdates()
         }
@@ -142,11 +185,13 @@ class SettingsFragment : Fragment() {
             binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
             binding.btnGrantNotification.text = getString(R.string.granted)
             binding.btnGrantNotification.isEnabled = false
+            stylePermissionButton(binding.btnGrantNotification, true)
         } else {
             binding.tvNotificationStatus.text = getString(R.string.settings_notif_disabled)
             binding.tvNotificationStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.danger))
             binding.btnGrantNotification.text = getString(R.string.grant)
             binding.btnGrantNotification.isEnabled = true
+            stylePermissionButton(binding.btnGrantNotification, false)
         }
 
         val hasOverlayAccess = Settings.canDrawOverlays(requireContext())
@@ -155,12 +200,40 @@ class SettingsFragment : Fragment() {
             binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
             binding.btnGrantOverlay.text = getString(R.string.granted)
             binding.btnGrantOverlay.isEnabled = false
+            stylePermissionButton(binding.btnGrantOverlay, true)
         } else {
             binding.tvOverlayStatus.text = getString(R.string.settings_overlay_disabled)
             binding.tvOverlayStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
             binding.btnGrantOverlay.text = getString(R.string.grant)
             binding.btnGrantOverlay.isEnabled = true
+            stylePermissionButton(binding.btnGrantOverlay, false)
         }
+    }
+
+    private fun stylePermissionButton(button: MaterialButton, granted: Boolean) {
+        val ctx = context ?: return
+        if (granted) {
+            button.setTextColor(ContextCompat.getColor(ctx, R.color.secondary))
+            button.strokeColor = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.secondary_stroke))
+            button.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.secondary_light))
+        } else {
+            button.setTextColor(ContextCompat.getColor(ctx, R.color.primary))
+            button.strokeColor = ContextCompat.getColorStateList(ctx, R.color.btn_outlined_stroke_color)
+            button.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        }
+    }
+
+    private fun resetTestConnectionButton() {
+        val ctx = context ?: return
+        if (_binding == null) return
+        val primary = ContextCompat.getColor(ctx, R.color.primary)
+        binding.btnTestConnection.isEnabled = true
+        binding.btnTestConnection.text = getString(R.string.settings_test_connection)
+        binding.btnTestConnection.setIconResource(R.drawable.ic_refresh)
+        binding.btnTestConnection.setTextColor(primary)
+        binding.btnTestConnection.iconTint = ColorStateList.valueOf(primary)
+        binding.btnTestConnection.strokeColor = ContextCompat.getColorStateList(ctx, R.color.btn_outlined_stroke_color)
+        binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
     }
 
     private fun setupLanguageSelector() {
@@ -207,7 +280,9 @@ class SettingsFragment : Fragment() {
         val prefs = mainActivity.prefs
         binding.etServerUrl.setText(prefs.serverUrl)
         binding.etApiToken.setText(prefs.apiToken)
+        binding.switchAutoCheckUpdates.isChecked = prefs.autoCheckUpdates
         binding.tvAppVersion.text = getString(R.string.settings_app_version, BuildConfig.VERSION_NAME)
+        resetTestConnectionButton()
         updateBackupStatus()
     }
 
@@ -226,7 +301,7 @@ class SettingsFragment : Fragment() {
         saveServerSettings()
 
         val dialogBinding = DialogBackupBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(dialogBinding.root)
             .create()
 
@@ -289,7 +364,7 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), R.string.backup_success, Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 if (_binding == null) return@launch
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore_error_title)
                     .setMessage(getString(R.string.backup_error, e.localizedMessage ?: getString(R.string.unknown_error)))
                     .setPositiveButton(R.string.ok, null)
@@ -306,7 +381,7 @@ class SettingsFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 if (_binding == null) return@launch
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore_error_title)
                     .setMessage(getString(R.string.restore_error_invalid_file, e.localizedMessage ?: getString(R.string.unknown_error)))
                     .setPositiveButton(R.string.ok, null)
@@ -321,7 +396,7 @@ class SettingsFragment : Fragment() {
 
     private fun showRestoreBackupDialog(backupData: BackupData) {
         val dialogBinding = DialogRestoreBinding.inflate(layoutInflater)
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(dialogBinding.root)
             .create()
 
@@ -403,7 +478,7 @@ class SettingsFragment : Fragment() {
                     lines.add(getString(R.string.restore_summary_transactions, summary.transactionsCount))
                 }
 
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore_success_title)
                     .setMessage(getString(R.string.restore_success_msg, lines.joinToString("\n")))
                     .setPositiveButton(R.string.ok, null)
@@ -439,7 +514,7 @@ class SettingsFragment : Fragment() {
                 mainActivity.showUpdateAvailableDialog(result)
             }
             is UpdateChecker.CheckResult.UpToDate -> {
-                AlertDialog.Builder(context)
+                MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.update_latest_title)
                     .setMessage(getString(R.string.update_latest_msg, result.currentVersion))
                     .setPositiveButton(R.string.ok, null)
@@ -449,7 +524,7 @@ class SettingsFragment : Fragment() {
                     .show()
             }
             is UpdateChecker.CheckResult.Error -> {
-                AlertDialog.Builder(context)
+                MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.update_check_failed_title)
                     .setMessage(getString(R.string.update_check_failed_msg, result.error.asString(context)))
                     .setPositiveButton(R.string.settings_view_releases) { _, _ ->

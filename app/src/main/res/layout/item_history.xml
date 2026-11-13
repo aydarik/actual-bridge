@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
+    app:rippleColor="@color/primary_light"
     app:strokeColor="@color/card_stroke"
     app:strokeWidth="1dp">
 
@@ -22,9 +26,28 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <FrameLayout
+                android:id="@+id/layoutHistoryTypeIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_circle"
+                android:importantForAccessibility="noHideDescendants">
+
+                <ImageView
+                    android:id="@+id/ivHistoryTypeIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_arrow_up_right"
+                    app:tint="@color/primary" />
+            </FrameLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -38,9 +61,12 @@
                         android:id="@+id/tvHistoryPayee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="Starbucks" />
 
                     <TextView
                         android:id="@+id/tvHistoryLocationIndicator"
@@ -49,9 +75,11 @@
                         android:layout_marginStart="6dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/history_coords_recorded"
+                        android:paddingHorizontal="2dp"
                         android:text="@string/history_location_indicator"
                         android:textSize="13sp"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:visibility="visible" />
                 </LinearLayout>
 
                 <TextView
@@ -59,23 +87,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="12sp" />
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    tools:text="Checking • Nov 13, 14:32" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvHistoryAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="-10.50" />
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/card_stroke" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -84,10 +122,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_status_success"
-                android:paddingStart="8dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="2dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
                 android:text="@string/status_sent"
                 android:textColor="@color/secondary"
                 android:textSize="11sp"
@@ -98,18 +134,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:ellipsize="middle"
                 android:singleLine="true"
                 android:textColor="@color/text_muted"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                tools:text="from com.google.android.apps.walletnfcrel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHistoryResend"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.ActualApp.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="36dp"
+                android:layout_height="32dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:minHeight="32dp"
+                android:paddingHorizontal="10dp"
                 android:text="@string/history_resend"
                 android:textSize="12sp" />
         </LinearLayout>

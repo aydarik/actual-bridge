@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.gumerbaev.actual.databinding.FragmentTransactionsBinding
 import de.gumerbaev.actual.ui.adapter.HistoryAdapter
 import de.gumerbaev.actual.util.LocationHelper
@@ -65,7 +65,7 @@ class TransactionsFragment : Fragment() {
 
     private fun setupListeners() {
         binding.btnClearHistory.setOnClickListener {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.clear_log_title))
                 .setMessage(getString(R.string.clear_log_message))
                 .setPositiveButton(R.string.clear) { _, _ ->
@@ -81,8 +81,11 @@ class TransactionsFragment : Fragment() {
         if (_binding == null) return
         val history = mainActivity.prefs.getHistory()
         historyAdapter.updateData(history)
-        binding.tvEmptyHistory.visibility = if (history.isEmpty()) View.VISIBLE else View.GONE
-        binding.rvHistory.visibility = if (history.isEmpty()) View.GONE else View.VISIBLE
+        val isEmpty = history.isEmpty()
+        binding.layoutEmptyHistory.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.tvEmptyHistory.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.rvHistory.visibility = if (isEmpty) View.GONE else View.VISIBLE
+        binding.btnClearHistory.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 
     override fun onDestroyView() {
