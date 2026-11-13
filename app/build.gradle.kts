@@ -5,9 +5,7 @@ plugins {
 android {
     namespace = "de.gumerbaev.actual"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version = release(37)
     }
 
     val appVersionCode = (project.findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
@@ -16,7 +14,7 @@ android {
     defaultConfig {
         applicationId = "de.gumerbaev.actual"
         minSdk = 33
-        targetSdk = 36
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
 
@@ -40,12 +38,6 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("androidx.core:core:${libs.versions.coreKtx.get()}")
-        force("androidx.core:core-ktx:${libs.versions.coreKtx.get()}")
-    }
-}
 
 dependencies {
     implementation(libs.androidx.core.ktx)

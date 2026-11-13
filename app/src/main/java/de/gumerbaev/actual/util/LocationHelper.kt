@@ -12,6 +12,7 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -47,6 +48,8 @@ object LocationHelper {
                     }
             }
             if (fusedLocation != null) return fusedLocation
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             // Fallback to framework LocationManager
         }

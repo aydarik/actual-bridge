@@ -351,22 +351,27 @@ class SettingsFragment : Fragment() {
             appVersion = BuildConfig.VERSION_NAME
         )
         pendingBackupData = null
+        val contentResolver = requireContext().contentResolver
 
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    backupManager.writeBackupToUri(requireContext().contentResolver, uri, dataToSave)
+            val writeError = withContext(Dispatchers.IO) {
+                try {
+                    backupManager.writeBackupToUri(contentResolver, uri, dataToSave)
+                    null
+                } catch (e: Exception) {
+                    e
                 }
-                if (_binding == null) return@launch
+            }
+            if (_binding == null) return@launch
 
+            if (writeError == null) {
                 mainActivity.prefs.lastBackupTimestamp = System.currentTimeMillis()
                 updateBackupStatus()
                 Toast.makeText(requireContext(), R.string.backup_success, Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                if (_binding == null) return@launch
+            } else {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore_error_title)
-                    .setMessage(getString(R.string.backup_error, e.localizedMessage ?: getString(R.string.unknown_error)))
+                    .setMessage(getString(R.string.backup_error, writeError.localizedMessage ?: getString(R.string.unknown_error)))
                     .setPositiveButton(R.string.ok, null)
                     .show()
             }
@@ -374,22 +379,28 @@ class SettingsFragment : Fragment() {
     }
 
     private fun loadBackupFromUri(uri: Uri) {
+        val contentResolver = requireContext().contentResolver
         viewLifecycleOwner.lifecycleScope.launch {
-            val backupData = try {
-                withContext(Dispatchers.IO) {
-                    backupManager.readBackupFromUri(requireContext().contentResolver, uri)
+            var readError: Exception? = null
+            val backupData = withContext(Dispatchers.IO) {
+                try {
+                    backupManager.readBackupFromUri(contentResolver, uri)
+                } catch (e: Exception) {
+                    readError = e
+                    null
                 }
-            } catch (e: Exception) {
-                if (_binding == null) return@launch
+            }
+            if (_binding == null) return@launch
+
+            if (backupData == null) {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore_error_title)
-                    .setMessage(getString(R.string.restore_error_invalid_file, e.localizedMessage ?: getString(R.string.unknown_error)))
+                    .setMessage(getString(R.string.restore_error_invalid_file, readError?.localizedMessage ?: getString(R.string.unknown_error)))
                     .setPositiveButton(R.string.ok, null)
                     .show()
                 return@launch
             }
 
-            if (_binding == null) return@launch
             showRestoreBackupDialog(backupData)
         }
     }

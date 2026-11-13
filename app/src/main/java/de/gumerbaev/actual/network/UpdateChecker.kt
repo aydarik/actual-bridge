@@ -61,16 +61,8 @@ object UpdateChecker {
         val lines = rawBody.replace("\r\n", "\n").replace('\r', '\n').lines()
         val sections = mutableListOf<ChangelogSection>()
         var currentTitle: String? = null
-        var currentItems = mutableListOf<String>()
+        val currentItems = mutableListOf<String>()
         var compareUrl: String? = null
-
-        fun flushSection() {
-            if (currentTitle != null || currentItems.isNotEmpty()) {
-                sections.add(ChangelogSection(currentTitle, currentItems.toList()))
-                currentTitle = null
-                currentItems = mutableListOf()
-            }
-        }
 
         for (rawLine in lines) {
             val line = rawLine.trim()
@@ -84,27 +76,28 @@ object UpdateChecker {
 
             val headerMatch = HEADER_REGEX.matchEntire(line)
             if (headerMatch != null) {
-                flushSection()
+                if (currentTitle != null || currentItems.isNotEmpty()) {
+                    sections.add(ChangelogSection(currentTitle, currentItems.toList()))
+                    currentItems.clear()
+                }
                 currentTitle = cleanInlineMarkdown(headerMatch.groupValues[1])
                 continue
             }
 
             val bulletMatch = BULLET_REGEX.matchEntire(line)
-            if (bulletMatch != null) {
-                val cleaned = cleanInlineMarkdown(bulletMatch.groupValues[1])
-                if (cleaned.isNotEmpty()) {
-                    currentItems.add(cleaned)
-                }
-                continue
+            val cleaned = if (bulletMatch != null) {
+                cleanInlineMarkdown(bulletMatch.groupValues[1])
+            } else {
+                cleanInlineMarkdown(line)
             }
-
-            val cleanedLine = cleanInlineMarkdown(line)
-            if (cleanedLine.isNotEmpty()) {
-                currentItems.add(cleanedLine)
+            if (cleaned.isNotEmpty()) {
+                currentItems.add(cleaned)
             }
         }
 
-        flushSection()
+        if (currentTitle != null || currentItems.isNotEmpty()) {
+            sections.add(ChangelogSection(currentTitle, currentItems.toList()))
+        }
         return ParsedChangelog(sections, compareUrl)
     }
 
