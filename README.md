@@ -106,6 +106,7 @@ In the **Settings** tab, ensure the required permissions are granted:
 | **Post Notifications** | Allows the app to show 1-tap confirmation prompts and sync alerts. | **Yes** |
 | **Display Over Other Apps** | Enables the floating review dialog over other apps when a transaction occurs. | Optional |
 | **Location Access** | Attaches GPS coordinates to transactions. | Optional |
+| **Local Network Access** *(Android 17+)* | Allows reaching self-hosted servers on local Wi-Fi / LAN IPs or `.local` domains. | Optional |
 
 > [!IMPORTANT]
 > If you enable **Attach Location**, ensure you select **"Allow all the time"** in system settings so the app can obtain coordinates in the background when processing notifications.
@@ -175,7 +176,8 @@ The compiled APK will be located in `app/build/outputs/apk/`.
 
 1. Ensure the URL is accessible from your mobile device (e.g., test it in Chrome on the phone).
 2. If using local IP / internal domain, make sure you are connected to the same Wi-Fi or have your VPN active (e.g. Tailscale / WireGuard).
-3. Check that your API key matches the token expected by your Actual Tap instance.
+3. On Android 17 (API 37) or newer, if your server resolves to a local/private IP on Wi-Fi/LAN, grant **Local Network Access** in the app's **Settings** tab (or system App Settings).
+4. Check that your API key matches the token expected by your Actual Tap instance.
 </details>
 
 <details>

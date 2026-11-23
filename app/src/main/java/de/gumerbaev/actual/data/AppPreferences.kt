@@ -29,6 +29,7 @@ class AppPreferences(private val context: Context) {
         private const val KEY_LAST_BACKUP_TIMESTAMP = "last_backup_timestamp"
         private const val KEY_LAST_UPDATE_CHECK_TIMESTAMP = "last_update_check_timestamp"
         private const val KEY_AUTO_CHECK_UPDATES = "auto_check_updates"
+        private const val KEY_LOCAL_NETWORK_PERMISSION_PROMPTED = "local_network_permission_prompted"
         const val MAX_HISTORY_SIZE = 100
     }
 
@@ -59,6 +60,10 @@ class AppPreferences(private val context: Context) {
     var autoCheckUpdates: Boolean
         get() = prefs.getBoolean(KEY_AUTO_CHECK_UPDATES, true)
         set(value) = prefs.edit { putBoolean(KEY_AUTO_CHECK_UPDATES, value) }
+
+    var localNetworkPermissionPrompted: Boolean
+        get() = prefs.getBoolean(KEY_LOCAL_NETWORK_PERMISSION_PROMPTED, false)
+        set(value) = prefs.edit { putBoolean(KEY_LOCAL_NETWORK_PERMISSION_PROMPTED, value) }
 
     private fun localizedDefaultRules(): List<ParsingRule> = ParsingRule.createDefaultRules(
         paymentRuleName = context.getString(R.string.default_rule_payment),

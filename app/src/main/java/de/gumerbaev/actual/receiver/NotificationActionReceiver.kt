@@ -13,6 +13,7 @@ import de.gumerbaev.actual.model.ActualTransaction
 import de.gumerbaev.actual.model.TransactionRecord
 import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.service.ActualNotificationListenerService
+import de.gumerbaev.actual.util.LocalNetworkHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 CoroutineScope(Dispatchers.IO).launch {
                     val serverUrl = prefs.serverUrl
                     val apiToken = prefs.apiToken
-                    val result = ActualApiClient.sendTransaction(serverUrl, apiToken, transaction)
+                    val rawResult = ActualApiClient.sendTransaction(serverUrl, apiToken, transaction)
+                    val result = LocalNetworkHelper.enrichErrorIfLocalNetworkBlocked(context, serverUrl, rawResult)
 
                     withContext(Dispatchers.Main) {
                         try {

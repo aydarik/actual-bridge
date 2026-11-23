@@ -1,5 +1,6 @@
 package de.gumerbaev.actual.ui
 
+import android.Manifest
 import android.app.NotificationManager
 import android.content.Intent
 import android.graphics.Rect
@@ -22,6 +23,7 @@ import de.gumerbaev.actual.model.TransactionRecord
 import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.receiver.NotificationActionReceiver
 import de.gumerbaev.actual.service.ActualNotificationListenerService
+import de.gumerbaev.actual.util.LocalNetworkHelper
 import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,6 +50,19 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
     private var currentLatitude: Double? = null
     private var currentLongitude: Double? = null
+    private var pendingTransactionToSend: ActualTransaction? = null
+
+    private val requestLocalNetworkPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        val pending = pendingTransactionToSend
+        pendingTransactionToSend = null
+        if (pending != null && !isFinishing && !isDestroyed) {
+            lifecycleScope.launch {
+                executeSendTransaction(pending)
+            }
+        }
+    }
 
     private val requestLocationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -232,8 +247,8 @@ class ConfirmTransactionActivity : AppCompatActivity() {
                 } else {
                     requestLocationPermissionLauncher.launch(
                         arrayOf(
-                            android.Manifest.permission.ACCESS_FINE_LOCATION,
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
                         )
                     )
                 }
@@ -355,38 +370,60 @@ class ConfirmTransactionActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val serverUrl = prefs.serverUrl
-            val apiToken = prefs.apiToken
-            val result = ActualApiClient.sendTransaction(serverUrl, apiToken, finalTx)
-
-            binding.progressSending.visibility = View.GONE
-            binding.btnSend.isEnabled = true
-            binding.btnDiscard.isEnabled = true
-
-            if (result.success) {
-                recordId?.let { id ->
-                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT, finalTx)
-                    notifyTransactionUpdated(id)
+            if (LocalNetworkHelper.isPermissionRequired() &&
+                !LocalNetworkHelper.hasLocalNetworkPermission(this@ConfirmTransactionActivity) &&
+                !prefs.localNetworkPermissionPrompted &&
+                LocalNetworkHelper.resolvesToLocalNetwork(serverUrl)
+            ) {
+                if (!isFinishing && !isDestroyed) {
+                    prefs.localNetworkPermissionPrompted = true
+                    pendingTransactionToSend = finalTx
+                    requestLocalNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
                 }
-                cancelNotification()
-
-                binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_success)
-                binding.tvStatusMessage.setTextColor(getColor(R.color.secondary))
-                binding.tvStatusMessage.text = getString(R.string.sent_success_status)
-                binding.tvStatusMessage.visibility = View.VISIBLE
-
-                Toast.makeText(this@ConfirmTransactionActivity, getString(R.string.posted_success), Toast.LENGTH_SHORT).show()
-                delay(800.milliseconds)
-                finish()
-            } else {
-                recordId?.let { id ->
-                    prefs.updateHistoryRecord(id, TransactionRecord.STATUS_FAILED)
-                    notifyTransactionUpdated(id)
-                }
-                binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_error)
-                binding.tvStatusMessage.setTextColor(getColor(R.color.danger))
-                binding.tvStatusMessage.text = getString(R.string.send_failed, result.error?.asString(this@ConfirmTransactionActivity).orEmpty())
-                binding.tvStatusMessage.visibility = View.VISIBLE
+                return@launch
             }
+            executeSendTransaction(finalTx)
+        }
+    }
+
+    private suspend fun executeSendTransaction(finalTx: ActualTransaction) {
+        val serverUrl = prefs.serverUrl
+        val apiToken = prefs.apiToken
+        val rawResult = ActualApiClient.sendTransaction(serverUrl, apiToken, finalTx)
+        val result = LocalNetworkHelper.enrichErrorIfLocalNetworkBlocked(
+            this@ConfirmTransactionActivity,
+            serverUrl,
+            rawResult
+        )
+
+        binding.progressSending.visibility = View.GONE
+        binding.btnSend.isEnabled = true
+        binding.btnDiscard.isEnabled = true
+
+        if (result.success) {
+            recordId?.let { id ->
+                prefs.updateHistoryRecord(id, TransactionRecord.STATUS_SENT, finalTx)
+                notifyTransactionUpdated(id)
+            }
+            cancelNotification()
+
+            binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_success)
+            binding.tvStatusMessage.setTextColor(getColor(R.color.secondary))
+            binding.tvStatusMessage.text = getString(R.string.sent_success_status)
+            binding.tvStatusMessage.visibility = View.VISIBLE
+
+            Toast.makeText(this@ConfirmTransactionActivity, getString(R.string.posted_success), Toast.LENGTH_SHORT).show()
+            delay(800.milliseconds)
+            finish()
+        } else {
+            recordId?.let { id ->
+                prefs.updateHistoryRecord(id, TransactionRecord.STATUS_FAILED)
+                notifyTransactionUpdated(id)
+            }
+            binding.tvStatusMessage.setBackgroundResource(R.drawable.bg_status_error)
+            binding.tvStatusMessage.setTextColor(getColor(R.color.danger))
+            binding.tvStatusMessage.text = getString(R.string.send_failed, result.error?.asString(this@ConfirmTransactionActivity).orEmpty())
+            binding.tvStatusMessage.visibility = View.VISIBLE
         }
     }
 

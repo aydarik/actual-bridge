@@ -42,6 +42,7 @@ import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.network.UpdateChecker
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.service.ActualNotificationListenerService
+import de.gumerbaev.actual.util.LocalNetworkHelper
 import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.launch
 
@@ -220,7 +221,12 @@ class MainActivity : AppCompatActivity() {
         prefs.apiToken = apiToken
 
         lifecycleScope.launch {
-            val result = ActualApiClient.testConnection(prefs.serverUrl, prefs.apiToken)
+            val rawResult = ActualApiClient.testConnection(prefs.serverUrl, prefs.apiToken)
+            val result = LocalNetworkHelper.enrichErrorIfLocalNetworkBlocked(
+                this@MainActivity,
+                prefs.serverUrl,
+                rawResult
+            )
             onResult(result)
         }
     }
