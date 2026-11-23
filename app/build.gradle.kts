@@ -4,8 +4,11 @@ plugins {
 
 android {
     namespace = "de.gumerbaev.actual"
+    buildToolsVersion = "37.0.0"
     compileSdk {
-        version = release(37)
+        version = release(37) {
+            minorApiLevel = 1
+        }
     }
 
     val appVersionCode = (project.findProperty("versionCode") as? String)?.toIntOrNull() ?: 1

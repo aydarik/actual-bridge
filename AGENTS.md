@@ -19,8 +19,8 @@ Welcome to **Actual Budget Bridge** (`actual-bridge`). This document provides ar
 
 ## 2. Tech Stack & Environment
 
-- **Language**: Kotlin (JVM target 24)
-- **Target SDK**: Android 36 (Extension / Minor API Level 1), **Min SDK**: 33, **Compile SDK**: 36
+- **Language**: Kotlin (JVM target 25)
+- **Target SDK**: Android 37, **Min SDK**: 33, **Compile SDK**: 37
 - **Build System**: Gradle with Kotlin DSL (`build.gradle.kts`, `settings.gradle.kts`) and Gradle Version Catalogs (`gradle/libs.versions.toml`)
 - **Android Gradle Plugin (AGP)**
 - **UI Framework**: Android ViewBinding, AppCompat, Material Design Components (`com.google.android.material:material`)
@@ -117,7 +117,7 @@ ActualApp/
 
 ## 5. Build, Test & Development Commands
 
-> **Note**: Requires JDK 24 or newer. Ensure `JAVA_HOME` points to a compatible JDK installation.
+> **Note**: Requires JDK 25 or newer. Ensure `JAVA_HOME` points to a compatible JDK installation.
 
 ### Run Unit Tests
 ```bash

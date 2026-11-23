@@ -12,7 +12,7 @@
   <a href="https://github.com/aydarik/actual-bridge/releases"><img src="https://img.shields.io/github/v/release/aydarik/actual-bridge?include_prereleases&color=blue&label=Release" alt="GitHub Release"></a>
   <a href="https://github.com/aydarik/actual-bridge/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
   <a href="https://developer.android.com/about/versions/13"><img src="https://img.shields.io/badge/Android-13%2B%20(API%2033%2B)-3DDC84.svg?logo=android&logoColor=white" alt="Android 13+"></a>
-  <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.1.0-7F52FF.svg?logo=kotlin&logoColor=white" alt="Kotlin"></a>
+  <a href="https://kotlinlang.org"><img src="https://img.shields.io/badge/Kotlin-2.2.10-7F52FF.svg?logo=kotlin&logoColor=white" alt="Kotlin"></a>
 </p>
 
 ---
@@ -139,8 +139,8 @@ Use the **Test Notification Parser** section on the Rules tab:
 ## Development & Building from Source
 
 ### Prerequisites
-- **JDK 24** or newer
-- **Android SDK** with platform `android-36` (Build Tools 36.0.0)
+- **JDK 25** or newer
+- **Android SDK** with platform `android-37.1` (Build Tools 37.0.0)
 
 ### Clone & Build
 ```bash
