@@ -1,5 +1,6 @@
 package de.gumerbaev.actual.ui
 
+import android.Manifest
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -31,6 +32,7 @@ import de.gumerbaev.actual.databinding.FragmentSettingsBinding
 import de.gumerbaev.actual.model.BackupData
 import de.gumerbaev.actual.network.UpdateChecker
 import de.gumerbaev.actual.service.ActualNotificationListenerService
+import de.gumerbaev.actual.util.LocalNetworkHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,6 +52,54 @@ class SettingsFragment : Fragment() {
     private val backupManager by lazy { BackupManager(mainActivity.prefs) }
 
     private var pendingBackupData: BackupData? = null
+    private var localNetworkHadRationaleBeforeRequest = false
+    private var localNetworkRequestFromButton = false
+    private var pendingTestConnection: Pair<String, String>? = null
+
+    private val requestLocalNetworkPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (_binding == null || context == null) {
+            pendingTestConnection = null
+            localNetworkRequestFromButton = false
+            return@registerForActivityResult
+        }
+        val pending = pendingTestConnection
+        val fromButton = localNetworkRequestFromButton
+        pendingTestConnection = null
+        localNetworkRequestFromButton = false
+
+        updatePermissionStatuses()
+
+        if (isGranted) {
+            Toast.makeText(requireContext(), R.string.local_network_permission_granted, Toast.LENGTH_SHORT).show()
+            if (pending != null) {
+                executeTestConnection(pending.first, pending.second)
+            }
+        } else if (pending != null) {
+            // Still proceed so VPN users who intentionally decline LAN access are not blocked.
+            executeTestConnection(pending.first, pending.second)
+        } else if (fromButton) {
+            val hasRationaleAfter = LocalNetworkHelper.isPermissionRequired() &&
+                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_LOCAL_NETWORK)
+            if (!localNetworkHadRationaleBeforeRequest && !hasRationaleAfter) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.local_network_settings_title)
+                    .setMessage(R.string.local_network_settings_msg)
+                    .setPositiveButton(R.string.open_settings) { _, _ ->
+                        val intent = Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            "package:${requireContext().packageName}".toUri()
+                        )
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            } else {
+                Toast.makeText(requireContext(), R.string.local_network_permission_required, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     private val exportBackupLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -105,6 +155,15 @@ class SettingsFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.btnGrantLocalNetwork.setOnClickListener {
+            if (!LocalNetworkHelper.isPermissionRequired()) return@setOnClickListener
+            mainActivity.prefs.localNetworkPermissionPrompted = true
+            localNetworkRequestFromButton = true
+            localNetworkHadRationaleBeforeRequest =
+                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_LOCAL_NETWORK)
+            requestLocalNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        }
+
         // Action Buttons
         binding.etServerUrl.doAfterTextChanged { resetTestConnectionButton() }
         binding.etApiToken.doAfterTextChanged { resetTestConnectionButton() }
@@ -117,34 +176,23 @@ class SettingsFragment : Fragment() {
             val url = binding.etServerUrl.text?.toString()?.trim() ?: ""
             val token = binding.etApiToken.text?.toString()?.trim() ?: ""
 
-            mainActivity.testConnection(url, token) { result ->
-                if (_binding == null) return@testConnection
-                val currentCtx = context ?: return@testConnection
-                binding.btnTestConnection.isEnabled = true
-                if (result.success || result.httpCode == 400) {
-                    val color = ContextCompat.getColor(currentCtx, R.color.secondary)
-                    val stroke = ContextCompat.getColor(currentCtx, R.color.secondary_stroke)
-                    val bg = ContextCompat.getColor(currentCtx, R.color.secondary_light)
-                    binding.btnTestConnection.text = getString(R.string.connection_success_title)
-                    binding.btnTestConnection.setIconResource(R.drawable.ic_check)
-                    binding.btnTestConnection.setTextColor(color)
-                    binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
-                    binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
-                    binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
+            viewLifecycleOwner.lifecycleScope.launch {
+                val currentCtx = context ?: return@launch
+                if (LocalNetworkHelper.isPermissionRequired() &&
+                    !LocalNetworkHelper.hasLocalNetworkPermission(currentCtx) &&
+                    !mainActivity.prefs.localNetworkPermissionPrompted &&
+                    LocalNetworkHelper.resolvesToLocalNetwork(url)
+                ) {
+                    if (_binding == null || !isAdded) return@launch
+                    mainActivity.prefs.localNetworkPermissionPrompted = true
+                    pendingTestConnection = url to token
+                    localNetworkRequestFromButton = false
+                    localNetworkHadRationaleBeforeRequest =
+                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                    requestLocalNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
                 } else {
-                    val color = ContextCompat.getColor(currentCtx, R.color.danger)
-                    val stroke = ContextCompat.getColor(currentCtx, R.color.danger_stroke)
-                    val bg = ContextCompat.getColor(currentCtx, R.color.danger_light)
-                    binding.btnTestConnection.text = if (result.httpCode > 0) {
-                        "${getString(R.string.connection_failed_title)} (HTTP ${result.httpCode})"
-                    } else {
-                        getString(R.string.connection_failed_title)
-                    }
-                    binding.btnTestConnection.setIconResource(R.drawable.ic_close)
-                    binding.btnTestConnection.setTextColor(color)
-                    binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
-                    binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
-                    binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
+                    if (_binding == null) return@launch
+                    executeTestConnection(url, token)
                 }
             }
         }
@@ -207,6 +255,64 @@ class SettingsFragment : Fragment() {
             binding.btnGrantOverlay.text = getString(R.string.grant)
             binding.btnGrantOverlay.isEnabled = true
             stylePermissionButton(binding.btnGrantOverlay, false)
+        }
+
+        if (LocalNetworkHelper.isPermissionRequired()) {
+            binding.layoutLocalNetworkPermission.visibility = View.VISIBLE
+            val hasLocalNetworkAccess = LocalNetworkHelper.hasLocalNetworkPermission(requireContext())
+            if (hasLocalNetworkAccess) {
+                binding.tvLocalNetworkStatus.text = getString(R.string.settings_local_network_active)
+                binding.tvLocalNetworkStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondary))
+                binding.btnGrantLocalNetwork.text = getString(R.string.granted)
+                binding.btnGrantLocalNetwork.isEnabled = false
+                stylePermissionButton(binding.btnGrantLocalNetwork, true)
+            } else {
+                binding.tvLocalNetworkStatus.text = getString(R.string.settings_local_network_disabled)
+                binding.tvLocalNetworkStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
+                binding.btnGrantLocalNetwork.text = getString(R.string.grant)
+                binding.btnGrantLocalNetwork.isEnabled = true
+                stylePermissionButton(binding.btnGrantLocalNetwork, false)
+            }
+        } else {
+            binding.layoutLocalNetworkPermission.visibility = View.GONE
+        }
+    }
+
+    private fun executeTestConnection(url: String, token: String) {
+        if (_binding == null) return
+        mainActivity.testConnection(url, token) { result ->
+            if (_binding == null) return@testConnection
+            val currentCtx = context ?: return@testConnection
+            binding.btnTestConnection.isEnabled = true
+            if (result.success || result.httpCode == 400) {
+                val color = ContextCompat.getColor(currentCtx, R.color.secondary)
+                val stroke = ContextCompat.getColor(currentCtx, R.color.secondary_stroke)
+                val bg = ContextCompat.getColor(currentCtx, R.color.secondary_light)
+                binding.btnTestConnection.text = getString(R.string.connection_success_title)
+                binding.btnTestConnection.setIconResource(R.drawable.ic_check)
+                binding.btnTestConnection.setTextColor(color)
+                binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
+                binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
+                binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
+            } else {
+                val color = ContextCompat.getColor(currentCtx, R.color.danger)
+                val stroke = ContextCompat.getColor(currentCtx, R.color.danger_stroke)
+                val bg = ContextCompat.getColor(currentCtx, R.color.danger_light)
+                binding.btnTestConnection.text = if (result.httpCode > 0) {
+                    "${getString(R.string.connection_failed_title)} (HTTP ${result.httpCode})"
+                } else {
+                    getString(R.string.connection_failed_title)
+                }
+                binding.btnTestConnection.setIconResource(R.drawable.ic_close)
+                binding.btnTestConnection.setTextColor(color)
+                binding.btnTestConnection.iconTint = ColorStateList.valueOf(color)
+                binding.btnTestConnection.strokeColor = ColorStateList.valueOf(stroke)
+                binding.btnTestConnection.backgroundTintList = ColorStateList.valueOf(bg)
+
+                if (LocalNetworkHelper.isLocalNetworkPermissionError(result)) {
+                    Toast.makeText(currentCtx, R.string.err_local_network_permission, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -564,6 +670,7 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        pendingTestConnection = null
         _binding = null
     }
 }

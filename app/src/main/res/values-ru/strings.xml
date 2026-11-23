@@ -24,6 +24,14 @@
     <string name="settings_notif_disabled">Отключено - включите в настройках</string>
     <string name="settings_overlay_active">Активно - окна будут показываться поверх приложений</string>
     <string name="settings_overlay_disabled">Отключено - нажмите, чтобы включить всплывающее окно</string>
+    <string name="settings_local_network_title">Доступ к локальной сети</string>
+    <string name="settings_local_network_active">Активно - локальные серверы в Wi-Fi/LAN доступны</string>
+    <string name="settings_local_network_disabled">Необходимо на Android 17+ для локальных IP</string>
+    <string name="local_network_permission_granted">Доступ к локальной сети разрешён</string>
+    <string name="local_network_permission_required">Для подключения к серверам в локальной сети требуется разрешение на доступ к локальной сети</string>
+    <string name="local_network_settings_title">Требуется доступ к локальной сети</string>
+    <string name="local_network_settings_msg">Доступ к локальной сети запрещён. Чтобы подключаться к серверу в домашней сети Wi-Fi или LAN, разрешите «Устройства поблизости» / доступ к локальной сети в настройках приложения.</string>
+    <string name="open_settings">Открыть настройки</string>
     <string name="granted">Разрешено</string>
     <string name="grant">Разрешить</string>
     <string name="history_coords_recorded">Координаты записаны</string>
@@ -149,6 +157,7 @@
     <string name="err_text_mismatch">Текст уведомления не соответствует regex правила.</string>
     <string name="err_server_url_empty">URL сервера не может быть пустым.</string>
     <string name="err_server_http">Сервер вернул HTTP %1$d: %2$s</string>
+    <string name="err_local_network_permission">Доступ к локальной сети заблокирован. Выдайте разрешение на доступ к локальной сети в настройках, чтобы подключаться к внутренним IP.</string>
     <string name="default_rule_payment">Обычный платёж картой (напр. «Paid $12.50 at Starbucks»)</string>
     <string name="default_rule_deposit">Доход / пополнение (напр. «Received $150.00 from Employer»)</string>
 

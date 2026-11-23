@@ -20,6 +20,7 @@ import de.gumerbaev.actual.network.ActualApiClient
 import de.gumerbaev.actual.parser.NotificationParser
 import de.gumerbaev.actual.receiver.NotificationActionReceiver
 import de.gumerbaev.actual.ui.ConfirmTransactionActivity
+import de.gumerbaev.actual.util.LocalNetworkHelper
 import de.gumerbaev.actual.util.LocationHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -178,7 +179,8 @@ class ActualNotificationListenerService : NotificationListenerService() {
     ) {
         val serverUrl = prefs.serverUrl
         val apiToken = prefs.apiToken
-        val result = ActualApiClient.sendTransaction(serverUrl, apiToken, transaction)
+        val rawResult = ActualApiClient.sendTransaction(serverUrl, apiToken, transaction)
+        val result = LocalNetworkHelper.enrichErrorIfLocalNetworkBlocked(this, serverUrl, rawResult)
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (result.success) {

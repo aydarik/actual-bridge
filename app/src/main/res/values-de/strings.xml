@@ -24,6 +24,14 @@
     <string name="settings_notif_disabled">Deaktiviert - in den Einstellungen aktivieren</string>
     <string name="settings_overlay_active">Aktiv - Popups erscheinen über anderen Apps</string>
     <string name="settings_overlay_disabled">Deaktiviert - zum Aktivieren des Popup-Overlays tippen</string>
+    <string name="settings_local_network_title">Lokaler Netzwerkzugriff</string>
+    <string name="settings_local_network_active">Aktiv - Lokale Server im WLAN/LAN erreichbar</string>
+    <string name="settings_local_network_disabled">Ab Android 17 für lokale IPs erforderlich</string>
+    <string name="local_network_permission_granted">Berechtigung für lokales Netzwerk erteilt</string>
+    <string name="local_network_permission_required">Die Berechtigung für das lokale Netzwerk ist erforderlich, um Server im lokalen Netzwerk zu erreichen</string>
+    <string name="local_network_settings_title">Berechtigung für lokales Netzwerk erforderlich</string>
+    <string name="local_network_settings_msg">Der Zugriff auf das lokale Netzwerk wurde verweigert. Um sich mit einem Server in Ihrem Heim-WLAN oder lokalen Netzwerk zu verbinden, erlauben Sie „Geräte in der Nähe“ / „Lokales Netzwerk“ in den App-Einstellungen.</string>
+    <string name="open_settings">Einstellungen öffnen</string>
     <string name="granted">Erteilt</string>
     <string name="grant">Erteilen</string>
     <string name="history_coords_recorded">Koordinaten aufgezeichnet</string>
@@ -149,6 +157,7 @@
     <string name="err_text_mismatch">Der Benachrichtigungstext passt nicht zur Regex der Regel.</string>
     <string name="err_server_url_empty">Die Server-URL darf nicht leer sein.</string>
     <string name="err_server_http">Server hat HTTP %1$d zurückgegeben: %2$s</string>
+    <string name="err_local_network_permission">Der Zugriff auf das lokale Netzwerk ist blockiert. Erteilen Sie in den Einstellungen die Berechtigung für den lokalen Netzwerkzugriff, um lokale IPs zu erreichen.</string>
     <string name="default_rule_payment">Standard-Kartenzahlung (z. B. \'Paid $12.50 at Starbucks\')</string>
     <string name="default_rule_deposit">Einnahme / Einzahlung (z. B. \'Received $150.00 from Employer\')</string>
 
